@@ -1,0 +1,23 @@
+[
+    {
+        "clientId": "1",
+        "clientName": "John Doe",
+        "clientEmail": "john@company1.com",
+        "clientPhone": "123-456-7890",
+        "clientAddress": "123 Main St, Anytown, USA"
+    },
+    {
+        "clientId": "2",
+        "clientName": "Jane Smith",
+        "clientEmail": "jane@company2.com",
+        "clientPhone": "123-456-8888",
+        "clientAddress": "456 Elm St, Anytown, USA"
+    },
+    {
+        "clientId": "3",
+        "clientName": "Joe Blow",
+        "clientEmail": "joe@company3.com",
+        "clientPhone": "123-456-7777",
+        "clientAddress": "789 Oak St, Anytown, USA"
+    }
+]
