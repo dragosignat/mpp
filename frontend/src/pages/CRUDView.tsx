@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar';
+import {Button} from '@/components/ui/button';
 import {useEffect, useState} from 'react';
 import {ClientProp} from '../types/Client';
 
@@ -16,26 +17,46 @@ function CRUDView() {
         fetchData();
     }, []);
 
+    function handleUpdate(key: string) {
+        console.log(`${key} was updated!`);
+    }
+
+    function handleDelete(key: string) {
+        console.log(`${key} was deleted!`);
+    }
+
     return (
         <div>
             <Navbar />
-            <div className='grid grid-cols-3 p-5 divide-x-[1px] gap-4'>
-                <div className='cols-span-2'>
-                    <table className='table-auto sticky top-0'>
-                        <thead>
-                            {clientList.map((client) => {
-                                return (
-                                    <tr key={client.clientId}>
-                                        <td>{client.clientName}</td>
-                                        <td>{client.clientAddress}</td>
-                                        <td>{client.clientEmail}</td>
-                                    </tr>
-                                );
-                            })}
-                        </thead>
-                    </table>
-                </div>
-                <div>TEST</div>
+            <div className='divide-x-[1px] justify-center p-5 flex'>
+                <table className='table-auto sticky top-0 border-separate border-spacing-2 '>
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Adrress</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {clientList.map((client) => {
+                            return (
+                                <tr key={client.clientId}>
+                                    <td>{client.clientName}</td>
+                                    <td>{client.clientAddress}</td>
+                                    <td>{client.clientEmail}</td>
+                                    <td>
+                                        <Button>Edit</Button>
+                                    </td>
+                                    <td>
+                                        <Button variant='destructive'>
+                                            Delete
+                                        </Button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
