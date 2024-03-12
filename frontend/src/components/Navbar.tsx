@@ -6,18 +6,33 @@ import {
 
 function Navbar() {
     return (
-        <header className=' border-b-[1px] top-0 z-40 w-full'>
+        <header className=' border-b-[2px] top-0 z-40 w-full'>
             <NavigationMenu className='mx-auto'>
-                <NavigationMenuList className='container h-10 px-5 w-screen flex justify-between'>
+                <NavigationMenuList className='container h-14 px-7 w-screen flex justify-between'>
                     <NavigationMenuItem>
-                        <span className=' text-2xl font-bold drop-shadow-2xl shadow-black '>
-                            <a>OpenInvoce</a>
-                        </span>
+                        <a className='text-2xl font-bold hover:text-gray-700 cursor-pointer '>
+                            OpenInvoce
+                        </a>
                     </NavigationMenuItem>
-                    <NavigationMenuItem className='flex gap-2'>
-                        <a href='/'>Clients</a>
-                        <a href='/'>Invoices</a>
-                        <a href='/'>Purchases</a>
+                    <NavigationMenuItem className='flex gap-3'>
+                        <a
+                            href='/'
+                            className='hover:text-gray-700 cursor-pointer '
+                        >
+                            Clients
+                        </a>
+                        <a
+                            href='/'
+                            className='hover:text-gray-700 cursor-pointer '
+                        >
+                            Invoices
+                        </a>
+                        <a
+                            href='/'
+                            className='hover:text-gray-700 cursor-pointer '
+                        >
+                            Purchases
+                        </a>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
