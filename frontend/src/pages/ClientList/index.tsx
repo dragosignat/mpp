@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
 import {Button} from '@/components/ui/button';
 import {useEffect, useState} from 'react';
-import {ClientProp} from '../types/Client';
+import {ClientProp} from '../../types/Client';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -27,8 +27,6 @@ import {
 function CRUDView() {
     const CLIENT_LIST_PATH = '../mockAPI/clientList.json';
     const [clientList, setClientList] = useState<ClientProp[]>([]);
-
-    const [editOpen, setEditOpen] = useState<boolean>(false);
 
     // GET from mock API the list of objects to display
     useEffect(() => {
@@ -57,8 +55,7 @@ function CRUDView() {
     }
 
     return (
-        <div className=' h-100 w-100 '>
-            <Navbar />
+        <div className=' flex-1 '>
             <div className='justify-center p-5 grid'>
                 <div className=' flex justify-between container p-5'>
                     <div className=' font-semibold text-xl'>Clients</div>
@@ -90,19 +87,13 @@ function CRUDView() {
                         {clientList.map((client) => {
                             return (
                                 <tr key={client.clientId}>
-                                    <td
-                                        className=' cursor-pointer hover:text-slate-700 '
-                                        onClick={() => setEditOpen(!editOpen)}
-                                    >
+                                    <td className=' cursor-pointer hover:text-slate-700 '>
                                         {client.clientName}
                                     </td>
                                     <td>{client.clientAddress}</td>
                                     <td>{client.clientEmail}</td>
                                     <td>
-                                        <Dialog
-                                            open={editOpen}
-                                            onOpenChange={setEditOpen}
-                                        >
+                                        <Dialog>
                                             <DialogTrigger asChild>
                                                 <Button variant='outline'>
                                                     Edit

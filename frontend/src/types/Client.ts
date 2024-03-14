@@ -4,7 +4,6 @@
 export interface ClientProp {
     clientId: string;
     clientName: string;
-    clientAge?: number;
     clientAddress: string;
     clientPhone?: string;
     clientEmail: string;

@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import CRUDView from './pages/CRUDView';
+import './style/index.css';
+import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <CRUDView />
+        <App />
     </React.StrictMode>,
 );
