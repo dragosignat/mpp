@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
 import {Button} from '@/components/ui/button';
 import {useEffect, useState} from 'react';
-import {ClientProp} from '../../types/Client';
+import {Client} from '../../types/Client';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -26,7 +26,7 @@ import {
 
 function CRUDView() {
     const CLIENT_LIST_PATH = '../mockAPI/clientList.json';
-    const [clientList, setClientList] = useState<ClientProp[]>([]);
+    const [clientList, setClientList] = useState<Client[]>([]);
 
     // GET from mock API the list of objects to display
     useEffect(() => {
@@ -55,7 +55,7 @@ function CRUDView() {
     }
 
     return (
-        <div className=' flex-1 '>
+        <div className=' '>
             <div className='justify-center p-5 grid'>
                 <div className=' flex justify-between container p-5'>
                     <div className=' font-semibold text-xl'>Clients</div>

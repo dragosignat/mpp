@@ -1,9 +1,9 @@
 import {ColumnDef} from '@tanstack/react-table';
-import {ClientProp} from '@/types/Client';
+import {Client} from '@/types/Client';
 
-export const ClientColumns: ColumnDef<ClientProp>[] = [
+export const ClientColumns: ColumnDef<Client>[] = [
     {
-        accessorKey: 'clientName',
+        accessorKey: 'name',
         header: 'Name',
     },
     {

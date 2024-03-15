@@ -7,6 +7,16 @@ import {
     SettingsIcon,
     HomeIcon,
 } from '@/assets/svgs';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {Button} from '@/components/ui/button';
+import {Menu} from 'lucide-react';
 
 function Sidebar() {
     return (
@@ -45,7 +55,10 @@ function Sidebar() {
                         </Link>
                     </li>
                 </ul>
-                <div className=' text-sm text-gray-200 px-2 '>v0.0.1</div>
+                <div className='flex flex-col'>
+                    <div className='justify-center m-2'></div>
+                    <div className=' text-sm text-gray-200 px-2 '>v0.0.1</div>
+                </div>
             </aside>
         </>
     );

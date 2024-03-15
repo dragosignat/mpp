@@ -4,20 +4,26 @@
         "clientName": "John Doe",
         "clientEmail": "john@company1.com",
         "clientPhone": "123-456-7890",
-        "clientAddress": "123 Main St, Anytown, USA"
+        "clientAddress": "123 Main St, Anytown, USA",
+        "clientTotalPurchases": "1000",
+        "clientIsBusiness": "false"
     },
     {
         "clientId": "2",
         "clientName": "Jane Smith",
         "clientEmail": "jane@company2.com",
         "clientPhone": "123-456-8888",
-        "clientAddress": "456 Elm St, Anytown, USA"
+        "clientAddress": "456 Elm St, Anytown, USA",
+        "clientTotalPurchases": "2500",
+        "clientIsBusiness": "false"
     },
     {
         "clientId": "3",
         "clientName": "Joe Blow",
         "clientEmail": "joe@company3.com",
         "clientPhone": "123-456-7777",
-        "clientAddress": "789 Oak St, Anytown, USA"
+        "clientAddress": "789 Oak St, Anytown, USA",
+        "clientTotalPurchases": "1300",
+        "clientIsBusiness": "false"
     }
 ]

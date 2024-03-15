@@ -1,12 +1,12 @@
 /*
     Client class is the main class for the client side of the application.
 */
-export interface ClientProp {
+export interface Client {
     clientId: string;
     clientName: string;
     clientAddress: string;
-    clientPhone?: string;
+    clientPhone: string;
     clientEmail: string;
-    clientNotes?: string;
-    clientTotalPurchases?: number;
+    clientTotatPurcheses: number;
+    clientIsBussiness: boolean;
 }
