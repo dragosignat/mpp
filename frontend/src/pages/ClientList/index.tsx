@@ -2,32 +2,10 @@
 import {useEffect} from 'react';
 // import {Client} from '../../types/Client';
 import {ClientColumns} from '@/components/client-data-table/columns';
-import {DataTable} from '@/components/client-data-table/data-table';
+import {DataTable} from '@/components/client-data-table/client-data-table';
 import {useDispatch, useSelector} from 'react-redux';
 import {loadClients, selectClients} from '@/redux/clients/clientsSlice';
 import {AppDispatch} from '@/redux/store';
-
-// import {
-//     AlertDialog,
-//     AlertDialogAction,
-//     AlertDialogCancel,
-//     AlertDialogContent,
-//     AlertDialogDescription,
-//     AlertDialogFooter,
-//     AlertDialogHeader,
-//     AlertDialogTitle,
-//     AlertDialogTrigger,
-// } from '@/components/ui/alert-dialog';
-
-// import {
-//     Dialog,
-//     DialogContent,
-//     DialogDescription,
-//     DialogHeader,
-//     DialogTitle,
-//     DialogTrigger,
-//     DialogFooter,
-// } from '@/components/ui/dialog';
 
 function CRUDView() {
     const clients = useSelector(selectClients);
@@ -39,7 +17,9 @@ function CRUDView() {
             console.log('loading clients');
             dispatch(loadClients());
         }
-    }, [clients, dispatch]);
+    }, [dispatch]);
+
+    console.log('clients', clients);
 
     return (
         <>

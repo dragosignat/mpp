@@ -1,0 +1,78 @@
+import {Row} from '@tanstack/react-table';
+import {Button} from '@/components/ui/button';
+import {Link} from 'react-router-dom';
+
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {useToast} from '@/components/ui/use-toast';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch} from '@/redux/store';
+import {
+    removeClient,
+    updateClient,
+    selectClients,
+} from '@/redux/clients/clientsSlice';
+
+interface DataTableRowActionsProps<TData> {
+    row: Row<TData>;
+}
+
+export function DataTableRowActions<TData>({
+    row,
+}: DataTableRowActionsProps<TData>) {
+    const clientId = row.original.clientId;
+    const dispatch = useDispatch<AppDispatch>();
+    const {toast} = useToast();
+    const handleDelete = () => {
+        dispatch(removeClient(clientId));
+        toast({
+            title: 'Client deleted',
+            variant: 'destructive',
+        });
+    };
+
+    return (
+        <div className='flex flex-row gap-3 justify-center align-middle'>
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant='destructive'>Delete</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            remove your data from our servers.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button
+                                variant='destructive'
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+            <Button variant='outline'>
+                <Link to={`/clients/${clientId}`}>Edit</Link>
+            </Button>
+        </div>
+    );
+}

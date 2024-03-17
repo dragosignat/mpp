@@ -23,6 +23,12 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {DataTablePagination} from '../data-table-components/data-table-pagination';
 
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch} from '@/redux/store';
+import {selectClients} from '@/redux/clients/clientsSlice';
+
+import {Link} from 'react-router-dom';
+
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -67,7 +73,9 @@ export function DataTable<TData, TValue>({
                     }
                     className='max-w-sm'
                 />
-                <Button variant='default'>Add Client</Button>
+                <Button variant='outline'>
+                    <Link to='/clients/add'>Add Client</Link>
+                </Button>
             </div>
             <div className='rounded-md border'>
                 <Table>
