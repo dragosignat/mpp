@@ -25,5 +25,14 @@
         "clientAddress": "789 Oak St, Anytown, USA",
         "clientTotalPurchases": "1300",
         "clientIsBusiness": "false"
+    },
+    {
+        "clientId": "4",
+        "clientName": "Acme Inc",
+        "clientEmail": "contact@acmeinc.com",
+        "clientPhone": "123-456-6666",
+        "clientAddress": "123 Main St, Anytown, USA",
+        "clientTotalPurchases": "10000",
+        "clientIsBusiness": "true"
     }
 ]

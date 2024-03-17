@@ -1,22 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {RxDashboard} from 'react-icons/rx';
 import {
     UsersIcon,
     ShoppingCartIcon,
     SettingsIcon,
     HomeIcon,
 } from '@/assets/svgs';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Button} from '@/components/ui/button';
-import {Menu} from 'lucide-react';
 
 function Sidebar() {
     return (
