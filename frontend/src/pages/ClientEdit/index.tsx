@@ -24,7 +24,7 @@ const ClientEdit = () => {
                     <div className='flex flex-col space-y-2'>
                         <Button className='' variant='ghost'>
                             <Link to='/clients'>
-                                <div className='flex flex-row space-x-2'>
+                                <div className='flex flex-row items-start space-x-3 space-y-0'>
                                     <ArrowLeft className='h-6 w-6' />
                                     <div className=' font-semibold text-lg '>
                                         Go Back
@@ -32,7 +32,7 @@ const ClientEdit = () => {
                                 </div>
                             </Link>
                         </Button>
-                        <h1 className='text-xl font-bold'>
+                        <h1 className='text-xl font-bold py-2'>
                             Editing: {client?.clientName}
                         </h1>
                     </div>

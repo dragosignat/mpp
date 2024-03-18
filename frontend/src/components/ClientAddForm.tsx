@@ -20,7 +20,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {useToast} from '@/components/ui/use-toast';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
 import {addClient} from '@/redux/clients/clientsSlice';
 import {useNavigate} from 'react-router-dom';
@@ -191,13 +191,10 @@ function ClientAddForm() {
                     control={form.control}
                     name='clientIsBusiness'
                     render={({field}) => (
-                        <FormItem className='flex items-center space-x-3 rounded-md align-middle border p-2 shadow'>
-                            <FormLabel htmlFor='clientIsBusiness'>
-                                Is the client a business?
-                            </FormLabel>
+                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow'>
+                            <FormLabel>Is the client a business?</FormLabel>
                             <FormControl>
                                 <Checkbox
-                                    id='clientIsBusiness'
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
                                 />

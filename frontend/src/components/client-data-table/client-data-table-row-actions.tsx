@@ -15,13 +15,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import {useToast} from '@/components/ui/use-toast';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
-import {
-    removeClient,
-    updateClient,
-    selectClients,
-} from '@/redux/clients/clientsSlice';
+import {removeClient} from '@/redux/clients/clientsSlice';
 
 interface DataTableRowActionsProps<TData> {
     row: Row<TData>;
@@ -61,7 +57,7 @@ export function DataTableRowActions<TData>({
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction asChild>
                             <Button
-                                variant='destructive'
+                                className='bg-destructive hover:bg-red-900'
                                 onClick={handleDelete}
                             >
                                 Delete
@@ -70,9 +66,9 @@ export function DataTableRowActions<TData>({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-            <Button variant='outline'>
-                <Link to={`/clients/${clientId}`}>Edit</Link>
-            </Button>
+            <Link to={`/clients/${clientId}`}>
+                <Button variant='outline'>Edit</Button>
+            </Link>
         </div>
     );
 }

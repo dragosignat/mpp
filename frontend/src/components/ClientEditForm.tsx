@@ -1,5 +1,4 @@
 import React from 'react';
-import {useId} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
@@ -199,7 +198,7 @@ function ClientEditForm({clientId}: {clientId: string | number}) {
                     control={form.control}
                     name='clientIsBusiness'
                     render={({field}) => (
-                        <FormItem className='flex items-center space-x-3 rounded-md align-middle border p-2 shadow'>
+                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow'>
                             <FormLabel htmlFor='clientIsBusiness'>
                                 Is the client a business?
                             </FormLabel>

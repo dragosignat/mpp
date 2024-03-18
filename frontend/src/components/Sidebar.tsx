@@ -30,13 +30,19 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className='flex items-center p-5 m-2 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700'>
-                        <Link className='flex items-center space-x-4' to='/'>
+                        <Link
+                            className='flex items-center space-x-4'
+                            to='/orders'
+                        >
                             <ShoppingCartIcon className='h-5 w-5 text-gray-500 dark:text-gray-400' />
                             <span className='text-sm font-medium'>Orders</span>
                         </Link>
                     </li>
                     <li className='flex items-center p-5 m-2 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700'>
-                        <Link className='flex items-center space-x-4' to='/'>
+                        <Link
+                            className='flex items-center space-x-4'
+                            to='/settings'
+                        >
                             <SettingsIcon className='h-5 w-5 text-gray-500 dark:text-gray-400' />
                             <span className='text-sm font-medium'>
                                 Settings
