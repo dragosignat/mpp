@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useEffect} from 'react';
 import {Button} from '@/components/ui/button';
 import {Tabs, TabsList, TabsTrigger} from '@/components/ui/tabs';
@@ -19,7 +19,7 @@ function Homepage() {
     // Load the number of clients and map them to the number total purchase
     const clients = useSelector(selectClients);
     const dispatch = useDispatch<AppDispatch>();
-    //const clientsToPurchases: {[key: string]: number} = {};
+    const clientsToPurchases: {name: string; total: number}[] = [];
 
     useEffect(() => {
         // Load the clients and form the map
@@ -28,6 +28,13 @@ function Homepage() {
             dispatch(loadClients());
         }
     }, [dispatch]);
+
+    clients.map((client) => {
+        clientsToPurchases.push({
+            name: client.clientName,
+            total: parseFloat(client.clientTotalPurchases),
+        });
+    });
 
     return (
         <>
@@ -39,7 +46,7 @@ function Homepage() {
                     </div>
                 </div>
                 <Tabs defaultValue='clients'>
-                    <TabsList className='my-2'>
+                    <TabsList className=''>
                         <TabsTrigger value='clients'>Clients</TabsTrigger>
                         <TabsTrigger value='sales' disabled>
                             Sales
@@ -113,7 +120,7 @@ function Homepage() {
                             <CardTitle>Sales by client</CardTitle>
                         </CardHeader>
                         <CardContent className='pl-2'>
-                            {/* <BarChartComponent data={clientsToPurchasesArray} /> */}
+                            <BarChartComponent data={clientsToPurchases} />
                         </CardContent>
                     </Card>
                     <Card className='col-span-2'>

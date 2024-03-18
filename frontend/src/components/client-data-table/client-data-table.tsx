@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className=' space-y-4 '>
+        <div className=' flex flex-col space-y-4 '>
             <div className='flex items-center justify-between'>
                 <Input
                     placeholder='Filter emails...'

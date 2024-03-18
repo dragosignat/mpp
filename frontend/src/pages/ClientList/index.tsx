@@ -19,14 +19,11 @@ function CRUDView() {
         }
     }, [dispatch]);
 
-    console.log('clients', clients);
-
     return (
         <>
-            <div className=' p-5 flex flex-col space-y-2'>
+            <div className=' p-5 flex flex-col space-y-4'>
                 <div className='flex flex-row justify-between'>
                     <h1 className='text-3xl font-bold'>Client List</h1>
-                    {/* Toggle a dialog with the form to add a new client */}
                 </div>
                 <DataTable columns={ClientColumns} data={clients} />
             </div>
