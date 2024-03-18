@@ -69,9 +69,9 @@ export function DataTable<TData, TValue>({
                     }
                     className='max-w-sm'
                 />
-                <Button variant='outline'>
-                    <Link to='/clients/add'>Add Client</Link>
-                </Button>
+                <Link to='/clients/add'>
+                    <Button variant='outline'>Add Client</Button>
+                </Link>
             </div>
             <div className='rounded-md border'>
                 <Table>

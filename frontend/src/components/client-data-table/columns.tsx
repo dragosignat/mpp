@@ -28,7 +28,9 @@ export const ClientColumns: ColumnDef<Client>[] = [
     },
     {
         accessorKey: 'clientTotalPurchases',
-        header: () => <div className=''>Total Purchases</div>,
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title='Total Purchases' />
+        ),
         cell: ({row}) => {
             const amount = parseFloat(row.getValue('clientTotalPurchases'));
             const formatted = new Intl.NumberFormat('en-US', {
