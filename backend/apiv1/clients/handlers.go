@@ -1,11 +1,55 @@
 package clients
 
 import (
+	"log"
+	"slices"
+	"sort"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
 func getClients(c *gin.Context) {
-	c.JSON(200, ClientsList)
+
+	sorting := c.DefaultQuery("sort", "asc")
+	sortBy := c.DefaultQuery("sortBy", "none")
+	filter := c.DefaultQuery("filter", "none")
+
+	sort.Slice(ClientsList, func(i, j int) bool {
+		switch sortBy {
+		case "clientName":
+			return ClientsList[i].ClientName < ClientsList[j].ClientName
+		case "clientEmail":
+			return ClientsList[i].ClientEmail < ClientsList[j].ClientEmail
+		case "clientTotalPurchases":
+			return ClientsList[i].ClientTotalPurchases < ClientsList[j].ClientTotalPurchases
+		default:
+			return ClientsList[i].ClientID < ClientsList[j].ClientID
+		}
+	})
+
+	for _, client := range ClientsList {
+		log.Println(client.ClientName)
+	}
+
+	if sorting == "desc" {
+		slices.Reverse(ClientsList)
+	}
+
+	response := []Clients{}
+
+	if filter == "none" {
+		response = ClientsList
+	} else {
+		for _, client := range ClientsList {
+			// If name, email, or phone contains the filter string
+			if strings.Contains(client.ClientName, filter) || strings.Contains(client.ClientEmail, filter) || strings.Contains(client.ClientPhone, filter) {
+				response = append(response, client)
+			}
+		}
+
+	}
+	c.JSON(200, response)
 }
 
 func getClient(c *gin.Context) {
