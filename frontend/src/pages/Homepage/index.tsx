@@ -32,7 +32,7 @@ function Homepage() {
     clients.map((client) => {
         clientsToPurchases.push({
             name: client.clientName,
-            total: parseFloat(client.clientTotalPurchases),
+            total: client.clientTotalPurchases,
         });
     });
 

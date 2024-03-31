@@ -6,7 +6,7 @@ import (
 
 func RegisterRoutes(router *gin.Engine) {
 
-	routes := router.Group("/clients")
+	routes := router.Group("/apiv1/clients")
 	{
 		routes.GET("", getClients)
 		routes.GET("/:id", getClient)

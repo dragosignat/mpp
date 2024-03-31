@@ -42,7 +42,7 @@ const formSchema = z.object({
     clientEmail: z.string().email({
         message: 'Client email must be a valid email.',
     }),
-    clientTotalPurchases: z.string().min(0, {
+    clientTotalPurchases: z.coerce.number().min(0, {
         message: 'Client total purchases must be at least 0.',
     }),
     clientIsBusiness: z.boolean(),
@@ -56,11 +56,6 @@ function ClientEditForm({clientId}: {clientId: string | number}) {
     const navigate = useNavigate();
     const {toast} = useToast();
 
-    const totalPurchesesAsNumber = parseFloat(
-        client?.clientTotalPurchases || '0',
-    );
-    const clientIsBusinessAsBoolean = client?.clientIsBusiness === 'true';
-
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -70,8 +65,8 @@ function ClientEditForm({clientId}: {clientId: string | number}) {
             clientAddress: client?.clientAddress,
             clientPhone: client?.clientPhone,
             clientEmail: client?.clientEmail,
-            clientTotalPurchases: totalPurchesesAsNumber.toString(),
-            clientIsBusiness: clientIsBusinessAsBoolean,
+            clientTotalPurchases: client?.clientTotalPurchases,
+            clientIsBusiness: client?.clientIsBusiness,
         },
     });
 
@@ -84,11 +79,10 @@ function ClientEditForm({clientId}: {clientId: string | number}) {
             clientAddress: values.clientAddress,
             clientPhone: values.clientPhone,
             clientEmail: values.clientEmail,
-            clientTotalPurchases: values.clientTotalPurchases.toString(),
-            clientIsBusiness: values.clientIsBusiness.toString(),
+            clientTotalPurchases: values.clientTotalPurchases,
+            clientIsBusiness: values.clientIsBusiness,
         };
 
-        console.log(client);
         // Dispatch the action to add the client to the store
         dispatch(updateClient(client));
         // Display a success message

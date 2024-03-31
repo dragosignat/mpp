@@ -32,7 +32,7 @@ export const ClientColumns: ColumnDef<Client>[] = [
             <DataTableColumnHeader column={column} title='Total Purchases' />
         ),
         cell: ({row}) => {
-            const amount = parseFloat(row.getValue('clientTotalPurchases'));
+            const amount = row.getValue('clientTotalPurchases');
             const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
@@ -46,7 +46,7 @@ export const ClientColumns: ColumnDef<Client>[] = [
         header: 'Is Business',
         cell: ({row}) => {
             const isBusiness = row.getValue('clientIsBusiness');
-            if (isBusiness === 'true') {
+            if (isBusiness === true) {
                 return <Check />;
             } else {
                 return <X />;

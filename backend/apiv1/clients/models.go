@@ -12,8 +12,8 @@ type Clients struct {
 	ClientEmail          string `json:"clientEmail" binding:"required"`
 	ClientPhone          string `json:"clientPhone" binding:"required"`
 	ClientAddress        string `json:"clientAddress" binding:"required"`
-	ClientTotalPurchases string `json:"clientTotalPurchases" binding:"required"`
-	ClientIsBusiness     string `json:"clientIsBusiness" binding:"required"`
+	ClientTotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
+	ClientIsBusiness     *bool  `json:"clientIsBusiness" binding:"required"`
 }
 
 var ClientsList []Clients

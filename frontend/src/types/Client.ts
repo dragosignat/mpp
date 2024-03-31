@@ -7,6 +7,6 @@ export interface Client {
     clientAddress: string;
     clientPhone: string;
     clientEmail: string;
-    clientTotalPurchases: string;
-    clientIsBusiness: string;
+    clientTotalPurchases: number;
+    clientIsBusiness: boolean;
 }

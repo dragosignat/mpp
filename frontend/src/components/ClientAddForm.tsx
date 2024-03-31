@@ -43,7 +43,7 @@ const formSchema = z.object({
     clientEmail: z.string().email({
         message: 'Client email must be a valid email.',
     }),
-    clientTotalPurchases: z.string().min(0, {
+    clientTotalPurchases: z.coerce.number().min(0, {
         message: 'Client total purchases must be at least 0.',
     }),
     clientIsBusiness: z.boolean(),
@@ -58,7 +58,7 @@ function ClientAddForm() {
             clientAddress: '',
             clientPhone: '',
             clientEmail: '',
-            clientTotalPurchases: '0',
+            clientTotalPurchases: 0,
             clientIsBusiness: false,
         },
     });
@@ -77,11 +77,10 @@ function ClientAddForm() {
             clientAddress: values.clientAddress,
             clientPhone: values.clientPhone,
             clientEmail: values.clientEmail,
-            clientTotalPurchases: values.clientTotalPurchases.toString(),
-            clientIsBusiness: values.clientIsBusiness.toString(),
+            clientTotalPurchases: values.clientTotalPurchases,
+            clientIsBusiness: values.clientIsBusiness,
         };
 
-        console.log(client);
         // Dispatch the action to add the client to the store
         dispatch(addClient(client));
         // Display a success message
@@ -177,7 +176,7 @@ function ClientAddForm() {
                         <FormItem>
                             <FormLabel>Client total purchases</FormLabel>
                             <FormControl>
-                                <Input {...field} />
+                                <Input type='number' {...field} />
                             </FormControl>
                             <FormDescription>
                                 This the total purchases of the associated

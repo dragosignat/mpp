@@ -1,6 +1,7 @@
 package clients
 
 import (
+	"fmt"
 	"log"
 	"slices"
 	"sort"
@@ -27,10 +28,6 @@ func getClients(c *gin.Context) {
 			return ClientsList[i].ClientID < ClientsList[j].ClientID
 		}
 	})
-
-	for _, client := range ClientsList {
-		log.Println(client.ClientName)
-	}
 
 	if sorting == "desc" {
 		slices.Reverse(ClientsList)
@@ -78,6 +75,7 @@ func createClient(c *gin.Context) {
 	err := c.BindJSON(&newClient)
 
 	if err != nil {
+		log.Println(err)
 		c.JSON(400, gin.H{"message": "Invalid request"})
 		return
 	}
@@ -100,6 +98,7 @@ func updateClient(c *gin.Context) {
 	err := c.BindJSON(&updatedClient)
 
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{"message": "Invalid request"})
 		return
 	}
@@ -107,7 +106,7 @@ func updateClient(c *gin.Context) {
 	for i, client := range ClientsList {
 		if client.ClientID == c.Param("id") {
 			ClientsList[i] = updatedClient
-			c.JSON(200, gin.H{"message": "Client updated"})
+			c.JSON(200, updatedClient)
 			return
 		}
 	}
