@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func getClients(c *gin.Context) {
@@ -70,9 +71,19 @@ func deleteClient(c *gin.Context) {
 }
 
 func createClient(c *gin.Context) {
-	var newClient Clients
+	var newClientFromCall ClientsCreate
 
-	err := c.BindJSON(&newClient)
+	err := c.BindJSON(&newClientFromCall)
+
+	newClient := Clients{
+		ClientID:             uuid.New().String(),
+		ClientName:           newClientFromCall.ClientName,
+		ClientEmail:          newClientFromCall.ClientEmail,
+		ClientPhone:          newClientFromCall.ClientPhone,
+		ClientAddress:        newClientFromCall.ClientAddress,
+		ClientTotalPurchases: newClientFromCall.ClientTotalPurchases,
+		ClientIsBusiness:     newClientFromCall.ClientIsBusiness,
+	}
 
 	if err != nil {
 		log.Println(err)

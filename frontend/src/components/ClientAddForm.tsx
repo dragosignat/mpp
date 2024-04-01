@@ -1,11 +1,9 @@
-import React from 'react';
-import {useId} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {Checkbox} from '@/components/ui/checkbox';
 
-import {Client} from '@/types/Client';
+import {ClientCreate} from '@/types/Client';
 
 import {Button} from '@/components/ui/button';
 import {
@@ -64,15 +62,14 @@ function ClientAddForm() {
     });
 
     const dispatch = useDispatch<AppDispatch>();
-    const clientId = useId();
     const navigate = useNavigate();
     const {toast} = useToast();
 
     // 2. Define a submit handler.
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         // Form the client object
-        const client: Client = {
-            clientId: clientId.toString(),
+        const client: ClientCreate = {
+            // clientId: clientId.toString(),
             clientName: values.clientName,
             clientAddress: values.clientAddress,
             clientPhone: values.clientPhone,

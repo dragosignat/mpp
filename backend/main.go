@@ -7,14 +7,15 @@ import (
 	"openinvoice-api/apiv1/clients"
 )
 
-type Clients struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(cors.Default())
+
+	r.GET("/apiv1", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Welcome to OpenInvoice API!",
+		})
+	})
 
 	clients.RegisterRoutes(r)
 

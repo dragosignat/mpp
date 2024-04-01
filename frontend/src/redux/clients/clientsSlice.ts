@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import type {PayloadAction} from '@reduxjs/toolkit';
-import {Client} from '@/types/Client';
+import {Client, ClientCreate} from '@/types/Client';
 import axios from 'axios';
 import {API_URL} from '@/config/apiConfig';
 
@@ -19,8 +18,7 @@ const initialState: ClientsState = {
 export const clientSlice = createSlice({
     name: 'clients',
     initialState,
-    reducers: {
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(loadClients.pending, (state) => {
@@ -56,7 +54,6 @@ export const clientSlice = createSlice({
                 if (index !== -1) {
                     state.clients[index] = action.payload;
                 }
-
             })
             .addCase(updateClient.rejected, (state) => {
                 state.error = 'Failed to update client';
@@ -69,25 +66,34 @@ export const loadClients = createAsyncThunk('clients/loadClients', async () => {
     return data;
 });
 
+export const addClient = createAsyncThunk(
+    'clients/addClient',
+    async (client: ClientCreate) => {
+        const {data} = await axios.post(`${API_URL}/clients`, client);
+        return data;
+    },
+);
 
-export const addClient = createAsyncThunk('clients/addClient', async (client: Client) => {
-    const {data} = await axios.post(`${API_URL}/clients`, client);
-    return data;
-});
+export const removeClient = createAsyncThunk(
+    'clients/deleteClient',
+    async (clientId: string) => {
+        await axios.delete(`${API_URL}/clients/${clientId}`);
+        return clientId;
+    },
+);
 
-export const removeClient = createAsyncThunk('clients/deleteClient', async (clientId: string) => {
-    await axios.delete(`${API_URL}/clients/${clientId}`);
-    return clientId;
-});
-
-
-export const updateClient = createAsyncThunk('clients/updateClient', async (client: Client) => {
-    const {data} = await axios.put(`${API_URL}/clients/${client.clientId}`, client);
-    return data;
-});
-
+export const updateClient = createAsyncThunk(
+    'clients/updateClient',
+    async (client: Client) => {
+        const {data} = await axios.put(
+            `${API_URL}/clients/${client.clientId}`,
+            client,
+        );
+        return data;
+    },
+);
 
 export const selectClients = (state: {clients: ClientsState}) =>
     state.clients.clients;
-export const {} = clientSlice.actions;
+// export const {} = clientSlice.actions;
 export default clientSlice.reducer;
