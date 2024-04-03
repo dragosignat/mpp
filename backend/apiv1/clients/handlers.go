@@ -34,7 +34,7 @@ func getClients(c *gin.Context) {
 		slices.Reverse(ClientsList)
 	}
 
-	response := []Clients{}
+	response := []Client{}
 
 	if filter == "none" {
 		response = ClientsList
@@ -75,14 +75,14 @@ func createClient(c *gin.Context) {
 
 	err := c.BindJSON(&newClientFromCall)
 
-	newClient := Clients{
+	newClient := Client{
 		ClientID:             uuid.New().String(),
 		ClientName:           newClientFromCall.ClientName,
 		ClientEmail:          newClientFromCall.ClientEmail,
 		ClientPhone:          newClientFromCall.ClientPhone,
 		ClientAddress:        newClientFromCall.ClientAddress,
 		ClientTotalPurchases: newClientFromCall.ClientTotalPurchases,
-		ClientIsBusiness:     newClientFromCall.ClientIsBusiness,
+		ClientIsBusiness:     *newClientFromCall.ClientIsBusiness,
 	}
 
 	if err != nil {
@@ -104,7 +104,7 @@ func createClient(c *gin.Context) {
 }
 
 func updateClient(c *gin.Context) {
-	var updatedClient Clients
+	var updatedClient Client
 
 	err := c.BindJSON(&updatedClient)
 

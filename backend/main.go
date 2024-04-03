@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"openinvoice-api/apiv1/clients"
+	"openinvoice-api/utils"
 )
 
 func setupRouter() *gin.Engine {
@@ -23,6 +24,10 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+
+	// Generate some mock data
+	utils.GenerateData()
+
 	r := setupRouter()
 
 	r.Run() // listen and serve on 0.0.0.0:8080
