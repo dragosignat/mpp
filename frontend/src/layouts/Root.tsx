@@ -10,17 +10,6 @@ import axios from 'axios';
 
 function Root() {
     const {toast} = useToast();
-    // (async () => {
-    //     try {
-    //         await axios.get(`${API_URL}`);
-    //     } catch (error) {
-    //         toast({
-    //             title: 'API Error',
-    //             description: 'Could not connect to the API server.',
-    //             variant: 'destructive',
-    //         });
-    //     }
-    // })();
 
     useEffect(() => {
         const fetchData = async () => {
