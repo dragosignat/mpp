@@ -3,12 +3,15 @@ package clients
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"slices"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 )
 
 func getClients(c *gin.Context) {
@@ -123,4 +126,38 @@ func updateClient(c *gin.Context) {
 	}
 
 	c.JSON(404, gin.H{"message": "Client not found"})
+}
+
+func watchClients(c *gin.Context) {
+
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	defer conn.Close()
+
+	for {
+		// Generate a new random client
+		newClien := GenerateData()
+
+		ClientsList = append(ClientsList, newClien)
+
+		err = conn.WriteMessage(websocket.TextMessage, []byte("clients_updated"))
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		time.Sleep(10 * time.Second)
+	}
+
 }

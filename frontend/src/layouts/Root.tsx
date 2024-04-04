@@ -7,9 +7,16 @@ import {API_URL} from '@/config/apiConfig';
 import {useToast} from '@/components/ui/use-toast';
 import {useEffect} from 'react';
 import axios from 'axios';
+import useWebSocket, {ReadyState} from 'react-use-websocket';
+import {useRef} from 'react';
+import {useDispatch} from 'react-redux';
+import {loadClients} from '@/redux/clients/clientsSlice';
+import {AppDispatch} from '@/redux/store';
 
 function Root() {
     const {toast} = useToast();
+
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,12 +35,25 @@ function Root() {
         // Call fetchData initially
         fetchData();
 
-        // Set up interval to call fetchData every 5 seconds
-        const intervalId = setInterval(fetchData, 5000);
+        // Set up interval to call fetchData every 10 seconds
+        const intervalId = setInterval(fetchData, 10000);
 
         // Clear interval on component unmount
         return () => clearInterval(intervalId);
     }, []);
+
+    const SOCKET_URL = 'ws://localhost:8080/apiv1/clients/watch';
+
+    const {lastMessage} = useWebSocket(SOCKET_URL, {
+        shouldReconnect: () => true,
+        share: true,
+    });
+
+    useEffect(() => {
+        if (lastMessage?.data === 'clients_updated') {
+            dispatch(loadClients());
+        }
+    }, [lastMessage, dispatch]);
 
     return (
         <html>

@@ -5,12 +5,17 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"openinvoice-api/apiv1/clients"
-	"openinvoice-api/utils"
 )
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(cors.Default())
+
+	superGroup := r.Group("/apiv1")
+	{
+		clients.RegisterRoutes(superGroup)
+
+	}
 
 	r.GET("/apiv1", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -18,15 +23,10 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
-	clients.RegisterRoutes(r)
-
 	return r
 }
 
 func main() {
-
-	// Generate some mock data
-	utils.GenerateData()
 
 	r := setupRouter()
 
