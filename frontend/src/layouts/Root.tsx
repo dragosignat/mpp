@@ -7,8 +7,7 @@ import {API_URL} from '@/config/apiConfig';
 import {useToast} from '@/components/ui/use-toast';
 import {useEffect} from 'react';
 import axios from 'axios';
-import useWebSocket, {ReadyState} from 'react-use-websocket';
-import {useRef} from 'react';
+import useWebSocket from 'react-use-websocket';
 import {useDispatch} from 'react-redux';
 import {loadClients} from '@/redux/clients/clientsSlice';
 import {AppDispatch} from '@/redux/store';
@@ -20,19 +19,29 @@ function Root() {
 
     useEffect(() => {
         const fetchData = async () => {
+            // If we can't connect to the API, show an error toast
+            // if we can't reach the internet, the browser will show a different error
             try {
                 await axios.get(`${API_URL}`);
             } catch (error) {
                 // Handle API error here
-                toast({
-                    title: 'API Error',
-                    description: 'Could not connect to the API server.',
-                    variant: 'destructive',
-                });
+                if (navigator.onLine === false) {
+                    toast({
+                        title: 'Network Error',
+                        description: 'Could not connect to the internet.',
+                        variant: 'destructive',
+                    });
+                    return;
+                } else {
+                    toast({
+                        title: 'API Error',
+                        description: 'Could not connect to the API server.',
+                        variant: 'destructive',
+                    });
+                }
             }
         };
 
-        // Call fetchData initially
         fetchData();
 
         // Set up interval to call fetchData every 10 seconds
