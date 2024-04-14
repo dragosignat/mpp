@@ -1,10 +1,11 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION
+IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS clients
+CREATE TABLE
+IF NOT EXISTS clients
 (
-    pk SERIAL PRIMARY KEY,
-    id UUID UNIQUE DEFAULT (uuid_generate_v4()),
-    name TEX, 
+    id UUID UNIQUE PRIMARY KEY DEFAULT (uuid_generate_v4()),
+    name TEXT, 
     email TEXT,
     phone TEXT,
     is_bussiness BOOLEAN,
@@ -13,11 +14,11 @@ CREATE TABLE IF NOT EXISTS clients
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS invoices
+CREATE TABLE
+IF NOT EXISTS invoices
 (
-    pk SERIAL PRIMARY KEY,
-    id UUID UNIQUE DEFAULT (uuid_generate_v4()),
-    client_id INT,
+    id UUID UNIQUE PRIMARY KEY DEFAULT (uuid_generate_v4()),
+    client_id UUID,
     total_amount INT,
     date_of_issue TIMESTAMP,
     due_date TIMESTAMP,
@@ -27,6 +28,6 @@ CREATE TABLE IF NOT EXISTS invoices
 );
 
 ALTER TABLE invoices
-ADD FOREIGN KEY (client_id) REFERENCES clients(pk);
+ADD FOREIGN KEY (client_id) REFERENCES clients(id);
 
 

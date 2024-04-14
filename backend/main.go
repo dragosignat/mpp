@@ -1,16 +1,34 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"openinvoice-api/apiv1/clients"
-	"openinvoice-api/utils"
+	"openinvoice-api/internal/pgdb"
 )
 
 func setupRouter() *gin.Engine {
+	pgConn, err := pgdb.Connect()
+	if err != nil {
+		log.Fatalf("Error connecting to database: %v", err)
+	}
+
+	querier := pgdb.New(pgConn)
+	defer pgdb.Close(pgConn)
+
+	clientsService := clients.NewService(querier)
+
+	// Setup the router
 	r := gin.Default()
 	r.Use(cors.Default())
+
+	superGroup := r.Group("/apiv1")
+	{
+		clientsService.RegisterRoutes(superGroup)
+	}
 
 	r.GET("/apiv1", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -18,15 +36,10 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
-	clients.RegisterRoutes(r)
-
 	return r
 }
 
 func main() {
-
-	// Generate some mock data
-	utils.GenerateData()
 
 	r := setupRouter()
 
