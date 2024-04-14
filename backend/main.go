@@ -17,7 +17,7 @@ func setupRouter() *gin.Engine {
 	}
 
 	querier := pgdb.New(pgConn)
-	defer pgdb.Close(pgConn)
+	// defer pgdb.Close(pgConn)
 
 	clientsService := clients.NewService(querier)
 

@@ -1,42 +1,20 @@
 package clients
 
-import (
-	"encoding/json"
-	"log"
-	"os"
-)
-
 type Client struct {
-	ClientID             string `json:"clientId" binding:"required"`
-	ClientName           string `json:"clientName" binding:"required"`
-	ClientEmail          string `json:"clientEmail" binding:"required"`
-	ClientPhone          string `json:"clientPhone" binding:"required"`
-	ClientAddress        string `json:"clientAddress" binding:"required"`
-	ClientTotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
-	ClientIsBusiness     bool   `json:"clientIsBusiness" binding:"required"`
+	ID             string `json:"clientId" binding:"required"`
+	Name           string `json:"clientName" binding:"required"`
+	Email          string `json:"clientEmail" binding:"required"`
+	Phone          string `json:"clientPhone" binding:"required"`
+	Address        string `json:"clientAddress" binding:"required"`
+	TotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
+	IsBusiness     bool   `json:"clientIsBusiness" binding:"required"`
 }
 
 type ClientsCreate struct {
-	ClientName           string `json:"clientName" binding:"required"`
-	ClientEmail          string `json:"clientEmail" binding:"required"`
-	ClientPhone          string `json:"clientPhone" binding:"required"`
-	ClientAddress        string `json:"clientAddress" binding:"required"`
-	ClientTotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
-	ClientIsBusiness     *bool  `json:"clientIsBusiness" binding:"required"`
-}
-
-var ClientsList []Client
-
-// Parse the mock data into a slice of Clients
-func init() {
-	mockDataPath := "apiv1/clients/client_list.json"
-
-	bytes, err := os.ReadFile(mockDataPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	json.Unmarshal(bytes, &ClientsList)
-
-	log.Printf("Loaded %d clients from %s\n", len(ClientsList), mockDataPath)
+	Name           string `json:"clientName" binding:"required"`
+	Email          string `json:"clientEmail" binding:"required"`
+	Phone          string `json:"clientPhone" binding:"required"`
+	Address        string `json:"clientAddress" binding:"required"`
+	TotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
+	IsBusiness     *bool  `json:"clientIsBusiness" binding:"required"`
 }

@@ -19,6 +19,7 @@ type Querier interface {
 	GetClients(ctx context.Context) ([]GetClientsRow, error)
 	GetInvoiceByID(ctx context.Context, id pgtype.UUID) (Invoices, error)
 	GetInvoices(ctx context.Context) ([]Invoices, error)
+	GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]Invoices, error)
 	UpdateClient(ctx context.Context, arg UpdateClientParams) error
 	UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) error
 }

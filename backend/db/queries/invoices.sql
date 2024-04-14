@@ -40,6 +40,21 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetInvoicesByClientID :many
+SELECT
+    id,
+    client_id,
+    total_amount,
+    date_of_issue,
+    due_date,
+    description,
+    created_at,
+    updated_at
+FROM
+    invoices
+WHERE
+    client_id = $1;
+
 -- name: UpdateInvoice :exec
 UPDATE
     invoices

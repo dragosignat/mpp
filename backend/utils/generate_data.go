@@ -14,13 +14,13 @@ func GenerateData() clients.Client {
 	minPurchase := 1000
 
 	newClientPerson := clients.Client{
-		ClientID:             faker.UUIDDigit(),
-		ClientName:           faker.Name(),
-		ClientEmail:          faker.Email(),
-		ClientPhone:          faker.TollFreePhoneNumber(),
-		ClientAddress:        faker.GetRealAddress().Address + ", " + faker.GetRealAddress().City + ", " + faker.GetRealAddress().State,
-		ClientTotalPurchases: (rand.Intn(maxPurchase-minPurchase+1) + minPurchase),
-		ClientIsBusiness:     (rand.Intn(2)%2 == 0),
+		ID:             faker.UUIDDigit(),
+		Name:           faker.Name(),
+		Email:          faker.Email(),
+		Phone:          faker.TollFreePhoneNumber(),
+		Address:        faker.GetRealAddress().Address + ", " + faker.GetRealAddress().City + ", " + faker.GetRealAddress().State,
+		TotalPurchases: (rand.Intn(maxPurchase-minPurchase+1) + minPurchase),
+		IsBusiness:     (rand.Intn(2)%2 == 0),
 	}
 
 	return newClientPerson

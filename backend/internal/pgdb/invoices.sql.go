@@ -143,6 +143,51 @@ func (q *Queries) GetInvoices(ctx context.Context) ([]Invoices, error) {
 	return items, nil
 }
 
+const getInvoicesByClientID = `-- name: GetInvoicesByClientID :many
+SELECT
+    id,
+    client_id,
+    total_amount,
+    date_of_issue,
+    due_date,
+    description,
+    created_at,
+    updated_at
+FROM
+    invoices
+WHERE
+    client_id = $1
+`
+
+func (q *Queries) GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]Invoices, error) {
+	rows, err := q.db.Query(ctx, getInvoicesByClientID, clientID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Invoices
+	for rows.Next() {
+		var i Invoices
+		if err := rows.Scan(
+			&i.ID,
+			&i.ClientID,
+			&i.TotalAmount,
+			&i.DateOfIssue,
+			&i.DueDate,
+			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateInvoice = `-- name: UpdateInvoice :exec
 UPDATE
     invoices

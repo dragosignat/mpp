@@ -1,13 +1,15 @@
 -- name: CreateClient :one
 INSERT INTO clients
-    (name, email, phone, is_bussiness)
+    (name, email, phone, is_bussiness, address, total_purchases)
 VALUES
-    ($1, $2, $3, $4)
+    ($1, $2, $3, $4, $5, $6)
 RETURNING id,
 name,
 email,
 phone,
-is_bussiness;
+is_bussiness,
+total_purchases,
+address;
 
 -- name: GetClients :many
 SELECT
@@ -16,7 +18,8 @@ SELECT
     email,
     phone,
     is_bussiness,
-    last_purchase
+    total_purchases,
+    address,
     created_at,
     updated_at
 FROM
@@ -29,6 +32,8 @@ SELECT
     email,
     phone,
     is_bussiness,
+    total_purchases,
+    address,
     last_purchase
     created_at,
     updated_at
@@ -46,9 +51,11 @@ SET
     phone = $3,
     is_bussiness = $4,
     last_purchase = $5,
+    address = $6,
+    total_purchases = $7,
     updated_at = NOW() 
 WHERE
-    id = $6;
+    id = $8;
 
 -- name: DeleteClient :exec
 DELETE FROM

@@ -6,8 +6,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"openinvoice-api/apiv1/clients"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,20 +27,6 @@ func TestGetClient(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
-}
-
-func TestGetClientsSorting(t *testing.T) {
-	r := setupRouter()
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/apiv1/clients?sort=asc&sortBy=clientName", nil)
-	r.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-
-	for i := 0; i < len(clients.ClientsList)-1; i++ {
-		assert.True(t, clients.ClientsList[i].ClientName <= clients.ClientsList[i+1].ClientName)
-	}
 }
 
 func TestPostClient(t *testing.T) {

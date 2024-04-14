@@ -13,29 +13,35 @@ import (
 
 const createClient = `-- name: CreateClient :one
 INSERT INTO clients
-    (name, email, phone, is_bussiness)
+    (name, email, phone, is_bussiness, address, total_purchases)
 VALUES
-    ($1, $2, $3, $4)
+    ($1, $2, $3, $4, $5, $6)
 RETURNING id,
 name,
 email,
 phone,
-is_bussiness
+is_bussiness,
+total_purchases,
+address
 `
 
 type CreateClientParams struct {
-	Name        pgtype.Text `json:"name"`
-	Email       pgtype.Text `json:"email"`
-	Phone       pgtype.Text `json:"phone"`
-	IsBussiness pgtype.Bool `json:"is_bussiness"`
+	Name           string      `json:"name"`
+	Email          pgtype.Text `json:"email"`
+	Phone          pgtype.Text `json:"phone"`
+	IsBussiness    pgtype.Bool `json:"is_bussiness"`
+	Address        pgtype.Text `json:"address"`
+	TotalPurchases pgtype.Int4 `json:"total_purchases"`
 }
 
 type CreateClientRow struct {
-	ID          pgtype.UUID `json:"id"`
-	Name        pgtype.Text `json:"name"`
-	Email       pgtype.Text `json:"email"`
-	Phone       pgtype.Text `json:"phone"`
-	IsBussiness pgtype.Bool `json:"is_bussiness"`
+	ID             pgtype.UUID `json:"id"`
+	Name           string      `json:"name"`
+	Email          pgtype.Text `json:"email"`
+	Phone          pgtype.Text `json:"phone"`
+	IsBussiness    pgtype.Bool `json:"is_bussiness"`
+	TotalPurchases pgtype.Int4 `json:"total_purchases"`
+	Address        pgtype.Text `json:"address"`
 }
 
 func (q *Queries) CreateClient(ctx context.Context, arg CreateClientParams) (CreateClientRow, error) {
@@ -44,6 +50,8 @@ func (q *Queries) CreateClient(ctx context.Context, arg CreateClientParams) (Cre
 		arg.Email,
 		arg.Phone,
 		arg.IsBussiness,
+		arg.Address,
+		arg.TotalPurchases,
 	)
 	var i CreateClientRow
 	err := row.Scan(
@@ -52,6 +60,8 @@ func (q *Queries) CreateClient(ctx context.Context, arg CreateClientParams) (Cre
 		&i.Email,
 		&i.Phone,
 		&i.IsBussiness,
+		&i.TotalPurchases,
+		&i.Address,
 	)
 	return i, err
 }
@@ -75,6 +85,8 @@ SELECT
     email,
     phone,
     is_bussiness,
+    total_purchases,
+    address,
     last_purchase
     created_at,
     updated_at
@@ -85,13 +97,15 @@ WHERE
 `
 
 type GetClientByIDRow struct {
-	ID          pgtype.UUID      `json:"id"`
-	Name        pgtype.Text      `json:"name"`
-	Email       pgtype.Text      `json:"email"`
-	Phone       pgtype.Text      `json:"phone"`
-	IsBussiness pgtype.Bool      `json:"is_bussiness"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	ID             pgtype.UUID      `json:"id"`
+	Name           string           `json:"name"`
+	Email          pgtype.Text      `json:"email"`
+	Phone          pgtype.Text      `json:"phone"`
+	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	TotalPurchases pgtype.Int4      `json:"total_purchases"`
+	Address        pgtype.Text      `json:"address"`
+	CreatedAt      pgtype.Timestamp `json:"created_at"`
+	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 }
 
 func (q *Queries) GetClientByID(ctx context.Context, id pgtype.UUID) (GetClientByIDRow, error) {
@@ -103,6 +117,8 @@ func (q *Queries) GetClientByID(ctx context.Context, id pgtype.UUID) (GetClientB
 		&i.Email,
 		&i.Phone,
 		&i.IsBussiness,
+		&i.TotalPurchases,
+		&i.Address,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -116,7 +132,8 @@ SELECT
     email,
     phone,
     is_bussiness,
-    last_purchase
+    total_purchases,
+    address,
     created_at,
     updated_at
 FROM
@@ -124,13 +141,15 @@ FROM
 `
 
 type GetClientsRow struct {
-	ID          pgtype.UUID      `json:"id"`
-	Name        pgtype.Text      `json:"name"`
-	Email       pgtype.Text      `json:"email"`
-	Phone       pgtype.Text      `json:"phone"`
-	IsBussiness pgtype.Bool      `json:"is_bussiness"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	ID             pgtype.UUID      `json:"id"`
+	Name           string           `json:"name"`
+	Email          pgtype.Text      `json:"email"`
+	Phone          pgtype.Text      `json:"phone"`
+	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	TotalPurchases pgtype.Int4      `json:"total_purchases"`
+	Address        pgtype.Text      `json:"address"`
+	CreatedAt      pgtype.Timestamp `json:"created_at"`
+	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 }
 
 func (q *Queries) GetClients(ctx context.Context) ([]GetClientsRow, error) {
@@ -148,6 +167,8 @@ func (q *Queries) GetClients(ctx context.Context) ([]GetClientsRow, error) {
 			&i.Email,
 			&i.Phone,
 			&i.IsBussiness,
+			&i.TotalPurchases,
+			&i.Address,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -170,18 +191,22 @@ SET
     phone = $3,
     is_bussiness = $4,
     last_purchase = $5,
+    address = $6,
+    total_purchases = $7,
     updated_at = NOW() 
 WHERE
-    id = $6
+    id = $8
 `
 
 type UpdateClientParams struct {
-	Name         pgtype.Text      `json:"name"`
-	Email        pgtype.Text      `json:"email"`
-	Phone        pgtype.Text      `json:"phone"`
-	IsBussiness  pgtype.Bool      `json:"is_bussiness"`
-	LastPurchase pgtype.Timestamp `json:"last_purchase"`
-	ID           pgtype.UUID      `json:"id"`
+	Name           string           `json:"name"`
+	Email          pgtype.Text      `json:"email"`
+	Phone          pgtype.Text      `json:"phone"`
+	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	LastPurchase   pgtype.Timestamp `json:"last_purchase"`
+	Address        pgtype.Text      `json:"address"`
+	TotalPurchases pgtype.Int4      `json:"total_purchases"`
+	ID             pgtype.UUID      `json:"id"`
 }
 
 func (q *Queries) UpdateClient(ctx context.Context, arg UpdateClientParams) error {
@@ -191,6 +216,8 @@ func (q *Queries) UpdateClient(ctx context.Context, arg UpdateClientParams) erro
 		arg.Phone,
 		arg.IsBussiness,
 		arg.LastPurchase,
+		arg.Address,
+		arg.TotalPurchases,
 		arg.ID,
 	)
 	return err

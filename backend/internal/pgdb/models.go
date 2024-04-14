@@ -9,14 +9,16 @@ import (
 )
 
 type Clients struct {
-	ID           pgtype.UUID      `json:"id"`
-	Name         pgtype.Text      `json:"name"`
-	Email        pgtype.Text      `json:"email"`
-	Phone        pgtype.Text      `json:"phone"`
-	IsBussiness  pgtype.Bool      `json:"is_bussiness"`
-	LastPurchase pgtype.Timestamp `json:"last_purchase"`
-	CreatedAt    pgtype.Timestamp `json:"created_at"`
-	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
+	ID             pgtype.UUID      `json:"id"`
+	Name           string           `json:"name"`
+	Email          pgtype.Text      `json:"email"`
+	Phone          pgtype.Text      `json:"phone"`
+	Address        pgtype.Text      `json:"address"`
+	TotalPurchases pgtype.Int4      `json:"total_purchases"`
+	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	LastPurchase   pgtype.Timestamp `json:"last_purchase"`
+	CreatedAt      pgtype.Timestamp `json:"created_at"`
+	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 }
 
 type Invoices struct {
