@@ -22,6 +22,7 @@ RETURNING id,
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 `
@@ -34,7 +35,19 @@ type CreateInvoiceParams struct {
 	Description pgtype.Text      `json:"description"`
 }
 
-func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (Invoices, error) {
+type CreateInvoiceRow struct {
+	ID          pgtype.UUID      `json:"id"`
+	ClientID    pgtype.UUID      `json:"client_id"`
+	TotalAmount pgtype.Int4      `json:"total_amount"`
+	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
+	DueDate     pgtype.Timestamp `json:"due_date"`
+	Description pgtype.Text      `json:"description"`
+	IsPaid      pgtype.Bool      `json:"is_paid"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+}
+
+func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (CreateInvoiceRow, error) {
 	row := q.db.QueryRow(ctx, createInvoice,
 		arg.ClientID,
 		arg.TotalAmount,
@@ -42,7 +55,7 @@ func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (I
 		arg.DueDate,
 		arg.Description,
 	)
-	var i Invoices
+	var i CreateInvoiceRow
 	err := row.Scan(
 		&i.ID,
 		&i.ClientID,
@@ -50,6 +63,7 @@ func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (I
 		&i.DateOfIssue,
 		&i.DueDate,
 		&i.Description,
+		&i.IsPaid,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -76,6 +90,7 @@ SELECT
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 FROM
@@ -84,9 +99,21 @@ WHERE
     id = $1
 `
 
-func (q *Queries) GetInvoiceByID(ctx context.Context, id pgtype.UUID) (Invoices, error) {
+type GetInvoiceByIDRow struct {
+	ID          pgtype.UUID      `json:"id"`
+	ClientID    pgtype.UUID      `json:"client_id"`
+	TotalAmount pgtype.Int4      `json:"total_amount"`
+	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
+	DueDate     pgtype.Timestamp `json:"due_date"`
+	Description pgtype.Text      `json:"description"`
+	IsPaid      pgtype.Bool      `json:"is_paid"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+}
+
+func (q *Queries) GetInvoiceByID(ctx context.Context, id pgtype.UUID) (GetInvoiceByIDRow, error) {
 	row := q.db.QueryRow(ctx, getInvoiceByID, id)
-	var i Invoices
+	var i GetInvoiceByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.ClientID,
@@ -94,6 +121,7 @@ func (q *Queries) GetInvoiceByID(ctx context.Context, id pgtype.UUID) (Invoices,
 		&i.DateOfIssue,
 		&i.DueDate,
 		&i.Description,
+		&i.IsPaid,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -108,21 +136,34 @@ SELECT
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 FROM
     invoices
 `
 
-func (q *Queries) GetInvoices(ctx context.Context) ([]Invoices, error) {
+type GetInvoicesRow struct {
+	ID          pgtype.UUID      `json:"id"`
+	ClientID    pgtype.UUID      `json:"client_id"`
+	TotalAmount pgtype.Int4      `json:"total_amount"`
+	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
+	DueDate     pgtype.Timestamp `json:"due_date"`
+	Description pgtype.Text      `json:"description"`
+	IsPaid      pgtype.Bool      `json:"is_paid"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+}
+
+func (q *Queries) GetInvoices(ctx context.Context) ([]GetInvoicesRow, error) {
 	rows, err := q.db.Query(ctx, getInvoices)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Invoices
+	var items []GetInvoicesRow
 	for rows.Next() {
-		var i Invoices
+		var i GetInvoicesRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.ClientID,
@@ -130,6 +171,7 @@ func (q *Queries) GetInvoices(ctx context.Context) ([]Invoices, error) {
 			&i.DateOfIssue,
 			&i.DueDate,
 			&i.Description,
+			&i.IsPaid,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -151,6 +193,7 @@ SELECT
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 FROM
@@ -159,15 +202,27 @@ WHERE
     client_id = $1
 `
 
-func (q *Queries) GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]Invoices, error) {
+type GetInvoicesByClientIDRow struct {
+	ID          pgtype.UUID      `json:"id"`
+	ClientID    pgtype.UUID      `json:"client_id"`
+	TotalAmount pgtype.Int4      `json:"total_amount"`
+	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
+	DueDate     pgtype.Timestamp `json:"due_date"`
+	Description pgtype.Text      `json:"description"`
+	IsPaid      pgtype.Bool      `json:"is_paid"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+}
+
+func (q *Queries) GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]GetInvoicesByClientIDRow, error) {
 	rows, err := q.db.Query(ctx, getInvoicesByClientID, clientID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Invoices
+	var items []GetInvoicesByClientIDRow
 	for rows.Next() {
-		var i Invoices
+		var i GetInvoicesByClientIDRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.ClientID,
@@ -175,6 +230,7 @@ func (q *Queries) GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUI
 			&i.DateOfIssue,
 			&i.DueDate,
 			&i.Description,
+			&i.IsPaid,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -197,9 +253,10 @@ SET
     date_of_issue = $3,
     due_date = $4,
     description = $5,
+    is_paid = $6,
     updated_at = NOW()
 WHERE
-    id = $6
+    id = $7
 `
 
 type UpdateInvoiceParams struct {
@@ -208,6 +265,7 @@ type UpdateInvoiceParams struct {
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
+	IsPaid      pgtype.Bool      `json:"is_paid"`
 	ID          pgtype.UUID      `json:"id"`
 }
 
@@ -218,6 +276,7 @@ func (q *Queries) UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) er
 		arg.DateOfIssue,
 		arg.DueDate,
 		arg.Description,
+		arg.IsPaid,
 		arg.ID,
 	)
 	return err

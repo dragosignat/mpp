@@ -9,6 +9,7 @@ RETURNING id,
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at;
 
@@ -20,6 +21,7 @@ SELECT
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 FROM
@@ -33,6 +35,7 @@ SELECT
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 FROM
@@ -48,6 +51,7 @@ SELECT
     date_of_issue,
     due_date,
     description,
+    is_paid,
     created_at,
     updated_at
 FROM
@@ -64,9 +68,10 @@ SET
     date_of_issue = $3,
     due_date = $4,
     description = $5,
+    is_paid = $6,
     updated_at = NOW()
 WHERE
-    id = $6;
+    id = $7;
 
 -- name: DeleteInvoice :exec
 DELETE FROM

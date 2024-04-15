@@ -20,6 +20,7 @@ func (s *Service) RegisterRoutes(router *gin.RouterGroup) {
 	{
 		routes.GET("", s.getInvoices)
 		routes.GET("/:id", s.getInvoice)
+		routes.GET("/client/:id", s.getInvoicesByClient)
 		routes.POST("", s.createInvoice)
 		routes.PUT("/:id", s.updateInvoice)
 		routes.DELETE("/:id", s.deleteInvoice)

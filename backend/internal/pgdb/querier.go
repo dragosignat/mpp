@@ -12,14 +12,14 @@ import (
 
 type Querier interface {
 	CreateClient(ctx context.Context, arg CreateClientParams) (CreateClientRow, error)
-	CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (Invoices, error)
+	CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (CreateInvoiceRow, error)
 	DeleteClient(ctx context.Context, id pgtype.UUID) error
 	DeleteInvoice(ctx context.Context, id pgtype.UUID) error
 	GetClientByID(ctx context.Context, id pgtype.UUID) (GetClientByIDRow, error)
 	GetClients(ctx context.Context) ([]GetClientsRow, error)
-	GetInvoiceByID(ctx context.Context, id pgtype.UUID) (Invoices, error)
-	GetInvoices(ctx context.Context) ([]Invoices, error)
-	GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]Invoices, error)
+	GetInvoiceByID(ctx context.Context, id pgtype.UUID) (GetInvoiceByIDRow, error)
+	GetInvoices(ctx context.Context) ([]GetInvoicesRow, error)
+	GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]GetInvoicesByClientIDRow, error)
 	UpdateClient(ctx context.Context, arg UpdateClientParams) error
 	UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) error
 }

@@ -30,4 +30,5 @@ type Invoices struct {
 	Description pgtype.Text      `json:"description"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	IsPaid      pgtype.Bool      `json:"is_paid"`
 }

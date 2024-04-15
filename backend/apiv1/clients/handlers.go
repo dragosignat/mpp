@@ -31,7 +31,7 @@ func (s *Service) getClients(c *gin.Context) {
 	for _, client := range clients {
 		clientList = append(clientList, Client{
 			ID:             uuid.UUID(client.ID.Bytes).String(),
-			Name:           client.Name.String,
+			Name:           client.Name,
 			Email:          client.Email.String,
 			Phone:          client.Phone.String,
 			IsBusiness:     client.IsBussiness.Bool,
@@ -98,7 +98,7 @@ func (s *Service) createClient(c *gin.Context) {
 	}
 
 	newClient, err := s.queries.CreateClient(c, pgdb.CreateClientParams{
-		Name:           pgtype.Text{String: client.Name, Valid: true},
+		Name:           client.Name,
 		Email:          pgtype.Text{String: client.Email, Valid: true},
 		Phone:          pgtype.Text{String: client.Phone, Valid: true},
 		IsBussiness:    pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
@@ -136,7 +136,7 @@ func (s *Service) updateClient(c *gin.Context) {
 
 	err = s.queries.UpdateClient(c, pgdb.UpdateClientParams{
 		ID:             uuid,
-		Name:           pgtype.Text{String: client.Name, Valid: true},
+		Name:           client.Name,
 		Email:          pgtype.Text{String: client.Email, Valid: true},
 		Phone:          pgtype.Text{String: client.Phone, Valid: true},
 		IsBussiness:    pgtype.Bool{Bool: *client.IsBusiness, Valid: true},

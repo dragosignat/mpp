@@ -1,0 +1,4 @@
+ALTER TABLE
+IF EXISTS invoices
+DROP COLUMN
+IF EXISTS is_paid;
