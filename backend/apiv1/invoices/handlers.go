@@ -3,6 +3,7 @@ package invoices
 import (
 	"log"
 	"openinvoice-api/internal/pgdb"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -129,17 +130,25 @@ func (s *Service) createInvoice(c *gin.Context) {
 		return
 	}
 
-	var dateOfIssue pgtype.Timestamp
-	err = dateOfIssue.Scan(invoice.DateOfIssue)
-	if err != nil {
-		c.JSON(400, gin.H{"message": "Invalid Date of Issue"})
-		return
+	var dateOfIssue time.Time
+	if invoice.DateOfIssue == "" {
+		log.Println("Date of Issue not provided, using current date")
+		dateOfIssue = time.Now()
+	} else {
+		err = dateOfIssue.UnmarshalText([]byte(invoice.DateOfIssue))
+		if err != nil {
+			c.JSON(400, gin.H{"message": "Invalid Date of Issue"})
+			return
+		}
 	}
 
 	newInvoice, err := s.queries.CreateInvoice(c, pgdb.CreateInvoiceParams{
-		ClientID:    clientUUID,
-		DueDate:     dueDate,
-		DateOfIssue: dateOfIssue,
+		ClientID: clientUUID,
+		DueDate:  dueDate,
+		DateOfIssue: pgtype.Timestamp{
+			Time:  dateOfIssue,
+			Valid: true,
+		},
 		TotalAmount: pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
 		Description: pgtype.Text{String: invoice.Description, Valid: true},
 	})
