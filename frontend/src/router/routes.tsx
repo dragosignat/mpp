@@ -5,6 +5,7 @@ import ClientEdit from '@/pages/ClientEdit';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import ErrorPage from '@/pages/ErrorPage';
 import Root from '@/layouts/Root';
+import Invoices from '@/pages/Invoices';
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
             {
                 path: '/clients/add',
                 element: <ClientAdd />,
+            },
+            {
+                path: '/invoices',
+                element: <Invoices />,
             },
         ],
     },

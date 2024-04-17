@@ -1,8 +1,8 @@
 // import {Button} from '@/components/ui/button';
 import {useEffect} from 'react';
 // import {Client} from '../../types/Client';
-import {ClientColumns} from '@/components/client-data-table/columns';
-import {DataTable} from '@/components/client-data-table/client-data-table';
+import {ClientColumns} from '@/components/ClientDataTable/ClientDataTableColumns';
+import {DataTable} from '@/components/ClientDataTable/ClientDataTable';
 import {useDispatch, useSelector} from 'react-redux';
 import {loadClients, selectClients} from '@/redux/clients/clientsSlice';
 import {AppDispatch} from '@/redux/store';

@@ -1,6 +1,6 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
-import {Users, ShoppingCart, Settings, Home} from 'lucide-react';
+import {Users, ShoppingCart, Settings, Home, ReceiptText} from 'lucide-react';
 
 function Sidebar() {
     return (
@@ -30,10 +30,12 @@ function Sidebar() {
                     <li>
                         <NavLink
                             className='flex items-center p-5 m-2 space-x-4 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 '
-                            to='/orders'
+                            to='/invoices'
                         >
-                            <ShoppingCart className='h-5 w-5 text-gray-500 dark:text-gray-400' />
-                            <span className='text-sm font-medium'>Orders</span>
+                            <ReceiptText className='h-5 w-5 text-gray-500 dark:text-gray-400' />
+                            <span className='text-sm font-medium'>
+                                Invoices
+                            </span>
                         </NavLink>
                     </li>
                     <li>
