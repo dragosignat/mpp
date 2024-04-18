@@ -1,25 +1,22 @@
 import React from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {Invoice} from '@/types/Invoices';
-import axios from 'axios';
-import {API_URL} from '@/config/apiConfig';
 import {DataTable} from '@/components/InvoiceDataTable/InvoiceDataTable';
 import {InvoiceColumns} from '@/components/InvoiceDataTable/InvoiceDataTableColumns';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectInvoices, loadInvoices} from '@/redux/invoices/invoiceSlice';
+import {AppDispatch} from '@/redux/store';
 
 function Invoices() {
-    const [invoices, setInvoices] = useState<Invoice[]>([]);
+    const invoices = useSelector(selectInvoices);
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        const fetchInvoices = async () => {
-            try {
-                const {data: response} = await axios.get(`${API_URL}/invoices`);
-                setInvoices(response);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchInvoices();
-    }, []);
+        if (invoices.length === 0) {
+            console.log('loading invoices');
+            dispatch(loadInvoices());
+        }
+    }, [dispatch]);
 
     return (
         <>

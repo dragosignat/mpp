@@ -123,8 +123,8 @@ func (s *Service) createInvoice(c *gin.Context) {
 		return
 	}
 
-	var dueDate pgtype.Timestamp
-	err = dueDate.Scan(invoice.DueDate)
+	var dueDate time.Time
+	err = dueDate.UnmarshalText([]byte(invoice.DueDate))
 	if err != nil {
 		c.JSON(400, gin.H{"message": "Invalid Due Date"})
 		return
@@ -137,6 +137,7 @@ func (s *Service) createInvoice(c *gin.Context) {
 	} else {
 		err = dateOfIssue.UnmarshalText([]byte(invoice.DateOfIssue))
 		if err != nil {
+			log.Println(err)
 			c.JSON(400, gin.H{"message": "Invalid Date of Issue"})
 			return
 		}
@@ -144,7 +145,10 @@ func (s *Service) createInvoice(c *gin.Context) {
 
 	newInvoice, err := s.queries.CreateInvoice(c, pgdb.CreateInvoiceParams{
 		ClientID: clientUUID,
-		DueDate:  dueDate,
+		DueDate: pgtype.Timestamp{
+			Time:  dueDate,
+			Valid: true,
+		},
 		DateOfIssue: pgtype.Timestamp{
 			Time:  dateOfIssue,
 			Valid: true,
@@ -198,25 +202,37 @@ func (s *Service) updateInvoice(c *gin.Context) {
 		return
 	}
 
-	var dueDate pgtype.Timestamp
-	err = dueDate.Scan(invoice.DueDate)
+	var dueDate time.Time
+	err = dueDate.UnmarshalText([]byte(invoice.DueDate))
 	if err != nil {
 		c.JSON(400, gin.H{"message": "Invalid Due Date"})
 		return
 	}
 
-	var dateOfIssue pgtype.Timestamp
-	err = dateOfIssue.Scan(invoice.DateOfIssue)
-	if err != nil {
-		c.JSON(400, gin.H{"message": "Invalid Date of Issue"})
-		return
+	var dateOfIssue time.Time
+	if invoice.DateOfIssue == "" {
+		log.Println("Date of Issue not provided, using current date")
+		dateOfIssue = time.Now()
+	} else {
+		err = dateOfIssue.UnmarshalText([]byte(invoice.DateOfIssue))
+		if err != nil {
+			log.Println(err)
+			c.JSON(400, gin.H{"message": "Invalid Date of Issue"})
+			return
+		}
 	}
 
 	err = s.queries.UpdateInvoice(c, pgdb.UpdateInvoiceParams{
-		ID:          invoiceUUID,
-		ClientID:    clientUUID,
-		DueDate:     dueDate,
-		DateOfIssue: dateOfIssue,
+		ID:       invoiceUUID,
+		ClientID: clientUUID,
+		DueDate: pgtype.Timestamp{
+			Time:  dueDate,
+			Valid: true,
+		},
+		DateOfIssue: pgtype.Timestamp{
+			Time:  dateOfIssue,
+			Valid: true,
+		},
 		TotalAmount: pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
 		Description: pgtype.Text{String: invoice.Description, Valid: true},
 		IsPaid:      pgtype.Bool{Bool: *invoice.IsPaid, Valid: true},

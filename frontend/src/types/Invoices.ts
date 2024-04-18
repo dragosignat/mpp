@@ -1,7 +1,7 @@
 export interface Invoice {
     id: string;
     client_id: string;
-    total_amount: number;
+    amount: number;
     date_of_issue: string;
     due_date: string;
     description: string;
@@ -12,9 +12,8 @@ export interface Invoice {
 
 export interface InvoiceCreate {
     client_id: string;
-    total_amount: number;
+    amount: number;
     date_of_issue: string;
     due_date: string;
     description: string;
-    is_paid: boolean;
 }

@@ -17,6 +17,7 @@ import {useToast} from '@/components/ui/use-toast';
 
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
+import {removeInvoice} from '@/redux/invoices/invoiceSlice';
 
 interface DataTableRowActionsProps<TData> {
     row: Row<TData>;
@@ -30,6 +31,7 @@ export function DataTableRowActions<TData>({
     const {toast} = useToast();
 
     const handleDelete = () => {
+        dispatch(removeInvoice(invoiceId));
         toast({
             title: 'Client deleted',
             variant: 'destructive',
