@@ -117,3 +117,4 @@ tags
 
 .env
 tmp/
+.zed/

@@ -245,3 +245,7 @@ func (s *Service) updateInvoice(c *gin.Context) {
 
 	c.JSON(200, gin.H{"message": "Invoice updated successfully"})
 }
+
+func (s *Service) generateFake(c *gin.Context) {
+
+}

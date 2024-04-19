@@ -8,7 +8,7 @@ import (
 	"github.com/go-faker/faker/v4"
 )
 
-func GenerateData() clients.Client {
+func GeneratePerson() clients.Client {
 
 	maxPurchase := 30000
 	minPurchase := 1000
@@ -20,7 +20,7 @@ func GenerateData() clients.Client {
 		Phone:          faker.TollFreePhoneNumber(),
 		Address:        faker.GetRealAddress().Address + ", " + faker.GetRealAddress().City + ", " + faker.GetRealAddress().State,
 		TotalPurchases: (rand.Intn(maxPurchase-minPurchase+1) + minPurchase),
-		IsBusiness:     (rand.Intn(2)%2 == 0),
+		IsBusiness:     false,
 	}
 
 	return newClientPerson
