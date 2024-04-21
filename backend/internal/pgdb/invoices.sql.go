@@ -13,12 +13,12 @@ import (
 
 const createInvoice = `-- name: CreateInvoice :one
 INSERT INTO invoices
-    (client_id, total_amount, date_of_issue, due_date, description)
+    (client_id, amount, date_of_issue, due_date, description)
 VALUES
     ($1, $2, $3, $4, $5)
 RETURNING id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -29,7 +29,7 @@ RETURNING id,
 
 type CreateInvoiceParams struct {
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
@@ -38,7 +38,7 @@ type CreateInvoiceParams struct {
 type CreateInvoiceRow struct {
 	ID          pgtype.UUID      `json:"id"`
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
@@ -50,7 +50,7 @@ type CreateInvoiceRow struct {
 func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (CreateInvoiceRow, error) {
 	row := q.db.QueryRow(ctx, createInvoice,
 		arg.ClientID,
-		arg.TotalAmount,
+		arg.Amount,
 		arg.DateOfIssue,
 		arg.DueDate,
 		arg.Description,
@@ -59,7 +59,7 @@ func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (C
 	err := row.Scan(
 		&i.ID,
 		&i.ClientID,
-		&i.TotalAmount,
+		&i.Amount,
 		&i.DateOfIssue,
 		&i.DueDate,
 		&i.Description,
@@ -83,10 +83,10 @@ func (q *Queries) DeleteInvoice(ctx context.Context, id pgtype.UUID) error {
 }
 
 const getInvoiceByID = `-- name: GetInvoiceByID :one
-SELECT 
+SELECT
     id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -102,7 +102,7 @@ WHERE
 type GetInvoiceByIDRow struct {
 	ID          pgtype.UUID      `json:"id"`
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
@@ -117,7 +117,7 @@ func (q *Queries) GetInvoiceByID(ctx context.Context, id pgtype.UUID) (GetInvoic
 	err := row.Scan(
 		&i.ID,
 		&i.ClientID,
-		&i.TotalAmount,
+		&i.Amount,
 		&i.DateOfIssue,
 		&i.DueDate,
 		&i.Description,
@@ -132,7 +132,7 @@ const getInvoices = `-- name: GetInvoices :many
 SELECT
     id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -146,7 +146,7 @@ FROM
 type GetInvoicesRow struct {
 	ID          pgtype.UUID      `json:"id"`
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
@@ -167,7 +167,7 @@ func (q *Queries) GetInvoices(ctx context.Context) ([]GetInvoicesRow, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.ClientID,
-			&i.TotalAmount,
+			&i.Amount,
 			&i.DateOfIssue,
 			&i.DueDate,
 			&i.Description,
@@ -189,7 +189,7 @@ const getInvoicesByClientID = `-- name: GetInvoicesByClientID :many
 SELECT
     id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -205,7 +205,7 @@ WHERE
 type GetInvoicesByClientIDRow struct {
 	ID          pgtype.UUID      `json:"id"`
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
@@ -226,7 +226,7 @@ func (q *Queries) GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUI
 		if err := rows.Scan(
 			&i.ID,
 			&i.ClientID,
-			&i.TotalAmount,
+			&i.Amount,
 			&i.DateOfIssue,
 			&i.DueDate,
 			&i.Description,
@@ -249,7 +249,7 @@ UPDATE
     invoices
 SET
     client_id = $1,
-    total_amount = $2,
+    amount = $2,
     date_of_issue = $3,
     due_date = $4,
     description = $5,
@@ -261,7 +261,7 @@ WHERE
 
 type UpdateInvoiceParams struct {
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
@@ -272,7 +272,7 @@ type UpdateInvoiceParams struct {
 func (q *Queries) UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) error {
 	_, err := q.db.Exec(ctx, updateInvoice,
 		arg.ClientID,
-		arg.TotalAmount,
+		arg.Amount,
 		arg.DateOfIssue,
 		arg.DueDate,
 		arg.Description,

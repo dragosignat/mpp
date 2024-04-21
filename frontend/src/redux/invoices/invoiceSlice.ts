@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {Invoice, InvoiceCreate} from '@/types/Invoices';
+import {Invoice, InvoiceCreate, InvoiceUpdate} from '@/types/Invoices';
 import axios from 'axios';
 import {API_URL} from '@/config/apiConfig';
 
@@ -104,7 +104,7 @@ export const removeInvoice = createAsyncThunk(
 
 export const updateInvoice = createAsyncThunk(
     'invoices/updateinvoice',
-    async (invoice: Invoice) => {
+    async (invoice: InvoiceUpdate) => {
         const {data} = await axios.put(
             `${API_URL}/invoices/${invoice.id}`,
             invoice,

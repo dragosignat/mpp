@@ -24,7 +24,7 @@ type Clients struct {
 type Invoices struct {
 	ID          pgtype.UUID      `json:"id"`
 	ClientID    pgtype.UUID      `json:"client_id"`
-	TotalAmount pgtype.Int4      `json:"total_amount"`
+	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`

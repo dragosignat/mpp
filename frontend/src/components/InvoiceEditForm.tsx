@@ -3,13 +3,6 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {date, z} from 'zod';
 import {Checkbox} from '@/components/ui/checkbox';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import {Button} from '@/components/ui/button';
 import {
     Form,
@@ -20,25 +13,29 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {Input} from '@/components/ui/input';
+import {useToast} from '@/components/ui/use-toast';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch} from '@/redux/store';
+import {useNavigate} from 'react-router-dom';
+import {selectInvoices, updateInvoice} from '@/redux/invoices/invoiceSlice';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
+import {Textarea} from '@/components/ui/textarea';
 import {Calendar as CalendarIcon} from 'lucide-react';
 import {Calendar} from '@/components/ui/calendar';
-import {Input} from '@/components/ui/input';
-import {cn} from '@/lib/utils';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '@/redux/store';
-import {Textarea} from '@/components/ui/textarea';
-import {addInvoice} from '@/redux/invoices/invoiceSlice';
-import {useToast} from '@/components/ui/use-toast';
-import {InvoiceCreate} from '@/types/Invoices';
 import {format} from 'date-fns';
+import {cn} from '@/lib/utils';
+import {InvoiceUpdate} from '@/types/Invoices';
+import {loadClients, selectClients} from '@/redux/clients/clientsSlice';
 import {useEffect} from 'react';
-import {loadClients} from '@/redux/clients/clientsSlice';
-import {useNavigate} from 'react-router-dom';
-import {useSelector} from 'react-redux';
-import {selectClients} from '@/redux/clients/clientsSlice';
 
-// This shold match the Invoice type from the backend
 const formSchema = z.object({
     clientId: z.string().uuid({
         message: 'Please select a client.',
@@ -49,44 +46,50 @@ const formSchema = z.object({
         message: 'Amount must be at least 0.',
     }),
     description: z.string(),
+    isPaid: z.boolean(),
 });
 
-function InvoiceAddForm() {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            clientId: '',
-            dueDate: new Date(),
-            dateOfIssue: new Date(),
-            amount: 0,
-            description: '',
-        },
-    });
+function InvoiceEditForm({invoiceId}: {invoiceId: string | number}) {
     const dispatch = useDispatch<AppDispatch>();
+    const invoices = useSelector(selectInvoices);
+    const invoice = invoices.find((i) => i.id === invoiceId);
     const navigate = useNavigate();
     const {toast} = useToast();
 
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            clientId: invoice?.client_id,
+            dueDate: new Date(invoice?.due_date),
+            dateOfIssue: new Date(invoice?.date_of_issue),
+            amount: invoice?.amount,
+            description: invoice?.description,
+            isPaid: invoice?.is_paid,
+        },
+    });
+
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        const invoice: InvoiceCreate = {
+        const invoice: InvoiceUpdate = {
+            id: invoiceId as string,
             client_id: values.clientId,
-            // Convert the dates to ISO strings withouth the timezone
-            due_date: values.dueDate.toISOString(),
-            date_of_issue: values.dateOfIssue.toISOString(),
             amount: values.amount,
+            date_of_issue: values.dateOfIssue.toISOString(),
+            due_date: values.dueDate.toISOString(),
             description: values.description,
+            is_paid: values.isPaid,
         };
 
         console.log(invoice);
 
-        dispatch(addInvoice(invoice))
+        dispatch(updateInvoice(invoice))
             .unwrap()
             .then(() => {
-                toast({title: 'Invoice added successfully'});
+                toast({title: 'Invoice edited successfully'});
                 navigate('/invoices');
             })
             .catch((error) => {
                 toast({
-                    title: 'Error adding invoice',
+                    title: 'Error editing invoice',
                     description: error.message,
                     variant: 'destructive',
                 });
@@ -141,54 +144,6 @@ function InvoiceAddForm() {
                         </FormItem>
                     )}
                 />
-
-                <FormField
-                    control={form.control}
-                    name='dateOfIssue'
-                    render={({field}) => (
-                        <FormItem className='flex flex-col'>
-                            <FormLabel>Date of issue</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            variant={'outline'}
-                                            className={cn(
-                                                'w-[240px] pl-3 text-left font-normal',
-                                                !field.value &&
-                                                    'text-muted-foreground',
-                                            )}
-                                        >
-                                            {field.value ? (
-                                                format(field.value, 'PPP')
-                                            ) : (
-                                                <span>Pick a date</span>
-                                            )}
-                                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                    className='w-auto p-0'
-                                    align='start'
-                                >
-                                    <Calendar
-                                        mode='single'
-                                        selected={field.value}
-                                        onSelect={field.onChange}
-                                        disabled={(date) =>
-                                            date > new Date() ||
-                                            date < new Date('1900-01-01')
-                                        }
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
                 <FormField
                     control={form.control}
                     name='dueDate'
@@ -223,7 +178,48 @@ function InvoiceAddForm() {
                                         mode='single'
                                         selected={field.value}
                                         onSelect={field.onChange}
-                                        disabled={(date) => date < new Date()}
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='dateOfIssue'
+                    render={({field}) => (
+                        <FormItem className='flex flex-col'>
+                            <FormLabel>Date of issue</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant={'outline'}
+                                            className={cn(
+                                                'w-[240px] pl-3 text-left font-normal',
+                                                !field.value &&
+                                                    'text-muted-foreground',
+                                            )}
+                                        >
+                                            {field.value ? (
+                                                format(field.value, 'PPP')
+                                            ) : (
+                                                <span>Pick a date</span>
+                                            )}
+                                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    className='w-auto p-0'
+                                    align='start'
+                                >
+                                    <Calendar
+                                        mode='single'
+                                        selected={field.value}
+                                        onSelect={field.onChange}
                                         initialFocus
                                     />
                                 </PopoverContent>
@@ -264,11 +260,28 @@ function InvoiceAddForm() {
                         </FormItem>
                     )}
                 />
-
+                <FormField
+                    control={form.control}
+                    name='isPaid'
+                    render={({field}) => (
+                        <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow'>
+                            <FormLabel htmlFor='isPaid'>
+                                Is the invoice paid?
+                            </FormLabel>
+                            <FormControl>
+                                <Checkbox
+                                    id='isPaid'
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
                 <Button type='submit'>Submit</Button>
             </form>
         </Form>
     );
 }
 
-export default InvoiceAddForm;
+export default InvoiceEditForm;

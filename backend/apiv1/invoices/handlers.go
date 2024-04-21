@@ -153,7 +153,7 @@ func (s *Service) createInvoice(c *gin.Context) {
 			Time:  dateOfIssue,
 			Valid: true,
 		},
-		TotalAmount: pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
+		Amount:      pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
 		Description: pgtype.Text{String: invoice.Description, Valid: true},
 	})
 
@@ -233,7 +233,7 @@ func (s *Service) updateInvoice(c *gin.Context) {
 			Time:  dateOfIssue,
 			Valid: true,
 		},
-		TotalAmount: pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
+		Amount:      pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
 		Description: pgtype.Text{String: invoice.Description, Valid: true},
 		IsPaid:      pgtype.Bool{Bool: *invoice.IsPaid, Valid: true},
 	})

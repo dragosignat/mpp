@@ -33,12 +33,12 @@ export const InvoiceColumns: ColumnDef<Invoice>[] = [
         },
     },
     {
-        accessorKey: 'total_amount',
+        accessorKey: 'amount',
         header: ({column}) => (
             <DataTableColumnHeader column={column} title='Amount' />
         ),
         cell: ({row}) => {
-            const amount = row.getValue('total_amount');
+            const amount = row.getValue('amount');
             const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',

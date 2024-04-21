@@ -25,7 +25,7 @@ IF NOT EXISTS invoices
 (uuid_generate_v4
 ()),
     client_id UUID,
-    total_amount INT,
+    amount INT,
     date_of_issue TIMESTAMP,
     due_date TIMESTAMP,
     description TEXT,

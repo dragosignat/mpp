@@ -1,11 +1,11 @@
 -- name: CreateInvoice :one
 INSERT INTO invoices
-    (client_id, total_amount, date_of_issue, due_date, description)
+    (client_id, amount, date_of_issue, due_date, description)
 VALUES
     ($1, $2, $3, $4, $5)
 RETURNING id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -17,7 +17,7 @@ RETURNING id,
 SELECT
     id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -28,10 +28,10 @@ FROM
     invoices;
 
 -- name: GetInvoiceByID :one
-SELECT 
+SELECT
     id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -47,7 +47,7 @@ WHERE
 SELECT
     id,
     client_id,
-    total_amount,
+    amount,
     date_of_issue,
     due_date,
     description,
@@ -64,7 +64,7 @@ UPDATE
     invoices
 SET
     client_id = $1,
-    total_amount = $2,
+    amount = $2,
     date_of_issue = $3,
     due_date = $4,
     description = $5,
