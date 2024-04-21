@@ -23,6 +23,7 @@ func (s *Service) RegisterRoutes(router *gin.RouterGroup) {
 		routes.POST("", s.createClient)
 		routes.PUT("/:id", s.updateClient)
 		routes.DELETE("/:id", s.deleteClient)
+		routes.GET("/generate-fake-client", s.generateFake)
 	}
 
 }

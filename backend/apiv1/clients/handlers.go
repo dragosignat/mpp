@@ -152,3 +152,24 @@ func (s *Service) updateClient(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Client updated successfully"})
 
 }
+
+func (s *Service) generateFake(c *gin.Context) {
+
+	newPerson := GeneratePerson()
+
+	newClient, err := s.queries.CreateClient(c, pgdb.CreateClientParams{
+		Name:           newPerson.Name,
+		Email:          pgtype.Text{String: newPerson.Email, Valid: true},
+		Phone:          pgtype.Text{String: newPerson.Phone, Valid: true},
+		IsBussiness:    pgtype.Bool{Bool: newPerson.IsBusiness, Valid: true},
+		Address:        pgtype.Text{String: newPerson.Address, Valid: true},
+		TotalPurchases: pgtype.Int4{Int32: int32(newPerson.TotalPurchases), Valid: true},
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error creating client"})
+		return
+	}
+
+	c.JSON(200, newClient)
+}

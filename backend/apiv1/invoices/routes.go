@@ -24,7 +24,6 @@ func (s *Service) RegisterRoutes(router *gin.RouterGroup) {
 		routes.POST("", s.createInvoice)
 		routes.PUT("/:id", s.updateInvoice)
 		routes.DELETE("/:id", s.deleteInvoice)
-		routes.GET("/generate-fake-client", s.generateFake)
 	}
 
 }

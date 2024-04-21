@@ -1,19 +1,17 @@
-package utils
+package clients
 
 import (
 	"math/rand"
 
-	"openinvoice-api/apiv1/clients"
-
 	"github.com/go-faker/faker/v4"
 )
 
-func GeneratePerson() clients.Client {
+func GeneratePerson() Client {
 
 	maxPurchase := 30000
 	minPurchase := 1000
 
-	newClientPerson := clients.Client{
+	newClientPerson := Client{
 		ID:             faker.UUIDDigit(),
 		Name:           faker.Name(),
 		Email:          faker.Email(),
