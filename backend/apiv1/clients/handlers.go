@@ -118,8 +118,8 @@ func (s *Service) updateClient(c *gin.Context) {
 
 	clientId := c.Param("id")
 
-	var uuid pgtype.UUID
-	err := uuid.Scan(clientId)
+	var uuid_client pgtype.UUID
+	err := uuid_client.Scan(clientId)
 
 	if err != nil {
 		c.JSON(400, gin.H{"message": "Invalid UUID"})
@@ -135,7 +135,7 @@ func (s *Service) updateClient(c *gin.Context) {
 	}
 
 	err = s.queries.UpdateClient(c, pgdb.UpdateClientParams{
-		ID:             uuid,
+		ID:             uuid_client,
 		Name:           client.Name,
 		Email:          pgtype.Text{String: client.Email, Valid: true},
 		Phone:          pgtype.Text{String: client.Phone, Valid: true},
@@ -149,7 +149,20 @@ func (s *Service) updateClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "Client updated successfully"})
+	updatedClient, err := s.queries.GetClientByID(c, uuid_client)
+	if err != nil {
+		c.JSON(404, gin.H{"message": "Client not found"})
+		return
+	}
+	var clientResponse Client
+	clientResponse.ID = uuid.UUID(updatedClient.ID.Bytes).String()
+	clientResponse.Name = updatedClient.Name
+	clientResponse.Email = updatedClient.Email.String
+	clientResponse.Phone = updatedClient.Phone.String
+	clientResponse.IsBusiness = updatedClient.IsBussiness.Bool
+	clientResponse.Address = updatedClient.Address.String
+	clientResponse.TotalPurchases = int(updatedClient.TotalPurchases.Int32)
+	c.JSON(200, clientResponse)
 
 }
 

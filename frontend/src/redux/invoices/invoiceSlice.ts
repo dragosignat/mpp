@@ -34,8 +34,7 @@ export const invoiceSlice = createSlice({
             })
             .addCase(loadInvoicesByClient.pending, (state) => {
                 state.loading = true;
-            }
-            )
+            })
             .addCase(loadInvoicesByClient.fulfilled, (state, action) => {
                 state.loading = false;
                 state.invoices = action.payload;
@@ -73,15 +72,20 @@ export const invoiceSlice = createSlice({
     },
 });
 
-export const loadInvoices = createAsyncThunk('invoices/loadInvoices', async () => {
-    const {data} = await axios.get(`${API_URL}/invoices`);
-    return data;
-});
+export const loadInvoices = createAsyncThunk(
+    'invoices/loadInvoices',
+    async () => {
+        const {data} = await axios.get(`${API_URL}/invoices`);
+        return data;
+    },
+);
 
 export const loadInvoicesByClient = createAsyncThunk(
     'invoices/loadInvoicesByClient',
     async (clientId: string) => {
-        const {data} = await axios.get(`${API_URL}/invoices?clientId=${clientId}`);
+        const {data} = await axios.get(
+            `${API_URL}/invoices?clientId=${clientId}`,
+        );
         return data;
     },
 );
