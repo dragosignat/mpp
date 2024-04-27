@@ -1,126 +1,186 @@
 package clients
 
 import (
-	"fmt"
 	"log"
-	"slices"
-	"sort"
-	"strings"
+	"openinvoice-api/internal/pgdb"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func getClients(c *gin.Context) {
+func (s *Service) getClients(c *gin.Context) {
 
-	sorting := c.DefaultQuery("sort", "asc")
-	sortBy := c.DefaultQuery("sortBy", "none")
-	filter := c.DefaultQuery("filter", "none")
+	clients, err := s.queries.GetClients(c)
 
-	sort.Slice(ClientsList, func(i, j int) bool {
-		switch sortBy {
-		case "clientName":
-			return ClientsList[i].ClientName < ClientsList[j].ClientName
-		case "clientEmail":
-			return ClientsList[i].ClientEmail < ClientsList[j].ClientEmail
-		case "clientTotalPurchases":
-			return ClientsList[i].ClientTotalPurchases < ClientsList[j].ClientTotalPurchases
-		default:
-			return ClientsList[i].ClientID < ClientsList[j].ClientID
-		}
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error fetching clients"})
+		log.Println(err)
+		return
+	}
+
+	if clients == nil {
+		c.JSON(404, gin.H{"message": "No clients found"})
+		return
+	}
+
+	var clientList []Client
+
+	for _, client := range clients {
+		clientList = append(clientList, Client{
+			ID:             uuid.UUID(client.ID.Bytes).String(),
+			Name:           client.Name,
+			Email:          client.Email.String,
+			Phone:          client.Phone.String,
+			IsBusiness:     client.IsBussiness.Bool,
+			Address:        client.Address.String,
+			TotalPurchases: int(client.TotalPurchases.Int32),
+		})
+	}
+
+	c.JSON(200, clientList)
+}
+
+func (s *Service) getClient(c *gin.Context) {
+
+	clientId := c.Param("id")
+
+	var uuid pgtype.UUID
+	err := uuid.Scan(clientId)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid UUID"})
+		return
+	}
+
+	client, err := s.queries.GetClientByID(c, uuid)
+
+	if err != nil {
+		c.JSON(404, gin.H{"message": "Client not found"})
+		return
+	}
+
+	c.JSON(200, client)
+}
+
+func (s *Service) deleteClient(c *gin.Context) {
+	clientId := c.Param("id")
+
+	var uuid pgtype.UUID
+	err := uuid.Scan(clientId)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid UUID"})
+		return
+	}
+
+	_, err = s.queries.GetClientByID(c, uuid)
+	if err != nil {
+		c.JSON(404, gin.H{"message": "Client not found"})
+		return
+	}
+
+	err = s.queries.DeleteClient(c, uuid)
+
+	c.JSON(200, "Client deleted successfully")
+}
+
+func (s *Service) createClient(c *gin.Context) {
+
+	var client ClientsCreate
+	err := c.ShouldBindJSON(&client)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid JSON"})
+		return
+	}
+
+	newClient, err := s.queries.CreateClient(c, pgdb.CreateClientParams{
+		Name:           client.Name,
+		Email:          pgtype.Text{String: client.Email, Valid: true},
+		Phone:          pgtype.Text{String: client.Phone, Valid: true},
+		IsBussiness:    pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
+		Address:        pgtype.Text{String: client.Address, Valid: true},
+		TotalPurchases: pgtype.Int4{Int32: int32(client.TotalPurchases), Valid: true},
 	})
 
-	if sorting == "desc" {
-		slices.Reverse(ClientsList)
-	}
-
-	response := []Client{}
-
-	if filter == "none" {
-		response = ClientsList
-	} else {
-		for _, client := range ClientsList {
-			// If name, email, or phone contains the filter string
-			if strings.Contains(client.ClientName, filter) || strings.Contains(client.ClientEmail, filter) || strings.Contains(client.ClientPhone, filter) {
-				response = append(response, client)
-			}
-		}
-
-	}
-	c.JSON(200, response)
-}
-
-func getClient(c *gin.Context) {
-	for _, client := range ClientsList {
-		if client.ClientID == c.Param("id") {
-			c.JSON(200, client)
-			return
-		}
-	}
-}
-
-func deleteClient(c *gin.Context) {
-	for i, client := range ClientsList {
-		if client.ClientID == c.Param("id") {
-			ClientsList = append(ClientsList[:i], ClientsList[i+1:]...)
-			c.JSON(200, gin.H{"message": "Client deleted"})
-			return
-		}
-	}
-	c.JSON(404, gin.H{"message": "Client not found"})
-}
-
-func createClient(c *gin.Context) {
-	var newClientFromCall ClientsCreate
-
-	err := c.BindJSON(&newClientFromCall)
-
-	newClient := Client{
-		ClientID:             uuid.New().String(),
-		ClientName:           newClientFromCall.ClientName,
-		ClientEmail:          newClientFromCall.ClientEmail,
-		ClientPhone:          newClientFromCall.ClientPhone,
-		ClientAddress:        newClientFromCall.ClientAddress,
-		ClientTotalPurchases: newClientFromCall.ClientTotalPurchases,
-		ClientIsBusiness:     *newClientFromCall.ClientIsBusiness,
-	}
-
 	if err != nil {
-		log.Println(err)
-		c.JSON(400, gin.H{"message": "Invalid request"})
+		c.JSON(500, gin.H{"message": "Error creating client"})
 		return
 	}
 
-	for _, client := range ClientsList {
-		if client.ClientID == newClient.ClientID {
-			c.JSON(400, gin.H{"message": "Client already exists"})
-			return
-		}
-	}
-
-	ClientsList = append(ClientsList, newClient)
-	c.JSON(201, newClient)
-
+	c.JSON(200, newClient)
 }
 
-func updateClient(c *gin.Context) {
-	var updatedClient Client
+func (s *Service) updateClient(c *gin.Context) {
 
-	err := c.BindJSON(&updatedClient)
+	clientId := c.Param("id")
+
+	var uuid_client pgtype.UUID
+	err := uuid_client.Scan(clientId)
 
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(400, gin.H{"message": "Invalid request"})
+		c.JSON(400, gin.H{"message": "Invalid UUID"})
 		return
 	}
 
-	for i, client := range ClientsList {
-		if client.ClientID == c.Param("id") {
-			ClientsList[i] = updatedClient
-			c.JSON(200, updatedClient)
-			return
-		}
+	var client ClientsCreate
+	err = c.ShouldBindJSON(&client)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid JSON"})
+		return
 	}
 
-	c.JSON(404, gin.H{"message": "Client not found"})
+	err = s.queries.UpdateClient(c, pgdb.UpdateClientParams{
+		ID:             uuid_client,
+		Name:           client.Name,
+		Email:          pgtype.Text{String: client.Email, Valid: true},
+		Phone:          pgtype.Text{String: client.Phone, Valid: true},
+		IsBussiness:    pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
+		Address:        pgtype.Text{String: client.Address, Valid: true},
+		TotalPurchases: pgtype.Int4{Int32: int32(client.TotalPurchases), Valid: true},
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error updating client"})
+		return
+	}
+
+	updatedClient, err := s.queries.GetClientByID(c, uuid_client)
+	if err != nil {
+		c.JSON(404, gin.H{"message": "Client not found"})
+		return
+	}
+	var clientResponse Client
+	clientResponse.ID = uuid.UUID(updatedClient.ID.Bytes).String()
+	clientResponse.Name = updatedClient.Name
+	clientResponse.Email = updatedClient.Email.String
+	clientResponse.Phone = updatedClient.Phone.String
+	clientResponse.IsBusiness = updatedClient.IsBussiness.Bool
+	clientResponse.Address = updatedClient.Address.String
+	clientResponse.TotalPurchases = int(updatedClient.TotalPurchases.Int32)
+	c.JSON(200, clientResponse)
+
+}
+
+func (s *Service) generateFake(c *gin.Context) {
+
+	newPerson := GeneratePerson()
+
+	newClient, err := s.queries.CreateClient(c, pgdb.CreateClientParams{
+		Name:           newPerson.Name,
+		Email:          pgtype.Text{String: newPerson.Email, Valid: true},
+		Phone:          pgtype.Text{String: newPerson.Phone, Valid: true},
+		IsBussiness:    pgtype.Bool{Bool: newPerson.IsBusiness, Valid: true},
+		Address:        pgtype.Text{String: newPerson.Address, Valid: true},
+		TotalPurchases: pgtype.Int4{Int32: int32(newPerson.TotalPurchases), Valid: true},
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error creating client"})
+		return
+	}
+
+	c.JSON(200, newClient)
 }

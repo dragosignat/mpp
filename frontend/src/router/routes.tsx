@@ -5,6 +5,9 @@ import ClientEdit from '@/pages/ClientEdit';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import ErrorPage from '@/pages/ErrorPage';
 import Root from '@/layouts/Root';
+import Invoices from '@/pages/Invoices';
+import InvoicesAdd from '@/pages/InvoicesAdd';
+import InvoicesEdit from '@/pages/InvoicesEdit';
 
 const router = createBrowserRouter([
     {
@@ -27,6 +30,18 @@ const router = createBrowserRouter([
             {
                 path: '/clients/add',
                 element: <ClientAdd />,
+            },
+            {
+                path: '/invoices',
+                element: <Invoices />,
+            },
+            {
+                path: '/invoices/add',
+                element: <InvoicesAdd />,
+            },
+            {
+                path: '/invoices/:invoiceId',
+                element: <InvoicesEdit />,
             },
         ],
     },

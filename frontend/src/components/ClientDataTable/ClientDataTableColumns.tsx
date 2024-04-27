@@ -3,7 +3,7 @@ import {Client} from '@/types/Client';
 import {Check} from 'lucide-react';
 import {X} from 'lucide-react';
 import {DataTableColumnHeader} from '../data-table-components/data-table-column-header';
-import {DataTableRowActions} from './client-data-table-row-actions';
+import {DataTableRowActions} from './ClientDataTableActions';
 
 export const ClientColumns: ColumnDef<Client>[] = [
     {

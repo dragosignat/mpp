@@ -36,8 +36,8 @@ const formSchema = z.object({
         .min(10, {
             message: 'Client phone must be at least 10 characters.',
         })
-        .max(15, {
-            message: 'Client phone must be at most 15 characters.',
+        .max(30, {
+            message: 'Client phone must be at most 30 characters.',
         }),
     clientEmail: z.string().email({
         message: 'Client email must be a valid email.',
