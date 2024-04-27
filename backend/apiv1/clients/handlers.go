@@ -24,8 +24,6 @@ func (s *Service) getClients(c *gin.Context) {
 		return
 	}
 
-	// Bind the clients to the the Clinet struct and return it
-
 	var clientList []Client
 
 	for _, client := range clients {
