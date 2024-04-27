@@ -24,6 +24,8 @@
 # Go workspace file
 go.work
 
+tmp/
+
 ### macOS ###
 # General
 .DS_Store
@@ -114,7 +116,8 @@ tags
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/react,macos,visualstudiocode,vim,go
-
 .env
 tmp/
 .zed/
+
+
