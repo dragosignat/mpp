@@ -69,28 +69,53 @@ export const loadClients = createAsyncThunk('clients/loadClients', async () => {
 export const addClient = createAsyncThunk(
     'clients/addClient',
     async (client: ClientCreate) => {
-        const {data} = await axios.post(`${API_URL}/clients`, client);
-        return data;
+        try {
+            const {data} = await axios.post(`${API_URL}/clients`, client);
+            return data;
+        } catch (error) {
+            const url = `${API_URL}/clients`;
+            const method = 'POST';
+            const body = client;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return client;
+        }
     },
 );
 
 export const removeClient = createAsyncThunk(
     'clients/deleteClient',
     async (clientId: string) => {
-        await axios.delete(`${API_URL}/clients/${clientId}`);
-        return clientId;
+        try {
+            await axios.delete(`${API_URL}/clients/${clientId}`);
+            return clientId;
+        } catch (error) {
+            const url = `${API_URL}/clients/${clientId}`;
+            const method = 'DELETE';
+            const body = clientId;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return clientId;
+        }
     },
 );
 
 export const updateClient = createAsyncThunk(
     'clients/updateClient',
     async (client: Client) => {
-        const {data} = await axios.put(
-            `${API_URL}/clients/${client.clientId}`,
-            client,
-        );
-        return data;
-    },
+        try {
+            const {data} = await axios.put(
+                `${API_URL}/clients/${client.clientId}`,
+                client,
+            );
+            return data;
+        } catch (error) {
+            const url = `${API_URL}/clients/${client.clientId}`;
+            const method = 'PUT';
+            const body = client;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return client;
+        }
+
+        },
 );
 
 export const selectClients = (state: {clients: ClientsState}) =>
