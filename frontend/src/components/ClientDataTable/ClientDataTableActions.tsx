@@ -26,7 +26,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
     row,
 }: DataTableRowActionsProps<TData>) {
-    const clientId = row.original.clientId;
+    const clientId = row.original.id;
     const dispatch = useDispatch<AppDispatch>();
     const {toast} = useToast();
     const handleDelete = () => {

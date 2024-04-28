@@ -7,32 +7,32 @@ import {DataTableRowActions} from './ClientDataTableActions';
 
 export const ClientColumns: ColumnDef<Client>[] = [
     {
-        accessorKey: 'clientName',
+        accessorKey: 'name',
         header: ({column}) => (
             <DataTableColumnHeader column={column} title='Name' />
         ),
     },
     {
-        accessorKey: 'clientAddress',
+        accessorKey: 'address',
         header: 'Address',
     },
     {
-        accessorKey: 'clientPhone',
+        accessorKey: 'phone',
         header: 'Phone',
     },
     {
-        accessorKey: 'clientEmail',
+        accessorKey: 'email',
         header: ({column}) => (
             <DataTableColumnHeader column={column} title='Email' />
         ),
     },
     {
-        accessorKey: 'clientTotalPurchases',
+        accessorKey: 'total_purchases',
         header: ({column}) => (
             <DataTableColumnHeader column={column} title='Total Purchases' />
         ),
         cell: ({row}) => {
-            const amount = row.getValue('clientTotalPurchases');
+            const amount = row.getValue('total_purchases');
             const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
@@ -42,10 +42,10 @@ export const ClientColumns: ColumnDef<Client>[] = [
         },
     },
     {
-        accessorKey: 'clientIsBusiness',
+        accessorKey: 'is_business',
         header: 'Is Business',
         cell: ({row}) => {
-            const isBusiness = row.getValue('clientIsBusiness');
+            const isBusiness = row.getValue('is_business');
             if (isBusiness === true) {
                 return <Check />;
             } else {

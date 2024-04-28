@@ -4,7 +4,7 @@ import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {Checkbox} from '@/components/ui/checkbox';
 
-import {Client} from '@/types/Client';
+import {ClientUpdate} from '@/types/Client';
 
 import {Button} from '@/components/ui/button';
 import {
@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {useToast} from '@/components/ui/use-toast';
-
+import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
 import {selectClients, updateClient} from '@/redux/clients/clientsSlice';
@@ -45,14 +45,14 @@ const formSchema = z.object({
     clientTotalPurchases: z.coerce.number().min(0, {
         message: 'Client total purchases must be at least 0.',
     }),
-    clientIsBusiness: z.boolean(),
+    clientIsBusiness: z.boolean().default(false),
 });
 
 function ClientEditForm({clientId}: {clientId: string | number}) {
     // Load the client data from the server
     const dispatch = useDispatch<AppDispatch>();
     const clients = useSelector(selectClients);
-    const client = clients.find((c) => c.clientId === clientId);
+    const client = clients.find((c) => c.id === clientId);
     const navigate = useNavigate();
     const {toast} = useToast();
 
@@ -61,26 +61,26 @@ function ClientEditForm({clientId}: {clientId: string | number}) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             // Load the client data into the form
-            clientName: client?.clientName,
-            clientAddress: client?.clientAddress,
-            clientPhone: client?.clientPhone,
-            clientEmail: client?.clientEmail,
-            clientTotalPurchases: client?.clientTotalPurchases,
-            clientIsBusiness: client?.clientIsBusiness,
+            clientName: client?.name,
+            clientAddress: client?.address,
+            clientPhone: client?.phone,
+            clientEmail: client?.email,
+            clientTotalPurchases: client?.total_purchases,
+            clientIsBusiness: client?.is_business,
         },
     });
 
     // 2. Define a submit handler.
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         // Form the client object
-        const client: Client = {
-            clientId: clientId.toString(),
-            clientName: values.clientName,
-            clientAddress: values.clientAddress,
-            clientPhone: values.clientPhone,
-            clientEmail: values.clientEmail,
-            clientTotalPurchases: values.clientTotalPurchases,
-            clientIsBusiness: values.clientIsBusiness,
+        const client: ClientUpdate = {
+            id: clientId.toString(),
+            name: values.clientName,
+            address: values.clientAddress,
+            phone: values.clientPhone,
+            email: values.clientEmail,
+            total_purchases: values.clientTotalPurchases,
+            is_business: values.clientIsBusiness,
         };
 
         // Dispatch the action to add the client to the store

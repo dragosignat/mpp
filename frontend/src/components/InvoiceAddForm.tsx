@@ -104,8 +104,8 @@ function InvoiceAddForm() {
     }, [dispatch]);
 
     const clientOptions = clients.map((client) => ({
-        value: client.clientId,
-        label: client.clientName,
+        value: client.id,
+        label: client.name,
     }));
 
     return (

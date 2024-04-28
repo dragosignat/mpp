@@ -12,7 +12,7 @@ IF NOT EXISTS clients
     phone TEXT,
     address TEXT,
     total_purchases INT,
-    is_bussiness BOOLEAN,
+    is_business BOOLEAN,
     last_purchase TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

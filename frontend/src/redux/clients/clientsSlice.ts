@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {Client, ClientCreate} from '@/types/Client';
+import {Client, ClientCreate, ClientUpdate} from '@/types/Client';
 import axios from 'axios';
 import {API_URL} from '@/config/apiConfig';
 
@@ -41,7 +41,7 @@ export const clientSlice = createSlice({
             })
             .addCase(removeClient.fulfilled, (state, action) => {
                 state.clients = state.clients.filter(
-                    (client) => client.clientId !== action.payload,
+                    (client) => client.id !== action.payload,
                 );
             })
             .addCase(removeClient.rejected, (state) => {
@@ -49,7 +49,7 @@ export const clientSlice = createSlice({
             })
             .addCase(updateClient.fulfilled, (state, action) => {
                 const index = state.clients.findIndex(
-                    (client) => client.clientId === action.payload.clientId,
+                    (client) => client.id === action.payload.clientId,
                 );
                 if (index !== -1) {
                     state.clients[index] = action.payload;
@@ -100,15 +100,15 @@ export const removeClient = createAsyncThunk(
 
 export const updateClient = createAsyncThunk(
     'clients/updateClient',
-    async (client: Client) => {
+    async (client: ClientUpdate) => {
         try {
             const {data} = await axios.put(
-                `${API_URL}/clients/${client.clientId}`,
+                `${API_URL}/clients/${client.id}`,
                 client,
             );
             return data;
         } catch (error) {
-            const url = `${API_URL}/clients/${client.clientId}`;
+            const url = `${API_URL}/clients/${client.id}`;
             const method = 'PUT';
             const body = client;
             localStorage.setItem(url, JSON.stringify({method, body}));

@@ -1,20 +1,20 @@
 package clients
 
 type Client struct {
-	ID             string `json:"clientId" binding:"required"`
-	Name           string `json:"clientName" binding:"required"`
-	Email          string `json:"clientEmail" binding:"required"`
-	Phone          string `json:"clientPhone" binding:"required"`
-	Address        string `json:"clientAddress" binding:"required"`
-	TotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
-	IsBusiness     bool   `json:"clientIsBusiness" binding:"required"`
+	ID             string `json:"id" binding:"required"`
+	Name           string `json:"name" binding:"required"`
+	Email          string `json:"email" binding:"required"`
+	Phone          string `json:"phone" binding:"required"`
+	Address        string `json:"address" binding:"required"`
+	TotalPurchases int    `json:"total_purchases" binding:"required"`
+	IsBusiness     bool   `json:"is_business" binding:"required"`
 }
 
 type ClientsCreate struct {
-	Name           string `json:"clientName" binding:"required"`
-	Email          string `json:"clientEmail" binding:"required"`
-	Phone          string `json:"clientPhone" binding:"required"`
-	Address        string `json:"clientAddress" binding:"required"`
-	TotalPurchases int    `json:"clientTotalPurchases" binding:"required"`
-	IsBusiness     *bool  `json:"clientIsBusiness" binding:"required"`
+	Name           string `json:"name" binding:"required"`
+	Email          string `json:"email" binding:"required"`
+	Phone          string `json:"phone" binding:"required"`
+	Address        string `json:"address" binding:"required"`
+	TotalPurchases int    `json:"total_purchases" binding:"required"`
+	IsBusiness     *bool  `json:"is_business" binding:"required"`
 }

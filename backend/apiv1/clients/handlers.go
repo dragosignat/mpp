@@ -3,15 +3,30 @@ package clients
 import (
 	"log"
 	"openinvoice-api/internal/pgdb"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (s *Service) getClients(c *gin.Context) {
 
-	clients, err := s.queries.GetClients(c)
+	start, err := strconv.Atoi(c.DefaultQuery("start", "0"))
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid start parameter"})
+		return
+	}
+
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "100"))
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid limit parameter"})
+		return
+	}
+
+	clients, err := s.queries.GetClientsWithOutgoingInvoicesAmount(c, pgdb.GetClientsWithOutgoingInvoicesAmountParams{
+		Offset: int32(start),
+		Limit:  int32(limit),
+	})
 
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching clients"})
@@ -24,21 +39,8 @@ func (s *Service) getClients(c *gin.Context) {
 		return
 	}
 
-	var clientList []Client
+	c.JSON(200, clients)
 
-	for _, client := range clients {
-		clientList = append(clientList, Client{
-			ID:             uuid.UUID(client.ID.Bytes).String(),
-			Name:           client.Name,
-			Email:          client.Email.String,
-			Phone:          client.Phone.String,
-			IsBusiness:     client.IsBussiness.Bool,
-			Address:        client.Address.String,
-			TotalPurchases: int(client.TotalPurchases.Int32),
-		})
-	}
-
-	c.JSON(200, clientList)
 }
 
 func (s *Service) getClient(c *gin.Context) {
@@ -82,6 +84,11 @@ func (s *Service) deleteClient(c *gin.Context) {
 
 	err = s.queries.DeleteClient(c, uuid)
 
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error deleting client"})
+		return
+	}
+
 	c.JSON(200, "Client deleted successfully")
 }
 
@@ -99,7 +106,7 @@ func (s *Service) createClient(c *gin.Context) {
 		Name:           client.Name,
 		Email:          pgtype.Text{String: client.Email, Valid: true},
 		Phone:          pgtype.Text{String: client.Phone, Valid: true},
-		IsBussiness:    pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
+		IsBusiness:     pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
 		Address:        pgtype.Text{String: client.Address, Valid: true},
 		TotalPurchases: pgtype.Int4{Int32: int32(client.TotalPurchases), Valid: true},
 	})
@@ -137,7 +144,7 @@ func (s *Service) updateClient(c *gin.Context) {
 		Name:           client.Name,
 		Email:          pgtype.Text{String: client.Email, Valid: true},
 		Phone:          pgtype.Text{String: client.Phone, Valid: true},
-		IsBussiness:    pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
+		IsBusiness:     pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
 		Address:        pgtype.Text{String: client.Address, Valid: true},
 		TotalPurchases: pgtype.Int4{Int32: int32(client.TotalPurchases), Valid: true},
 	})
@@ -152,16 +159,8 @@ func (s *Service) updateClient(c *gin.Context) {
 		c.JSON(404, gin.H{"message": "Client not found"})
 		return
 	}
-	var clientResponse Client
-	clientResponse.ID = uuid.UUID(updatedClient.ID.Bytes).String()
-	clientResponse.Name = updatedClient.Name
-	clientResponse.Email = updatedClient.Email.String
-	clientResponse.Phone = updatedClient.Phone.String
-	clientResponse.IsBusiness = updatedClient.IsBussiness.Bool
-	clientResponse.Address = updatedClient.Address.String
-	clientResponse.TotalPurchases = int(updatedClient.TotalPurchases.Int32)
-	c.JSON(200, clientResponse)
 
+	c.JSON(200, updatedClient)
 }
 
 func (s *Service) generateFake(c *gin.Context) {
@@ -172,7 +171,7 @@ func (s *Service) generateFake(c *gin.Context) {
 		Name:           newPerson.Name,
 		Email:          pgtype.Text{String: newPerson.Email, Valid: true},
 		Phone:          pgtype.Text{String: newPerson.Phone, Valid: true},
-		IsBussiness:    pgtype.Bool{Bool: newPerson.IsBusiness, Valid: true},
+		IsBusiness:     pgtype.Bool{Bool: newPerson.IsBusiness, Valid: true},
 		Address:        pgtype.Text{String: newPerson.Address, Valid: true},
 		TotalPurchases: pgtype.Int4{Int32: int32(newPerson.TotalPurchases), Valid: true},
 	})

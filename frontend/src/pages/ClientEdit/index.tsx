@@ -11,7 +11,7 @@ const ClientEdit = () => {
     const {clientId} = useParams();
     // Load the client data from the server
     const clients = useSelector(selectClients);
-    const client = clients.find((c) => c.clientId === clientId);
+    const client = clients.find((c) => c.id === clientId);
 
     if (!client) {
         return <div>Loading...</div>;
@@ -33,7 +33,7 @@ const ClientEdit = () => {
                             </Link>
                         </Button>
                         <h1 className='text-xl font-bold py-2'>
-                            Editing: {client?.clientName}
+                            Editing: {client?.name}
                         </h1>
                     </div>
                 </div>
