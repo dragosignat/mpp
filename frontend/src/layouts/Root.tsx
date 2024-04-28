@@ -15,6 +15,17 @@ function Root() {
         const fetchData = async () => {
             try {
                 await axios.get(`${API_URL}`);
+
+                // If local storage has any failed requests, retry them
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith(API_URL)) {
+                        const {method, body} = JSON.parse(localStorage.getItem(key) || '{}');
+                        await axios(key, {method, data: body});
+                        localStorage.removeItem(key);
+                    }
+                }
+
             } catch (error) {
                 // Handle API error here
                 toast({

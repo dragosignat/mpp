@@ -93,27 +93,52 @@ export const loadInvoicesByClient = createAsyncThunk(
 export const addInvoice = createAsyncThunk(
     'invoices/addinvoice',
     async (invoice: InvoiceCreate) => {
-        const {data} = await axios.post(`${API_URL}/invoices`, invoice);
-        return data;
+        try {
+            const {data} = await axios.post(`${API_URL}/invoices`, invoice);
+            return data;
+        } catch (error) {
+            const url = `${API_URL}/invoices`;
+            const method = 'POST';
+            const body = invoice;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return invoice;
+        }
     },
 );
 
 export const removeInvoice = createAsyncThunk(
     'invoices/deleteinvoice',
     async (id: string) => {
-        await axios.delete(`${API_URL}/invoices/${id}`);
-        return id;
+        try {
+            await axios.delete(`${API_URL}/invoices/${id}`);
+        }
+        catch (error) {
+            // Add to local storage to retry later
+            const url = `${API_URL}/invoices/${id}`;
+            const method = 'DELETE';
+            const body = null;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return id;
+        }
     },
 );
 
 export const updateInvoice = createAsyncThunk(
     'invoices/updateinvoice',
     async (invoice: InvoiceUpdate) => {
+        try {
         const {data} = await axios.put(
             `${API_URL}/invoices/${invoice.id}`,
             invoice,
         );
         return data;
+        } catch (error) {
+            const url = `${API_URL}/invoices/${invoice.id}`;
+            const method = 'PUT';
+            const body = invoice;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return invoice;
+        }
     },
 );
 
