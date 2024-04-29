@@ -21,7 +21,16 @@ function Root() {
                     const key = localStorage.key(i);
                     if (key && key.startsWith(API_URL)) {
                         const {method, body} = JSON.parse(localStorage.getItem(key) || '{}');
-                        await axios(key, {method, data: body});
+                        try {
+                            await axios(key, {method, data: body});
+                        } catch (error) {
+                            // Handle API error here
+                            toast({
+                                title: 'API Error',
+                                description: 'Could not perform the backlogged request.',
+                                variant: 'destructive',
+                            });
+                        }
                         localStorage.removeItem(key);
                     }
                 }
@@ -36,13 +45,8 @@ function Root() {
             }
         };
 
-        // Call fetchData initially
         fetchData();
-
-        // Set up interval to call fetchData every 5 seconds
         const intervalId = setInterval(fetchData, 5000);
-
-        // Clear interval on component unmount
         return () => clearInterval(intervalId);
     }, []);
 
