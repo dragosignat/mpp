@@ -58,6 +58,16 @@ export function DataTable<TData, TValue>({
                 <div className='flex space-x-4'>
                     <Input
                         placeholder='Filter by client...'
+                        value={
+                            (table
+                                .getColumn('client_id')
+                                ?.getFilterValue() as string) ?? ''
+                        }
+                        onChange={(event) =>
+                            table
+                                .getColumn('client_id')
+                                ?.setFilterValue(event.target.value)
+                        }
                         className='max-w-sm'
                     />
                     <Button variant='default'>Filter</Button>

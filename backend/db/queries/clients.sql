@@ -98,3 +98,53 @@ LIMIT
     $1
 OFFSET
     $2;
+
+-- name: GetClientsWithOutgoingInvoicesAmountFull :many
+SELECT
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at,
+    COALESCE(SUM(i.amount), 0) as total_outgoing_invoices
+FROM
+    clients c
+LEFT JOIN
+    invoices i
+ON
+    c.id = i.client_id
+GROUP BY
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at
+ORDER BY
+    c.id;
+
+-- name: GetTotalNumberOfClients :one
+SELECT
+    COUNT(*)
+FROM
+    clients;
+    
+-- name: SearchClients :many
+SELECT
+    id,
+    name
+FROM 
+    clients
+WHERE
+    name ILIKE $1
+ORDER BY
+    name
+LIMIT
+    $2;

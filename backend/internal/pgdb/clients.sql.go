@@ -267,6 +267,140 @@ func (q *Queries) GetClientsWithOutgoingInvoicesAmount(ctx context.Context, arg 
 	return items, nil
 }
 
+const getClientsWithOutgoingInvoicesAmountFull = `-- name: GetClientsWithOutgoingInvoicesAmountFull :many
+SELECT
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at,
+    COALESCE(SUM(i.amount), 0) as total_outgoing_invoices
+FROM
+    clients c
+LEFT JOIN
+    invoices i
+ON
+    c.id = i.client_id
+GROUP BY
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at
+ORDER BY
+    c.id
+`
+
+type GetClientsWithOutgoingInvoicesAmountFullRow struct {
+	ID                    pgtype.UUID      `json:"id"`
+	Name                  string           `json:"name"`
+	Email                 pgtype.Text      `json:"email"`
+	Phone                 pgtype.Text      `json:"phone"`
+	IsBusiness            pgtype.Bool      `json:"is_business"`
+	TotalPurchases        pgtype.Int4      `json:"total_purchases"`
+	Address               pgtype.Text      `json:"address"`
+	CreatedAt             pgtype.Timestamp `json:"created_at"`
+	UpdatedAt             pgtype.Timestamp `json:"updated_at"`
+	TotalOutgoingInvoices interface{}      `json:"total_outgoing_invoices"`
+}
+
+func (q *Queries) GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error) {
+	rows, err := q.db.Query(ctx, getClientsWithOutgoingInvoicesAmountFull)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetClientsWithOutgoingInvoicesAmountFullRow
+	for rows.Next() {
+		var i GetClientsWithOutgoingInvoicesAmountFullRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Phone,
+			&i.IsBusiness,
+			&i.TotalPurchases,
+			&i.Address,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.TotalOutgoingInvoices,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTotalNumberOfClients = `-- name: GetTotalNumberOfClients :one
+SELECT
+    COUNT(*)
+FROM
+    clients
+`
+
+func (q *Queries) GetTotalNumberOfClients(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getTotalNumberOfClients)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const searchClients = `-- name: SearchClients :many
+SELECT
+    id,
+    name
+FROM 
+    clients
+WHERE
+    name ILIKE $1
+ORDER BY
+    name
+LIMIT
+    $2
+`
+
+type SearchClientsParams struct {
+	Name  string `json:"name"`
+	Limit int32  `json:"limit"`
+}
+
+type SearchClientsRow struct {
+	ID   pgtype.UUID `json:"id"`
+	Name string      `json:"name"`
+}
+
+func (q *Queries) SearchClients(ctx context.Context, arg SearchClientsParams) ([]SearchClientsRow, error) {
+	rows, err := q.db.Query(ctx, searchClients, arg.Name, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchClientsRow
+	for rows.Next() {
+		var i SearchClientsRow
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateClient = `-- name: UpdateClient :exec
 UPDATE
     clients

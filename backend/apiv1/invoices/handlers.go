@@ -2,6 +2,7 @@ package invoices
 
 import (
 	"log"
+	"math/rand"
 	"openinvoice-api/internal/pgdb"
 	"time"
 
@@ -244,4 +245,44 @@ func (s *Service) updateInvoice(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Invoice updated successfully"})
+}
+
+func (s *Service) generateFake(c *gin.Context) {
+
+	// Generate a fake invoice for the given client
+
+	clientId := c.Param("client_id")
+
+	var uuid_client pgtype.UUID
+	err := uuid_client.Scan(clientId)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid UUID"})
+		return
+	}
+
+	// Skip validation for client (for now)
+
+	// Generate a fake invoice
+	var invoiceAmount = rand.Intn(1000)
+	newInvoice, err := s.queries.CreateInvoice(c, pgdb.CreateInvoiceParams{
+		ClientID: uuid_client,
+		DueDate: pgtype.Timestamp{
+			Time:  time.Now().AddDate(0, 1, 0),
+			Valid: true,
+		},
+		DateOfIssue: pgtype.Timestamp{
+			Time:  time.Now(),
+			Valid: true,
+		},
+		Amount:      pgtype.Int4{Int32: int32(invoiceAmount), Valid: true},
+		Description: pgtype.Text{String: "Fake Invoice", Valid: true},
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error creating invoice"})
+		return
+	}
+
+	c.JSON(200, newInvoice)
 }

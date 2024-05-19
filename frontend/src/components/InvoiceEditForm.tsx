@@ -28,13 +28,14 @@ import {useNavigate} from 'react-router-dom';
 import {selectInvoices, updateInvoice} from '@/redux/invoices/invoiceSlice';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Textarea} from '@/components/ui/textarea';
-import {Calendar as CalendarIcon} from 'lucide-react';
+import {Calendar as CalendarIcon, ChevronsUpDown} from 'lucide-react';
 import {Calendar} from '@/components/ui/calendar';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
 import {InvoiceUpdate} from '@/types/Invoices';
 import {loadClients, selectClients} from '@/redux/clients/clientsSlice';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+import {ClientSearch} from '@/components/SearchClientCombobox';
 
 const formSchema = z.object({
     clientId: z.string().uuid({
@@ -96,20 +97,17 @@ function InvoiceEditForm({invoiceId}: {invoiceId: string | number}) {
             });
     };
 
-    const clients = useSelector(selectClients);
+    interface Client {
+        id: string;
+        name: string;
+    }
+    const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
-    // Load the client list from the store
     useEffect(() => {
-        if (clients.length === 0) {
-            console.log('loading clients');
-            dispatch(loadClients());
+        if (selectedClient) {
+        form.setValue("clientId", selectedClient.id);
         }
-    }, [dispatch]);
-
-    const clientOptions = clients.map((client) => ({
-        value: client.id,
-        label: client.name,
-    }));
+    }, [selectedClient, form]); 
 
     return (
         <Form {...form}>
@@ -118,32 +116,38 @@ function InvoiceEditForm({invoiceId}: {invoiceId: string | number}) {
                     control={form.control}
                     name='clientId'
                     render={({field}) => (
-                        <FormItem>
+                        <FormItem className='flex flex-col'>
                             <FormLabel>Client Name</FormLabel>
-                            <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                            >
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder='Select a client' />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {clientOptions.map((option) => (
-                                        <SelectItem
-                                            key={option.value}
-                                            value={option.value}
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant='outline'
+                                            role='combobox'
+                                            className={cn(
+                                                'w-[200px] justify-between',
+                                                !field.value &&
+                                                    'text-muted-foreground',
+                                            )}
                                         >
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                            {
+                                                selectedClient?.name ||
+                                                'Search for a client'
+                                            }
+                                            <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className='w-[200px] p-0'>
+                                    <ClientSearch selectedResult={selectedClient} onSelectResult={setSelectedClient} />
+                                </PopoverContent>
+                            </Popover>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
+
+
                 <FormField
                     control={form.control}
                     name='dueDate'

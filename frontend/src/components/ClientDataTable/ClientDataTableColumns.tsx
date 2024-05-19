@@ -42,6 +42,21 @@ export const ClientColumns: ColumnDef<Client>[] = [
         },
     },
     {
+        accessorKey: 'total_outgoing_invoices',
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title='Total Outgoing Invoices' />
+        ),
+        cell: ({row}) => {
+            const amount = row.getValue('total_outgoing_invoices');
+            const formatted = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            }).format(amount);
+
+            return <div className='font-medium'>{formatted}</div>;
+        },
+    },
+    {
         accessorKey: 'is_business',
         header: 'Is Business',
         cell: ({row}) => {

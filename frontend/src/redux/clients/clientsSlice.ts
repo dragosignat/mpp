@@ -5,12 +5,16 @@ import {API_URL} from '@/config/apiConfig';
 
 export interface ClientsState {
     clients: Client[];
+    currentPage?: number;
+    itemsPerPage?: number;
     loading?: boolean;
     error: string;
 }
 
 const initialState: ClientsState = {
     clients: [],
+    currentPage: 0,
+    itemsPerPage: 100,
     loading: false,
     error: '',
 };

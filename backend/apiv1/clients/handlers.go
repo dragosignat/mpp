@@ -28,6 +28,8 @@ func (s *Service) getClients(c *gin.Context) {
 		Limit:  int32(limit),
 	})
 
+	// clients, err := s.queries.GetClientsWithOutgoingInvoicesAmountFull(c)
+
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching clients"})
 		log.Println(err)
@@ -182,4 +184,47 @@ func (s *Service) generateFake(c *gin.Context) {
 	}
 
 	c.JSON(200, newClient)
+}
+
+func (s *Service) getTotalClients(c *gin.Context) {
+
+	totalClients, err := s.queries.GetTotalNumberOfClients(c)
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error fetching total clients"})
+		return
+	}
+
+	c.JSON(200, gin.H{"total_clients": totalClients})
+}
+
+func (s *Service) searchClients(c *gin.Context) {
+
+	query := c.Query("query")
+
+	if query == "" {
+		c.JSON(400, gin.H{"message": "Query parameter is required"})
+		return
+	}
+
+	// Make sure the query is at least 3 characters long
+	if len(query) < 3 {
+		c.JSON(400, gin.H{"message": "Query parameter must be at least 3 characters long"})
+		return
+	}
+
+	// Search clients (change the query so it can be used in a LIKE statement)
+	query = "%" + query + "%"
+
+	clients, err := s.queries.SearchClients(c, pgdb.SearchClientsParams{
+		Name:  query,
+		Limit: 50,
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error searching clients"})
+		return
+	}
+
+	c.JSON(200, clients)
 }
