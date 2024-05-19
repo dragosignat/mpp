@@ -15,7 +15,7 @@ type Clients struct {
 	Phone          pgtype.Text      `json:"phone"`
 	Address        pgtype.Text      `json:"address"`
 	TotalPurchases pgtype.Int4      `json:"total_purchases"`
-	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	IsBusiness     pgtype.Bool      `json:"is_business"`
 	LastPurchase   pgtype.Timestamp `json:"last_purchase"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`

@@ -70,12 +70,12 @@ function ClientAddForm() {
         // Form the client object
         const client: ClientCreate = {
             // clientId: clientId.toString(),
-            clientName: values.clientName,
-            clientAddress: values.clientAddress,
-            clientPhone: values.clientPhone,
-            clientEmail: values.clientEmail,
-            clientTotalPurchases: values.clientTotalPurchases,
-            clientIsBusiness: values.clientIsBusiness,
+            name: values.clientName,
+            address: values.clientAddress,
+            phone: values.clientPhone,
+            email: values.clientEmail,
+            total_purchases: values.clientTotalPurchases,
+            is_business: values.clientIsBusiness,
         };
 
         // Dispatch the action to add the client to the store

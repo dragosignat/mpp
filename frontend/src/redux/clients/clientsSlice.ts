@@ -1,16 +1,20 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {Client, ClientCreate} from '@/types/Client';
+import {Client, ClientCreate, ClientUpdate} from '@/types/Client';
 import axios from 'axios';
 import {API_URL} from '@/config/apiConfig';
 
 export interface ClientsState {
     clients: Client[];
+    currentPage?: number;
+    itemsPerPage?: number;
     loading?: boolean;
     error: string;
 }
 
 const initialState: ClientsState = {
     clients: [],
+    currentPage: 0,
+    itemsPerPage: 100,
     loading: false,
     error: '',
 };
@@ -41,7 +45,7 @@ export const clientSlice = createSlice({
             })
             .addCase(removeClient.fulfilled, (state, action) => {
                 state.clients = state.clients.filter(
-                    (client) => client.clientId !== action.payload,
+                    (client) => client.id !== action.payload,
                 );
             })
             .addCase(removeClient.rejected, (state) => {
@@ -49,7 +53,7 @@ export const clientSlice = createSlice({
             })
             .addCase(updateClient.fulfilled, (state, action) => {
                 const index = state.clients.findIndex(
-                    (client) => client.clientId === action.payload.clientId,
+                    (client) => client.id === action.payload.clientId,
                 );
                 if (index !== -1) {
                     state.clients[index] = action.payload;
@@ -69,28 +73,53 @@ export const loadClients = createAsyncThunk('clients/loadClients', async () => {
 export const addClient = createAsyncThunk(
     'clients/addClient',
     async (client: ClientCreate) => {
-        const {data} = await axios.post(`${API_URL}/clients`, client);
-        return data;
+        try {
+            const {data} = await axios.post(`${API_URL}/clients`, client);
+            return data;
+        } catch (error) {
+            const url = `${API_URL}/clients`;
+            const method = 'POST';
+            const body = client;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return client;
+        }
     },
 );
 
 export const removeClient = createAsyncThunk(
     'clients/deleteClient',
     async (clientId: string) => {
-        await axios.delete(`${API_URL}/clients/${clientId}`);
-        return clientId;
+        try {
+            await axios.delete(`${API_URL}/clients/${clientId}`);
+            return clientId;
+        } catch (error) {
+            const url = `${API_URL}/clients/${clientId}`;
+            const method = 'DELETE';
+            const body = clientId;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return clientId;
+        }
     },
 );
 
 export const updateClient = createAsyncThunk(
     'clients/updateClient',
-    async (client: Client) => {
-        const {data} = await axios.put(
-            `${API_URL}/clients/${client.clientId}`,
-            client,
-        );
-        return data;
-    },
+    async (client: ClientUpdate) => {
+        try {
+            const {data} = await axios.put(
+                `${API_URL}/clients/${client.id}`,
+                client,
+            );
+            return data;
+        } catch (error) {
+            const url = `${API_URL}/clients/${client.id}`;
+            const method = 'PUT';
+            const body = client;
+            localStorage.setItem(url, JSON.stringify({method, body}));
+            return client;
+        }
+
+        },
 );
 
 export const selectClients = (state: {clients: ClientsState}) =>

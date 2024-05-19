@@ -13,14 +13,14 @@ import (
 
 const createClient = `-- name: CreateClient :one
 INSERT INTO clients
-    (name, email, phone, is_bussiness, address, total_purchases)
+    (name, email, phone, is_business, address, total_purchases)
 VALUES
     ($1, $2, $3, $4, $5, $6)
 RETURNING id,
 name,
 email,
 phone,
-is_bussiness,
+is_business,
 total_purchases,
 address
 `
@@ -29,7 +29,7 @@ type CreateClientParams struct {
 	Name           string      `json:"name"`
 	Email          pgtype.Text `json:"email"`
 	Phone          pgtype.Text `json:"phone"`
-	IsBussiness    pgtype.Bool `json:"is_bussiness"`
+	IsBusiness     pgtype.Bool `json:"is_business"`
 	Address        pgtype.Text `json:"address"`
 	TotalPurchases pgtype.Int4 `json:"total_purchases"`
 }
@@ -39,7 +39,7 @@ type CreateClientRow struct {
 	Name           string      `json:"name"`
 	Email          pgtype.Text `json:"email"`
 	Phone          pgtype.Text `json:"phone"`
-	IsBussiness    pgtype.Bool `json:"is_bussiness"`
+	IsBusiness     pgtype.Bool `json:"is_business"`
 	TotalPurchases pgtype.Int4 `json:"total_purchases"`
 	Address        pgtype.Text `json:"address"`
 }
@@ -49,7 +49,7 @@ func (q *Queries) CreateClient(ctx context.Context, arg CreateClientParams) (Cre
 		arg.Name,
 		arg.Email,
 		arg.Phone,
-		arg.IsBussiness,
+		arg.IsBusiness,
 		arg.Address,
 		arg.TotalPurchases,
 	)
@@ -59,7 +59,7 @@ func (q *Queries) CreateClient(ctx context.Context, arg CreateClientParams) (Cre
 		&i.Name,
 		&i.Email,
 		&i.Phone,
-		&i.IsBussiness,
+		&i.IsBusiness,
 		&i.TotalPurchases,
 		&i.Address,
 	)
@@ -84,7 +84,7 @@ SELECT
     name,
     email,
     phone,
-    is_bussiness,
+    is_business,
     total_purchases,
     address,
     last_purchase
@@ -101,7 +101,7 @@ type GetClientByIDRow struct {
 	Name           string           `json:"name"`
 	Email          pgtype.Text      `json:"email"`
 	Phone          pgtype.Text      `json:"phone"`
-	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	IsBusiness     pgtype.Bool      `json:"is_business"`
 	TotalPurchases pgtype.Int4      `json:"total_purchases"`
 	Address        pgtype.Text      `json:"address"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
@@ -116,7 +116,7 @@ func (q *Queries) GetClientByID(ctx context.Context, id pgtype.UUID) (GetClientB
 		&i.Name,
 		&i.Email,
 		&i.Phone,
-		&i.IsBussiness,
+		&i.IsBusiness,
 		&i.TotalPurchases,
 		&i.Address,
 		&i.CreatedAt,
@@ -131,7 +131,7 @@ SELECT
     name,
     email,
     phone,
-    is_bussiness,
+    is_business,
     total_purchases,
     address,
     created_at,
@@ -145,7 +145,7 @@ type GetClientsRow struct {
 	Name           string           `json:"name"`
 	Email          pgtype.Text      `json:"email"`
 	Phone          pgtype.Text      `json:"phone"`
-	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	IsBusiness     pgtype.Bool      `json:"is_business"`
 	TotalPurchases pgtype.Int4      `json:"total_purchases"`
 	Address        pgtype.Text      `json:"address"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
@@ -166,12 +166,231 @@ func (q *Queries) GetClients(ctx context.Context) ([]GetClientsRow, error) {
 			&i.Name,
 			&i.Email,
 			&i.Phone,
-			&i.IsBussiness,
+			&i.IsBusiness,
 			&i.TotalPurchases,
 			&i.Address,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getClientsWithOutgoingInvoicesAmount = `-- name: GetClientsWithOutgoingInvoicesAmount :many
+SELECT
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at,
+    COALESCE(SUM(i.amount), 0) as total_outgoing_invoices
+FROM
+    clients c
+LEFT JOIN
+    invoices i
+ON
+    c.id = i.client_id
+GROUP BY
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at
+ORDER BY
+    c.id
+LIMIT
+    $1
+OFFSET
+    $2
+`
+
+type GetClientsWithOutgoingInvoicesAmountParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type GetClientsWithOutgoingInvoicesAmountRow struct {
+	ID                    pgtype.UUID      `json:"id"`
+	Name                  string           `json:"name"`
+	Email                 pgtype.Text      `json:"email"`
+	Phone                 pgtype.Text      `json:"phone"`
+	IsBusiness            pgtype.Bool      `json:"is_business"`
+	TotalPurchases        pgtype.Int4      `json:"total_purchases"`
+	Address               pgtype.Text      `json:"address"`
+	CreatedAt             pgtype.Timestamp `json:"created_at"`
+	UpdatedAt             pgtype.Timestamp `json:"updated_at"`
+	TotalOutgoingInvoices interface{}      `json:"total_outgoing_invoices"`
+}
+
+func (q *Queries) GetClientsWithOutgoingInvoicesAmount(ctx context.Context, arg GetClientsWithOutgoingInvoicesAmountParams) ([]GetClientsWithOutgoingInvoicesAmountRow, error) {
+	rows, err := q.db.Query(ctx, getClientsWithOutgoingInvoicesAmount, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetClientsWithOutgoingInvoicesAmountRow
+	for rows.Next() {
+		var i GetClientsWithOutgoingInvoicesAmountRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Phone,
+			&i.IsBusiness,
+			&i.TotalPurchases,
+			&i.Address,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.TotalOutgoingInvoices,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getClientsWithOutgoingInvoicesAmountFull = `-- name: GetClientsWithOutgoingInvoicesAmountFull :many
+SELECT
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at,
+    COALESCE(SUM(i.amount), 0) as total_outgoing_invoices
+FROM
+    clients c
+LEFT JOIN
+    invoices i
+ON
+    c.id = i.client_id
+GROUP BY
+    c.id,
+    c.name,
+    c.email,
+    c.phone,
+    c.is_business,
+    c.total_purchases,
+    c.address,
+    c.created_at,
+    c.updated_at
+ORDER BY
+    c.id
+`
+
+type GetClientsWithOutgoingInvoicesAmountFullRow struct {
+	ID                    pgtype.UUID      `json:"id"`
+	Name                  string           `json:"name"`
+	Email                 pgtype.Text      `json:"email"`
+	Phone                 pgtype.Text      `json:"phone"`
+	IsBusiness            pgtype.Bool      `json:"is_business"`
+	TotalPurchases        pgtype.Int4      `json:"total_purchases"`
+	Address               pgtype.Text      `json:"address"`
+	CreatedAt             pgtype.Timestamp `json:"created_at"`
+	UpdatedAt             pgtype.Timestamp `json:"updated_at"`
+	TotalOutgoingInvoices interface{}      `json:"total_outgoing_invoices"`
+}
+
+func (q *Queries) GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error) {
+	rows, err := q.db.Query(ctx, getClientsWithOutgoingInvoicesAmountFull)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetClientsWithOutgoingInvoicesAmountFullRow
+	for rows.Next() {
+		var i GetClientsWithOutgoingInvoicesAmountFullRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Phone,
+			&i.IsBusiness,
+			&i.TotalPurchases,
+			&i.Address,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.TotalOutgoingInvoices,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTotalNumberOfClients = `-- name: GetTotalNumberOfClients :one
+SELECT
+    COUNT(*)
+FROM
+    clients
+`
+
+func (q *Queries) GetTotalNumberOfClients(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getTotalNumberOfClients)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const searchClients = `-- name: SearchClients :many
+SELECT
+    id,
+    name
+FROM 
+    clients
+WHERE
+    name ILIKE $1
+ORDER BY
+    name
+LIMIT
+    $2
+`
+
+type SearchClientsParams struct {
+	Name  string `json:"name"`
+	Limit int32  `json:"limit"`
+}
+
+type SearchClientsRow struct {
+	ID   pgtype.UUID `json:"id"`
+	Name string      `json:"name"`
+}
+
+func (q *Queries) SearchClients(ctx context.Context, arg SearchClientsParams) ([]SearchClientsRow, error) {
+	rows, err := q.db.Query(ctx, searchClients, arg.Name, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchClientsRow
+	for rows.Next() {
+		var i SearchClientsRow
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -189,7 +408,7 @@ SET
     name = $1,
     email = $2,
     phone = $3,
-    is_bussiness = $4,
+    is_business = $4,
     last_purchase = $5,
     address = $6,
     total_purchases = $7,
@@ -202,7 +421,7 @@ type UpdateClientParams struct {
 	Name           string           `json:"name"`
 	Email          pgtype.Text      `json:"email"`
 	Phone          pgtype.Text      `json:"phone"`
-	IsBussiness    pgtype.Bool      `json:"is_bussiness"`
+	IsBusiness     pgtype.Bool      `json:"is_business"`
 	LastPurchase   pgtype.Timestamp `json:"last_purchase"`
 	Address        pgtype.Text      `json:"address"`
 	TotalPurchases pgtype.Int4      `json:"total_purchases"`
@@ -214,7 +433,7 @@ func (q *Queries) UpdateClient(ctx context.Context, arg UpdateClientParams) erro
 		arg.Name,
 		arg.Email,
 		arg.Phone,
-		arg.IsBussiness,
+		arg.IsBusiness,
 		arg.LastPurchase,
 		arg.Address,
 		arg.TotalPurchases,

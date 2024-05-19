@@ -15,18 +15,19 @@ RETURNING id,
 
 -- name: GetInvoices :many
 SELECT
-    id,
-    client_id,
-    amount,
-    date_of_issue,
-    due_date,
-    description,
-    is_paid,
-    created_at,
-    updated_at
+    i.id as id,
+    c.name as client_id,
+    i.amount,
+    i.date_of_issue,
+    i.due_date,
+    i.description,
+    i.is_paid,
+    i.created_at,
+    i.updated_at
 FROM
-    invoices;
-
+    invoices i
+JOIN clients c ON i.client_id = c.id;
+    
 -- name: GetInvoiceByID :one
 SELECT
     id,

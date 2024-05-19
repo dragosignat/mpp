@@ -130,22 +130,23 @@ func (q *Queries) GetInvoiceByID(ctx context.Context, id pgtype.UUID) (GetInvoic
 
 const getInvoices = `-- name: GetInvoices :many
 SELECT
-    id,
-    client_id,
-    amount,
-    date_of_issue,
-    due_date,
-    description,
-    is_paid,
-    created_at,
-    updated_at
+    i.id as id,
+    c.name as client_id,
+    i.amount,
+    i.date_of_issue,
+    i.due_date,
+    i.description,
+    i.is_paid,
+    i.created_at,
+    i.updated_at
 FROM
-    invoices
+    invoices i
+JOIN clients c ON i.client_id = c.id
 `
 
 type GetInvoicesRow struct {
 	ID          pgtype.UUID      `json:"id"`
-	ClientID    pgtype.UUID      `json:"client_id"`
+	ClientID    string           `json:"client_id"`
 	Amount      pgtype.Int4      `json:"amount"`
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
