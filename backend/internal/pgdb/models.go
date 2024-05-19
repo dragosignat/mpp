@@ -19,6 +19,7 @@ type Clients struct {
 	LastPurchase   pgtype.Timestamp `json:"last_purchase"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
+	OwnerID        pgtype.Int4      `json:"owner_id"`
 }
 
 type Invoices struct {
@@ -30,5 +31,16 @@ type Invoices struct {
 	Description pgtype.Text      `json:"description"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	OwnerID     pgtype.Int4      `json:"owner_id"`
 	IsPaid      pgtype.Bool      `json:"is_paid"`
+}
+
+type Users struct {
+	ID        int32            `json:"id"`
+	Username  string           `json:"username"`
+	Email     string           `json:"email"`
+	Password  string           `json:"password"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	IsActive  bool             `json:"is_active"`
 }
