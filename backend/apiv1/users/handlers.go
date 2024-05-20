@@ -96,9 +96,9 @@ func (s *Service) login(c *gin.Context) {
 
 func (s *Service) me(c *gin.Context) {
 
-	userID := c.MustGet("userID").(uint)
+	userID := c.MustGet("userID").(int32)
 
-	u, err := s.queries.GetUserByID(c, int32(userID))
+	u, err := s.queries.GetUserByID(c, userID)
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error getting user"})
 		log.Println(err)
