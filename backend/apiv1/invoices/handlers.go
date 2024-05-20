@@ -12,7 +12,12 @@ import (
 
 func (s *Service) getInvoices(c *gin.Context) {
 
-	invoices, err := s.queries.GetInvoices(c)
+	userID := c.MustGet("userID").(int32)
+
+	invoices, err := s.queries.GetInvoices(c, pgtype.Int4{
+		Int32: userID,
+		Valid: true,
+	})
 
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching invoices"})
@@ -30,6 +35,7 @@ func (s *Service) getInvoices(c *gin.Context) {
 
 func (s *Service) getInvoice(c *gin.Context) {
 
+	userID := c.MustGet("userID").(int32)
 	invoiceId := c.Param("id")
 
 	var uuid pgtype.UUID
@@ -40,7 +46,10 @@ func (s *Service) getInvoice(c *gin.Context) {
 		return
 	}
 
-	invoice, err := s.queries.GetInvoiceByID(c, uuid)
+	invoice, err := s.queries.GetInvoiceByID(c, pgdb.GetInvoiceByIDParams{
+		ID:      uuid,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
 
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching invoice"})
@@ -53,6 +62,7 @@ func (s *Service) getInvoice(c *gin.Context) {
 
 func (s *Service) getInvoicesByClient(c *gin.Context) {
 
+	userID := c.MustGet("userID").(int32)
 	clientId := c.Param("id")
 
 	var uuid pgtype.UUID
@@ -63,7 +73,10 @@ func (s *Service) getInvoicesByClient(c *gin.Context) {
 		return
 	}
 
-	invoices, err := s.queries.GetInvoicesByClientID(c, uuid)
+	invoices, err := s.queries.GetInvoicesByClientID(c, pgdb.GetInvoicesByClientIDParams{
+		ClientID: uuid,
+		OwnerID:  pgtype.Int4{Int32: userID, Valid: true},
+	})
 
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching invoices"})
@@ -102,6 +115,9 @@ func (s *Service) deleteInvoice(c *gin.Context) {
 }
 
 func (s *Service) createInvoice(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
+
 	var invoice CreateInvoiceRequest
 	err := c.ShouldBindJSON(&invoice)
 
@@ -118,7 +134,10 @@ func (s *Service) createInvoice(c *gin.Context) {
 		return
 	}
 
-	_, err = s.queries.GetClientByID(c, clientUUID)
+	_, err = s.queries.GetClientByID(c, pgdb.GetClientByIDParams{
+		ID:      clientUUID,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
 	if err != nil {
 		c.JSON(404, gin.H{"message": "Client not found"})
 		return
@@ -156,6 +175,7 @@ func (s *Service) createInvoice(c *gin.Context) {
 		},
 		Amount:      pgtype.Int4{Int32: int32(invoice.Amount), Valid: true},
 		Description: pgtype.Text{String: invoice.Description, Valid: true},
+		OwnerID:     pgtype.Int4{Int32: userID, Valid: true},
 	})
 
 	if err != nil {
@@ -168,6 +188,7 @@ func (s *Service) createInvoice(c *gin.Context) {
 
 func (s *Service) updateInvoice(c *gin.Context) {
 
+	userID := c.MustGet("userID").(int32)
 	var invoice UpdateInvoiceRequest
 	err := c.ShouldBindJSON(&invoice)
 
@@ -184,7 +205,10 @@ func (s *Service) updateInvoice(c *gin.Context) {
 		return
 	}
 
-	_, err = s.queries.GetInvoiceByID(c, invoiceUUID)
+	_, err = s.queries.GetInvoiceByID(c, pgdb.GetInvoiceByIDParams{
+		ID:      invoiceUUID,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
 	if err != nil {
 		c.JSON(404, gin.H{"message": "Invoice not found"})
 		return
@@ -197,7 +221,10 @@ func (s *Service) updateInvoice(c *gin.Context) {
 		return
 	}
 
-	_, err = s.queries.GetClientByID(c, clientUUID)
+	_, err = s.queries.GetClientByID(c, pgdb.GetClientByIDParams{
+		ID:      clientUUID,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
 	if err != nil {
 		c.JSON(404, gin.H{"message": "Client not found"})
 		return

@@ -24,8 +24,21 @@ export function ClientSearch({ selectedResult, onSelectResult }: SearchProps) {
     if (searchQuery.trim()) {
       setLoading(true);
       setError(null);
-      fetch(`${API_URL}/clients/search?query=${searchQuery}`)
-        .then(response => response.json())
+      
+      const token = localStorage.getItem('token');
+      
+      fetch(`${API_URL}/clients/search?query=${searchQuery}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
           setClients(data || []);
           setLoading(false);
@@ -76,6 +89,6 @@ function SearchResults({ query, clients, loading, error, selectedResult, onSelec
           {name}
         </CommandItem>
       ))}
-    </CommandList> 
+    </CommandList>
   );
 }

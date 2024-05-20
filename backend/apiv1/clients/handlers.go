@@ -3,7 +3,6 @@ package clients
 import (
 	"log"
 	"openinvoice-api/internal/pgdb"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -11,24 +10,12 @@ import (
 
 func (s *Service) getClients(c *gin.Context) {
 
-	start, err := strconv.Atoi(c.DefaultQuery("start", "0"))
-	if err != nil {
-		c.JSON(400, gin.H{"message": "Invalid start parameter"})
-		return
-	}
+	userID := c.MustGet("userID").(int32)
 
-	limit, err := strconv.Atoi(c.DefaultQuery("limit", "100"))
-	if err != nil {
-		c.JSON(400, gin.H{"message": "Invalid limit parameter"})
-		return
-	}
-
-	clients, err := s.queries.GetClientsWithOutgoingInvoicesAmount(c, pgdb.GetClientsWithOutgoingInvoicesAmountParams{
-		Offset: int32(start),
-		Limit:  int32(limit),
+	clients, err := s.queries.GetClientsWithOutgoingInvoicesAmountFull(c, pgtype.Int4{
+		Int32: userID,
+		Valid: true,
 	})
-
-	// clients, err := s.queries.GetClientsWithOutgoingInvoicesAmountFull(c)
 
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching clients"})
@@ -47,6 +34,8 @@ func (s *Service) getClients(c *gin.Context) {
 
 func (s *Service) getClient(c *gin.Context) {
 
+	userID := c.MustGet("userID").(int32)
+
 	clientId := c.Param("id")
 
 	var uuid pgtype.UUID
@@ -57,7 +46,10 @@ func (s *Service) getClient(c *gin.Context) {
 		return
 	}
 
-	client, err := s.queries.GetClientByID(c, uuid)
+	client, err := s.queries.GetClientByID(c, pgdb.GetClientByIDParams{
+		ID:      uuid,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
 
 	if err != nil {
 		c.JSON(404, gin.H{"message": "Client not found"})
@@ -68,6 +60,8 @@ func (s *Service) getClient(c *gin.Context) {
 }
 
 func (s *Service) deleteClient(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
 	clientId := c.Param("id")
 
 	var uuid pgtype.UUID
@@ -78,7 +72,11 @@ func (s *Service) deleteClient(c *gin.Context) {
 		return
 	}
 
-	_, err = s.queries.GetClientByID(c, uuid)
+	_, err = s.queries.GetClientByID(c, pgdb.GetClientByIDParams{
+		ID:      uuid,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
+
 	if err != nil {
 		c.JSON(404, gin.H{"message": "Client not found"})
 		return
@@ -96,6 +94,8 @@ func (s *Service) deleteClient(c *gin.Context) {
 
 func (s *Service) createClient(c *gin.Context) {
 
+	userID := c.MustGet("userID").(int32)
+
 	var client ClientsCreate
 	err := c.ShouldBindJSON(&client)
 
@@ -111,6 +111,7 @@ func (s *Service) createClient(c *gin.Context) {
 		IsBusiness:     pgtype.Bool{Bool: *client.IsBusiness, Valid: true},
 		Address:        pgtype.Text{String: client.Address, Valid: true},
 		TotalPurchases: pgtype.Int4{Int32: int32(client.TotalPurchases), Valid: true},
+		OwnerID:        pgtype.Int4{Int32: userID, Valid: true},
 	})
 
 	if err != nil {
@@ -122,6 +123,8 @@ func (s *Service) createClient(c *gin.Context) {
 }
 
 func (s *Service) updateClient(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
 
 	clientId := c.Param("id")
 
@@ -156,7 +159,10 @@ func (s *Service) updateClient(c *gin.Context) {
 		return
 	}
 
-	updatedClient, err := s.queries.GetClientByID(c, uuid_client)
+	updatedClient, err := s.queries.GetClientByID(c, pgdb.GetClientByIDParams{
+		ID:      uuid_client,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
+	})
 	if err != nil {
 		c.JSON(404, gin.H{"message": "Client not found"})
 		return
@@ -188,7 +194,12 @@ func (s *Service) generateFake(c *gin.Context) {
 
 func (s *Service) getTotalClients(c *gin.Context) {
 
-	totalClients, err := s.queries.GetTotalNumberOfClients(c)
+	userID := c.MustGet("userID").(int32)
+
+	totalClients, err := s.queries.GetTotalNumberOfClients(c, pgtype.Int4{
+		Int32: userID,
+		Valid: true,
+	})
 
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Error fetching total clients"})
@@ -199,6 +210,7 @@ func (s *Service) getTotalClients(c *gin.Context) {
 }
 
 func (s *Service) searchClients(c *gin.Context) {
+	userID := c.MustGet("userID").(int32)
 
 	query := c.Query("query")
 
@@ -217,8 +229,9 @@ func (s *Service) searchClients(c *gin.Context) {
 	query = "%" + query + "%"
 
 	clients, err := s.queries.SearchClients(c, pgdb.SearchClientsParams{
-		Name:  query,
-		Limit: 50,
+		Name:    query,
+		Limit:   50,
+		OwnerID: pgtype.Int4{Int32: userID, Valid: true},
 	})
 
 	if err != nil {

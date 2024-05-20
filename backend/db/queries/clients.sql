@@ -1,8 +1,8 @@
 -- name: CreateClient :one
 INSERT INTO clients
-    (name, email, phone, is_business, address, total_purchases)
+    (name, email, phone, is_business, address, total_purchases, owner_id)
 VALUES
-    ($1, $2, $3, $4, $5, $6)
+    ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id,
 name,
 email,
@@ -23,7 +23,9 @@ SELECT
     created_at,
     updated_at
 FROM
-    clients;
+    clients
+WHERE 
+    owner_id = $1;
 
 -- name: GetClientByID :one
 SELECT
@@ -40,7 +42,9 @@ SELECT
 FROM
     clients
 WHERE
-    id = $1;
+    id = $1
+    AND
+    owner_id = $2;
 
 -- name: UpdateClient :exec
 UPDATE
@@ -56,6 +60,7 @@ SET
     updated_at = NOW() 
 WHERE
     id = $8;
+
 
 -- name: DeleteClient :exec
 DELETE FROM
@@ -117,6 +122,8 @@ LEFT JOIN
     invoices i
 ON
     c.id = i.client_id
+WHERE
+    c.owner_id = $1
 GROUP BY
     c.id,
     c.name,
@@ -134,7 +141,9 @@ ORDER BY
 SELECT
     COUNT(*)
 FROM
-    clients;
+    clients
+WHERE
+    owner_id = $1;
     
 -- name: SearchClients :many
 SELECT
@@ -144,7 +153,9 @@ FROM
     clients
 WHERE
     name ILIKE $1
+    AND
+    owner_id = $2
 ORDER BY
     name
 LIMIT
-    $2;
+    $3;

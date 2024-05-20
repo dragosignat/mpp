@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {Invoice, InvoiceCreate, InvoiceUpdate} from '@/types/Invoices';
 import axios from 'axios';
 import {API_URL} from '@/config/apiConfig';
+import axiosInstance from '@/config/axiosConfig';
 
 export interface InvoiceState {
     invoices: Invoice[];
@@ -75,7 +76,7 @@ export const invoiceSlice = createSlice({
 export const loadInvoices = createAsyncThunk(
     'invoices/loadInvoices',
     async () => {
-        const {data} = await axios.get(`${API_URL}/invoices`);
+        const {data} = await axiosInstance.get(`/invoices`);
         return data;
     },
 );
@@ -83,8 +84,8 @@ export const loadInvoices = createAsyncThunk(
 export const loadInvoicesByClient = createAsyncThunk(
     'invoices/loadInvoicesByClient',
     async (clientId: string) => {
-        const {data} = await axios.get(
-            `${API_URL}/invoices?clientId=${clientId}`,
+        const {data} = await axiosInstance.get(
+            `/invoices?clientId=${clientId}`,
         );
         return data;
     },
@@ -94,10 +95,10 @@ export const addInvoice = createAsyncThunk(
     'invoices/addinvoice',
     async (invoice: InvoiceCreate) => {
         try {
-            const {data} = await axios.post(`${API_URL}/invoices`, invoice);
+            const {data} = await axiosInstance.post(`/invoices`, invoice);
             return data;
         } catch (error) {
-            const url = `${API_URL}/invoices`;
+            const url = `/invoices`;
             const method = 'POST';
             const body = invoice;
             localStorage.setItem(url, JSON.stringify({method, body}));
@@ -110,11 +111,11 @@ export const removeInvoice = createAsyncThunk(
     'invoices/deleteinvoice',
     async (id: string) => {
         try {
-            await axios.delete(`${API_URL}/invoices/${id}`);
+            await axiosInstance.delete(`/invoices/${id}`);
         }
         catch (error) {
             // Add to local storage to retry later
-            const url = `${API_URL}/invoices/${id}`;
+            const url = `/invoices/${id}`;
             const method = 'DELETE';
             const body = null;
             localStorage.setItem(url, JSON.stringify({method, body}));
@@ -127,13 +128,13 @@ export const updateInvoice = createAsyncThunk(
     'invoices/updateinvoice',
     async (invoice: InvoiceUpdate) => {
         try {
-        const {data} = await axios.put(
-            `${API_URL}/invoices/${invoice.id}`,
+        const {data} = await axiosInstance.put(
+            `/invoices/${invoice.id}`,
             invoice,
         );
         return data;
         } catch (error) {
-            const url = `${API_URL}/invoices/${invoice.id}`;
+            const url = `/invoices/${invoice.id}`;
             const method = 'PUT';
             const body = invoice;
             localStorage.setItem(url, JSON.stringify({method, body}));

@@ -13,9 +13,9 @@ import (
 
 const createClient = `-- name: CreateClient :one
 INSERT INTO clients
-    (name, email, phone, is_business, address, total_purchases)
+    (name, email, phone, is_business, address, total_purchases, owner_id)
 VALUES
-    ($1, $2, $3, $4, $5, $6)
+    ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id,
 name,
 email,
@@ -32,6 +32,7 @@ type CreateClientParams struct {
 	IsBusiness     pgtype.Bool `json:"is_business"`
 	Address        pgtype.Text `json:"address"`
 	TotalPurchases pgtype.Int4 `json:"total_purchases"`
+	OwnerID        pgtype.Int4 `json:"owner_id"`
 }
 
 type CreateClientRow struct {
@@ -52,6 +53,7 @@ func (q *Queries) CreateClient(ctx context.Context, arg CreateClientParams) (Cre
 		arg.IsBusiness,
 		arg.Address,
 		arg.TotalPurchases,
+		arg.OwnerID,
 	)
 	var i CreateClientRow
 	err := row.Scan(
@@ -94,7 +96,14 @@ FROM
     clients
 WHERE
     id = $1
+    AND
+    owner_id = $2
 `
+
+type GetClientByIDParams struct {
+	ID      pgtype.UUID `json:"id"`
+	OwnerID pgtype.Int4 `json:"owner_id"`
+}
 
 type GetClientByIDRow struct {
 	ID             pgtype.UUID      `json:"id"`
@@ -108,8 +117,8 @@ type GetClientByIDRow struct {
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 }
 
-func (q *Queries) GetClientByID(ctx context.Context, id pgtype.UUID) (GetClientByIDRow, error) {
-	row := q.db.QueryRow(ctx, getClientByID, id)
+func (q *Queries) GetClientByID(ctx context.Context, arg GetClientByIDParams) (GetClientByIDRow, error) {
+	row := q.db.QueryRow(ctx, getClientByID, arg.ID, arg.OwnerID)
 	var i GetClientByIDRow
 	err := row.Scan(
 		&i.ID,
@@ -138,6 +147,8 @@ SELECT
     updated_at
 FROM
     clients
+WHERE 
+    owner_id = $1
 `
 
 type GetClientsRow struct {
@@ -152,8 +163,8 @@ type GetClientsRow struct {
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 }
 
-func (q *Queries) GetClients(ctx context.Context) ([]GetClientsRow, error) {
-	rows, err := q.db.Query(ctx, getClients)
+func (q *Queries) GetClients(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsRow, error) {
+	rows, err := q.db.Query(ctx, getClients, ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -285,6 +296,8 @@ LEFT JOIN
     invoices i
 ON
     c.id = i.client_id
+WHERE
+    c.owner_id = $1
 GROUP BY
     c.id,
     c.name,
@@ -312,8 +325,8 @@ type GetClientsWithOutgoingInvoicesAmountFullRow struct {
 	TotalOutgoingInvoices interface{}      `json:"total_outgoing_invoices"`
 }
 
-func (q *Queries) GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error) {
-	rows, err := q.db.Query(ctx, getClientsWithOutgoingInvoicesAmountFull)
+func (q *Queries) GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error) {
+	rows, err := q.db.Query(ctx, getClientsWithOutgoingInvoicesAmountFull, ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -348,10 +361,12 @@ SELECT
     COUNT(*)
 FROM
     clients
+WHERE
+    owner_id = $1
 `
 
-func (q *Queries) GetTotalNumberOfClients(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, getTotalNumberOfClients)
+func (q *Queries) GetTotalNumberOfClients(ctx context.Context, ownerID pgtype.Int4) (int64, error) {
+	row := q.db.QueryRow(ctx, getTotalNumberOfClients, ownerID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -365,15 +380,18 @@ FROM
     clients
 WHERE
     name ILIKE $1
+    AND
+    owner_id = $2
 ORDER BY
     name
 LIMIT
-    $2
+    $3
 `
 
 type SearchClientsParams struct {
-	Name  string `json:"name"`
-	Limit int32  `json:"limit"`
+	Name    string      `json:"name"`
+	OwnerID pgtype.Int4 `json:"owner_id"`
+	Limit   int32       `json:"limit"`
 }
 
 type SearchClientsRow struct {
@@ -382,7 +400,7 @@ type SearchClientsRow struct {
 }
 
 func (q *Queries) SearchClients(ctx context.Context, arg SearchClientsParams) ([]SearchClientsRow, error) {
-	rows, err := q.db.Query(ctx, searchClients, arg.Name, arg.Limit)
+	rows, err := q.db.Query(ctx, searchClients, arg.Name, arg.OwnerID, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

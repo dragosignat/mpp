@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {Client, ClientCreate, ClientUpdate} from '@/types/Client';
 import axios from 'axios';
 import {API_URL} from '@/config/apiConfig';
+import axiosInstance from '@/config/axiosConfig';
 
 export interface ClientsState {
     clients: Client[];
@@ -66,7 +67,7 @@ export const clientSlice = createSlice({
 });
 
 export const loadClients = createAsyncThunk('clients/loadClients', async () => {
-    const {data} = await axios.get(`${API_URL}/clients`);
+    const {data} = await axiosInstance.get(`/clients`);
     return data;
 });
 
@@ -74,10 +75,10 @@ export const addClient = createAsyncThunk(
     'clients/addClient',
     async (client: ClientCreate) => {
         try {
-            const {data} = await axios.post(`${API_URL}/clients`, client);
+            const {data} = await axiosInstance.post('/clients', client);
             return data;
         } catch (error) {
-            const url = `${API_URL}/clients`;
+            const url = `/clients`;
             const method = 'POST';
             const body = client;
             localStorage.setItem(url, JSON.stringify({method, body}));
@@ -90,10 +91,10 @@ export const removeClient = createAsyncThunk(
     'clients/deleteClient',
     async (clientId: string) => {
         try {
-            await axios.delete(`${API_URL}/clients/${clientId}`);
+            await axiosInstance.delete(`/clients/${clientId}`);
             return clientId;
         } catch (error) {
-            const url = `${API_URL}/clients/${clientId}`;
+            const url = `/clients/${clientId}`;
             const method = 'DELETE';
             const body = clientId;
             localStorage.setItem(url, JSON.stringify({method, body}));
@@ -106,13 +107,13 @@ export const updateClient = createAsyncThunk(
     'clients/updateClient',
     async (client: ClientUpdate) => {
         try {
-            const {data} = await axios.put(
-                `${API_URL}/clients/${client.id}`,
+            const {data} = await axiosInstance.put(
+                `/clients/${client.id}`,
                 client,
             );
             return data;
         } catch (error) {
-            const url = `${API_URL}/clients/${client.id}`;
+            const url = `/clients/${client.id}`;
             const method = 'PUT';
             const body = client;
             localStorage.setItem(url, JSON.stringify({method, body}));
