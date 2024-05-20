@@ -1,15 +1,26 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
-import {Outlet} from 'react-router-dom';
+import {Outlet, useNavigate} from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
 import {Toaster} from '@/components/ui/toaster';
 import {API_URL} from '@/config/apiConfig';
 import {useToast} from '@/components/ui/use-toast';
 import {useEffect} from 'react';
 import axios from 'axios';
+import useAuth from '@/hooks/auth';
+import axiosInstance from '@/config/axiosConfig';
 
 function Root() {
     const {toast} = useToast();
+
+    const isAuth = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isAuth) {
+          navigate('/login');
+        }
+      }, [isAuth, navigate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +33,7 @@ function Root() {
                     if (key && key.startsWith(API_URL)) {
                         const {method, body} = JSON.parse(localStorage.getItem(key) || '{}');
                         try {
-                            await axios(key, {method, data: body});
+                            await axiosInstance(key, {method, data: body});
                         } catch (error) {
                             // Handle API error here
                             toast({
@@ -49,6 +60,7 @@ function Root() {
         const intervalId = setInterval(fetchData, 5000);
         return () => clearInterval(intervalId);
     }, []);
+
 
     return (
         <html>

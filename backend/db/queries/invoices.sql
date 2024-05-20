@@ -1,8 +1,8 @@
 -- name: CreateInvoice :one
 INSERT INTO invoices
-    (client_id, amount, date_of_issue, due_date, description)
+    (client_id, amount, date_of_issue, due_date, description, owner_id)
 VALUES
-    ($1, $2, $3, $4, $5)
+    ($1, $2, $3, $4, $5, $6)
 RETURNING id,
     client_id,
     amount,
@@ -26,7 +26,9 @@ SELECT
     i.updated_at
 FROM
     invoices i
-JOIN clients c ON i.client_id = c.id;
+JOIN clients c ON i.client_id = c.id
+WHERE
+    i.owner_id = $1;
     
 -- name: GetInvoiceByID :one
 SELECT
@@ -42,7 +44,9 @@ SELECT
 FROM
     invoices
 WHERE
-    id = $1;
+    id = $1
+AND
+    owner_id = $2;
 
 -- name: GetInvoicesByClientID :many
 SELECT
@@ -58,7 +62,9 @@ SELECT
 FROM
     invoices
 WHERE
-    client_id = $1;
+    client_id = $1
+AND
+    owner_id = $2;
 
 -- name: UpdateInvoice :exec
 UPDATE

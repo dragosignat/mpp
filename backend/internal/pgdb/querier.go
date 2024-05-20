@@ -18,14 +18,14 @@ type Querier interface {
 	DeleteClient(ctx context.Context, id pgtype.UUID) error
 	DeleteInvoice(ctx context.Context, id pgtype.UUID) error
 	DeleteUser(ctx context.Context, id int32) error
-	GetClientByID(ctx context.Context, id pgtype.UUID) (GetClientByIDRow, error)
-	GetClients(ctx context.Context) ([]GetClientsRow, error)
+	GetClientByID(ctx context.Context, arg GetClientByIDParams) (GetClientByIDRow, error)
+	GetClients(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsRow, error)
 	GetClientsWithOutgoingInvoicesAmount(ctx context.Context, arg GetClientsWithOutgoingInvoicesAmountParams) ([]GetClientsWithOutgoingInvoicesAmountRow, error)
-	GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error)
-	GetInvoiceByID(ctx context.Context, id pgtype.UUID) (GetInvoiceByIDRow, error)
-	GetInvoices(ctx context.Context) ([]GetInvoicesRow, error)
-	GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]GetInvoicesByClientIDRow, error)
-	GetTotalNumberOfClients(ctx context.Context) (int64, error)
+	GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error)
+	GetInvoiceByID(ctx context.Context, arg GetInvoiceByIDParams) (GetInvoiceByIDRow, error)
+	GetInvoices(ctx context.Context, ownerID pgtype.Int4) ([]GetInvoicesRow, error)
+	GetInvoicesByClientID(ctx context.Context, arg GetInvoicesByClientIDParams) ([]GetInvoicesByClientIDRow, error)
+	GetTotalNumberOfClients(ctx context.Context, ownerID pgtype.Int4) (int64, error)
 	GetUserByEmail(ctx context.Context, email string) (Users, error)
 	GetUserByID(ctx context.Context, id int32) (Users, error)
 	GetUserByUsername(ctx context.Context, username string) (Users, error)

@@ -13,9 +13,9 @@ import (
 
 const createInvoice = `-- name: CreateInvoice :one
 INSERT INTO invoices
-    (client_id, amount, date_of_issue, due_date, description)
+    (client_id, amount, date_of_issue, due_date, description, owner_id)
 VALUES
-    ($1, $2, $3, $4, $5)
+    ($1, $2, $3, $4, $5, $6)
 RETURNING id,
     client_id,
     amount,
@@ -33,6 +33,7 @@ type CreateInvoiceParams struct {
 	DateOfIssue pgtype.Timestamp `json:"date_of_issue"`
 	DueDate     pgtype.Timestamp `json:"due_date"`
 	Description pgtype.Text      `json:"description"`
+	OwnerID     pgtype.Int4      `json:"owner_id"`
 }
 
 type CreateInvoiceRow struct {
@@ -54,6 +55,7 @@ func (q *Queries) CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (C
 		arg.DateOfIssue,
 		arg.DueDate,
 		arg.Description,
+		arg.OwnerID,
 	)
 	var i CreateInvoiceRow
 	err := row.Scan(
@@ -97,7 +99,14 @@ FROM
     invoices
 WHERE
     id = $1
+AND
+    owner_id = $2
 `
+
+type GetInvoiceByIDParams struct {
+	ID      pgtype.UUID `json:"id"`
+	OwnerID pgtype.Int4 `json:"owner_id"`
+}
 
 type GetInvoiceByIDRow struct {
 	ID          pgtype.UUID      `json:"id"`
@@ -111,8 +120,8 @@ type GetInvoiceByIDRow struct {
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
-func (q *Queries) GetInvoiceByID(ctx context.Context, id pgtype.UUID) (GetInvoiceByIDRow, error) {
-	row := q.db.QueryRow(ctx, getInvoiceByID, id)
+func (q *Queries) GetInvoiceByID(ctx context.Context, arg GetInvoiceByIDParams) (GetInvoiceByIDRow, error) {
+	row := q.db.QueryRow(ctx, getInvoiceByID, arg.ID, arg.OwnerID)
 	var i GetInvoiceByIDRow
 	err := row.Scan(
 		&i.ID,
@@ -142,6 +151,8 @@ SELECT
 FROM
     invoices i
 JOIN clients c ON i.client_id = c.id
+WHERE
+    i.owner_id = $1
 `
 
 type GetInvoicesRow struct {
@@ -156,8 +167,8 @@ type GetInvoicesRow struct {
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
-func (q *Queries) GetInvoices(ctx context.Context) ([]GetInvoicesRow, error) {
-	rows, err := q.db.Query(ctx, getInvoices)
+func (q *Queries) GetInvoices(ctx context.Context, ownerID pgtype.Int4) ([]GetInvoicesRow, error) {
+	rows, err := q.db.Query(ctx, getInvoices, ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +212,14 @@ FROM
     invoices
 WHERE
     client_id = $1
+AND
+    owner_id = $2
 `
+
+type GetInvoicesByClientIDParams struct {
+	ClientID pgtype.UUID `json:"client_id"`
+	OwnerID  pgtype.Int4 `json:"owner_id"`
+}
 
 type GetInvoicesByClientIDRow struct {
 	ID          pgtype.UUID      `json:"id"`
@@ -215,8 +233,8 @@ type GetInvoicesByClientIDRow struct {
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 }
 
-func (q *Queries) GetInvoicesByClientID(ctx context.Context, clientID pgtype.UUID) ([]GetInvoicesByClientIDRow, error) {
-	rows, err := q.db.Query(ctx, getInvoicesByClientID, clientID)
+func (q *Queries) GetInvoicesByClientID(ctx context.Context, arg GetInvoicesByClientIDParams) ([]GetInvoicesByClientIDRow, error) {
+	rows, err := q.db.Query(ctx, getInvoicesByClientID, arg.ClientID, arg.OwnerID)
 	if err != nil {
 		return nil, err
 	}

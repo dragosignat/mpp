@@ -2,12 +2,14 @@ import Homepage from '@/pages/Homepage';
 import ClientList from '@/pages/ClientList';
 import ClientAdd from '@/pages/ClientAdd';
 import ClientEdit from '@/pages/ClientEdit';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import {createBrowserRouter} from 'react-router-dom';
 import ErrorPage from '@/pages/ErrorPage';
 import Root from '@/layouts/Root';
 import Invoices from '@/pages/Invoices';
 import InvoicesAdd from '@/pages/InvoicesAdd';
 import InvoicesEdit from '@/pages/InvoicesEdit';
+import LoginPage from '@/pages/LoginPage';
+import Signup from '@/pages/SignupPage';
 
 const router = createBrowserRouter([
     {
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
             },
         ],
     },
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
+    {
+        path: '/signup',
+        element: <Signup />,
+    }
 ]);
 
 export default router;

@@ -68,7 +68,15 @@ func AuthMiddleware(queries *pgdb.Queries) gin.HandlerFunc {
 			return
 		}
 
-		c.Set("userID", uint(userID))
+		// Cast the float64 to int32
+		_, err = queries.GetUserByID(c, int32(userID))
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+			c.Abort()
+			return
+		}
+
+		c.Set("userID", int32(userID))
 		c.Next()
 	}
 }

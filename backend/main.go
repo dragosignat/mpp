@@ -22,7 +22,14 @@ func setupRouter(pgConn *pgxpool.Pool) *gin.Engine {
 
 	// Setup the router
 	r := gin.Default()
-	r.Use(cors.Default())
+	corsConfig := cors.Config{
+		AllowOrigins:     []string{"*"}, // Adjust this to your front-end URL
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}
+	r.Use(cors.New(corsConfig))
 
 	superGroup := r.Group("/apiv1")
 	{
