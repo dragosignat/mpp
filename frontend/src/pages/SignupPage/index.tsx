@@ -65,7 +65,7 @@ export function SignupPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -76,6 +76,7 @@ export function SignupPage() {
               <Input
                 id="password"
                 type="password"
+                placeholder='********'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

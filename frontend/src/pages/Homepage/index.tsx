@@ -31,8 +31,8 @@ function Homepage() {
 
     clients.map((client) => {
         clientsToPurchases.push({
-            name: client.clientName,
-            total: client.clientTotalPurchases,
+            name: client.name,
+            total: client.total_purchases,
         });
     });
 

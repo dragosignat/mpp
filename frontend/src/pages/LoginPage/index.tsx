@@ -54,7 +54,7 @@ export function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -65,6 +65,7 @@ export function LoginPage() {
               <Input
                 id="password"
                 type="password"
+                placeholder='********'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -89,7 +90,7 @@ export function LoginPage() {
         <div className="absolute top-4 right-4 text-3xl font-bold text-gray-800">
           OpenInvoice
         </div>
-        <p className="mb-4 text-center text-2xl text-gray-600 absolute bottom-10">
+        <p className="mb-4 text-center text-xl text-gray-600 absolute bottom-10">
           Get ready to manage your invoices with ease and simplicity
         </p>
         <div className="absolute inset-0 flex flex-col justify-center items-center space-y-4">
