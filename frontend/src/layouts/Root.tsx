@@ -18,9 +18,9 @@ function Root() {
 
     useEffect(() => {
         if (!isAuth) {
-          navigate('/login');
+            navigate('/login');
         }
-      }, [isAuth, navigate]);
+    }, [isAuth, navigate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,21 +31,23 @@ function Root() {
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key && key.startsWith(API_URL)) {
-                        const {method, body} = JSON.parse(localStorage.getItem(key) || '{}');
+                        const {method, body} = JSON.parse(
+                            localStorage.getItem(key) || '{}',
+                        );
                         try {
                             await axiosInstance(key, {method, data: body});
                         } catch (error) {
                             // Handle API error here
                             toast({
                                 title: 'API Error',
-                                description: 'Could not perform the backlogged request.',
+                                description:
+                                    'Could not perform the backlogged request.',
                                 variant: 'destructive',
                             });
                         }
                         localStorage.removeItem(key);
                     }
                 }
-
             } catch (error) {
                 // Handle API error here
                 toast({
@@ -60,7 +62,6 @@ function Root() {
         const intervalId = setInterval(fetchData, 5000);
         return () => clearInterval(intervalId);
     }, []);
-
 
     return (
         <html>

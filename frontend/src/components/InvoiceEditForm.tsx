@@ -105,9 +105,9 @@ function InvoiceEditForm({invoiceId}: {invoiceId: string | number}) {
 
     useEffect(() => {
         if (selectedClient) {
-        form.setValue("clientId", selectedClient.id);
+            form.setValue('clientId', selectedClient.id);
         }
-    }, [selectedClient, form]); 
+    }, [selectedClient, form]);
 
     return (
         <Form {...form}>
@@ -130,23 +130,23 @@ function InvoiceEditForm({invoiceId}: {invoiceId: string | number}) {
                                                     'text-muted-foreground',
                                             )}
                                         >
-                                            {
-                                                selectedClient?.name ||
-                                                'Search for a client'
-                                            }
+                                            {selectedClient?.name ||
+                                                'Search for a client'}
                                             <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent className='w-[200px] p-0'>
-                                    <ClientSearch selectedResult={selectedClient} onSelectResult={setSelectedClient} />
+                                    <ClientSearch
+                                        selectedResult={selectedClient}
+                                        onSelectResult={setSelectedClient}
+                                    />
                                 </PopoverContent>
                             </Popover>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-
 
                 <FormField
                     control={form.control}

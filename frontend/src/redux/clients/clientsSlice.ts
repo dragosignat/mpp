@@ -119,8 +119,7 @@ export const updateClient = createAsyncThunk(
             localStorage.setItem(url, JSON.stringify({method, body}));
             return client;
         }
-
-        },
+    },
 );
 
 export const selectClients = (state: {clients: ClientsState}) =>

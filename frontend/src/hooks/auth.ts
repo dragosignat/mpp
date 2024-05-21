@@ -1,26 +1,28 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        !!localStorage.getItem('token'),
+    );
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const token = localStorage.getItem('token');
-      setIsAuthenticated(!!token);
-    };
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const token = localStorage.getItem('token');
+            setIsAuthenticated(!!token);
+        };
 
-    // Listen for storage changes
-    window.addEventListener('storage', handleStorageChange);
+        // Listen for storage changes
+        window.addEventListener('storage', handleStorageChange);
 
-    // Check token on mount
-    handleStorageChange();
+        // Check token on mount
+        handleStorageChange();
 
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
 
-  return isAuthenticated;
+    return isAuthenticated;
 };
 
 export default useAuth;

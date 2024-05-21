@@ -44,7 +44,10 @@ export const ClientColumns: ColumnDef<Client>[] = [
     {
         accessorKey: 'total_outgoing_invoices',
         header: ({column}) => (
-            <DataTableColumnHeader column={column} title='Total Outgoing Invoices' />
+            <DataTableColumnHeader
+                column={column}
+                title='Total Outgoing Invoices'
+            />
         ),
         cell: ({row}) => {
             const amount = row.getValue('total_outgoing_invoices');

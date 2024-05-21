@@ -96,7 +96,7 @@ function InvoiceAddForm() {
 
     useEffect(() => {
         if (selectedClient) {
-        form.setValue("clientId", selectedClient.id);
+            form.setValue('clientId', selectedClient.id);
         }
     }, [selectedClient, form]);
 
@@ -121,16 +121,17 @@ function InvoiceAddForm() {
                                                     'text-muted-foreground',
                                             )}
                                         >
-                                            {
-                                                selectedClient?.name ||
-                                                'Search for a client'
-                                            }
+                                            {selectedClient?.name ||
+                                                'Search for a client'}
                                             <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent className='w-[200px] p-0'>
-                                    <ClientSearch selectedResult={selectedClient} onSelectResult={setSelectedClient} />
+                                    <ClientSearch
+                                        selectedResult={selectedClient}
+                                        onSelectResult={setSelectedClient}
+                                    />
                                 </PopoverContent>
                             </Popover>
                             <FormMessage />

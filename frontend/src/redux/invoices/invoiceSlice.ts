@@ -112,8 +112,7 @@ export const removeInvoice = createAsyncThunk(
     async (id: string) => {
         try {
             await axiosInstance.delete(`/invoices/${id}`);
-        }
-        catch (error) {
+        } catch (error) {
             // Add to local storage to retry later
             const url = `/invoices/${id}`;
             const method = 'DELETE';
@@ -128,11 +127,11 @@ export const updateInvoice = createAsyncThunk(
     'invoices/updateinvoice',
     async (invoice: InvoiceUpdate) => {
         try {
-        const {data} = await axiosInstance.put(
-            `/invoices/${invoice.id}`,
-            invoice,
-        );
-        return data;
+            const {data} = await axiosInstance.put(
+                `/invoices/${invoice.id}`,
+                invoice,
+            );
+            return data;
         } catch (error) {
             const url = `/invoices/${invoice.id}`;
             const method = 'PUT';

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuList,
 } from '@/components/ui/navigation-menu';
-import { Link } from 'react-router-dom';
-import { FaRegUserCircle } from 'react-icons/fa';
-import { API_URL } from '@/config/apiConfig';
-import { useNavigate } from 'react-router-dom';
-import { UserProfilePopup } from './UserProfilePopup';
+import {Link} from 'react-router-dom';
+import {FaRegUserCircle} from 'react-icons/fa';
+import {API_URL} from '@/config/apiConfig';
+import {useNavigate} from 'react-router-dom';
+import {UserProfilePopup} from './UserProfilePopup';
 
 function Navbar() {
     const [username, setUsername] = useState('');
@@ -21,7 +21,7 @@ function Navbar() {
                 const response = await fetch(`${API_URL}/u/me`, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
@@ -39,7 +39,6 @@ function Navbar() {
 
         fetchUser();
     }, [navigate]);
-
 
     return (
         <header className='border-b-[2px] top-0 z-40 w-full'>
