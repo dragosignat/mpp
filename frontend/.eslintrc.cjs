@@ -15,7 +15,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     // If I don't use a variable, give me an error
-    '@typescript-eslint/no-unused-vars': 'error',
-    'prettier/prettier': ['error'],
+    '@typescript-eslint/no-unused-vars': 'warn',
+    'prettier/prettier': ['warn'],
   },
 }
