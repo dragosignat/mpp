@@ -2,14 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {date, z} from 'zod';
-import {Check, ChevronsUpDown, Calendar as CalendarIcon} from 'lucide-react';
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-} from '@/components/ui/command';
+import {ChevronsUpDown, Calendar as CalendarIcon} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
     Form,
@@ -31,7 +24,6 @@ import {useToast} from '@/components/ui/use-toast';
 import {InvoiceCreate} from '@/types/Invoices';
 import {format} from 'date-fns';
 import {useNavigate} from 'react-router-dom';
-import {API_URL} from '@/config/apiConfig';
 import {ClientSearch} from '@/components/SearchClientCombobox';
 
 // This should match the Invoice type from the backend

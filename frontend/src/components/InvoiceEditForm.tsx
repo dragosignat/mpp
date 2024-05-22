@@ -7,19 +7,11 @@ import {Button} from '@/components/ui/button';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import {Input} from '@/components/ui/input';
 import {useToast} from '@/components/ui/use-toast';
 import {useDispatch, useSelector} from 'react-redux';
@@ -33,7 +25,6 @@ import {Calendar} from '@/components/ui/calendar';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
 import {InvoiceUpdate} from '@/types/Invoices';
-import {loadClients, selectClients} from '@/redux/clients/clientsSlice';
 import {useEffect, useState} from 'react';
 import {ClientSearch} from '@/components/SearchClientCombobox';
 

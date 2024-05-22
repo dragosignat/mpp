@@ -1,7 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {Client, ClientCreate, ClientUpdate} from '@/types/Client';
-import axios from 'axios';
-import {API_URL} from '@/config/apiConfig';
 import axiosInstance from '@/config/axiosConfig';
 
 export interface ClientsState {

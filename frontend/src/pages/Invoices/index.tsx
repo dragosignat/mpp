@@ -1,6 +1,5 @@
 import React from 'react';
 import {useEffect} from 'react';
-import {Invoice} from '@/types/Invoices';
 import {DataTable} from '@/components/InvoiceDataTable/InvoiceDataTable';
 import {InvoiceColumns} from '@/components/InvoiceDataTable/InvoiceDataTableColumns';
 import {useSelector, useDispatch} from 'react-redux';

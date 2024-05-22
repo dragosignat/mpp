@@ -1,7 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {Invoice, InvoiceCreate, InvoiceUpdate} from '@/types/Invoices';
-import axios from 'axios';
-import {API_URL} from '@/config/apiConfig';
 import axiosInstance from '@/config/axiosConfig';
 
 export interface InvoiceState {

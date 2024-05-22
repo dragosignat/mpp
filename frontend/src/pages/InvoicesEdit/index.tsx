@@ -3,7 +3,7 @@ import {Button} from '@/components/ui/button';
 import {Link} from 'react-router-dom';
 import {ArrowLeft} from 'lucide-react';
 import {useParams} from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {selectInvoices} from '@/redux/invoices/invoiceSlice';
 import InvoiceEditForm from '@/components/InvoiceEditForm';
 
