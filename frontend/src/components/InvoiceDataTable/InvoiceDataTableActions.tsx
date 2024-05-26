@@ -14,10 +14,10 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import {useToast} from '@/components/ui/use-toast';
-
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
 import {removeInvoice} from '@/redux/invoices/invoiceSlice';
+import {Invoice} from '@/types/Invoices';
 
 interface DataTableRowActionsProps<TData> {
     row: Row<TData>;
@@ -26,7 +26,9 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
     row,
 }: DataTableRowActionsProps<TData>) {
-    const invoiceId = row.original.id;
+    // Tell TypeScript that the row.original object is of type Invoice
+    const invoice = row.original as Invoice;
+    const invoiceId = invoice.id;
     const dispatch = useDispatch<AppDispatch>();
     const {toast} = useToast();
 

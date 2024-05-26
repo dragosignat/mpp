@@ -1,4 +1,3 @@
-import React from 'react';
 import {useParams} from 'react-router-dom';
 import {useSelector} from 'react-redux';
 import {selectClients} from '@/redux/clients/clientsSlice';
@@ -8,12 +7,12 @@ import {ArrowLeft} from 'lucide-react';
 import ClientEditForm from '@/components/ClientEditForm';
 
 const ClientEdit = () => {
-    const {clientId} = useParams();
+    const {clientId} = useParams<{clientId: string}>();
     // Load the client data from the server
     const clients = useSelector(selectClients);
     const client = clients.find((c) => c.id === clientId);
 
-    if (!client) {
+    if (!client || !clientId) {
         return <div>Loading...</div>;
     }
 

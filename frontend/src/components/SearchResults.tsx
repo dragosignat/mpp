@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {CommandItem, CommandList} from '@/components/ui/command';
 import {Check} from 'lucide-react';
 import {cn} from '@/lib/utils';

@@ -84,7 +84,7 @@ export function ClientSearch({selectedResult, onSelectResult}: SearchProps) {
     );
 }
 
-interface SearchResultsProps {
+export interface SearchResultsProps {
     query: string;
     clients: Client[];
     loading: boolean;

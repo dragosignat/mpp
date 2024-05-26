@@ -1,4 +1,3 @@
-import React from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
@@ -18,7 +17,6 @@ import {
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {useToast} from '@/components/ui/use-toast';
-import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
 import {selectClients, updateClient} from '@/redux/clients/clientsSlice';

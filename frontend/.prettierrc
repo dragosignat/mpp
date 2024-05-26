@@ -1,18 +1,11 @@
 {
-  "trailingComma": "all",
-  "jsxSingleQuote": true,
-  "tabWidth": 4,
-  "singleQuote": true,
-  "bracketSpacing": false,
-  "useTabs": false,
-  "endOfLine": "auto",
-  "arrowParens": "always",
-  "semi": true,
-  "max-line-length": [
-    true,
-    {
-      "limit": 140,
-      "ignore-pattern": "^import |^export {(.*?)}"
-    }
-  ]
+    "trailingComma": "all",
+    "jsxSingleQuote": true,
+    "tabWidth": 4,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "useTabs": false,
+    "endOfLine": "auto",
+    "arrowParens": "always",
+    "semi": true
 }

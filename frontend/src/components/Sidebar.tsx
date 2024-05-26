@@ -1,6 +1,5 @@
-import React from 'react';
 import {NavLink} from 'react-router-dom';
-import {Users, ShoppingCart, Settings, Home, ReceiptText} from 'lucide-react';
+import {Users, Settings, Home, ReceiptText} from 'lucide-react';
 
 function Sidebar() {
     return (
