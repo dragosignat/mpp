@@ -14,11 +14,8 @@ RUN go build -o main .
 FROM debian:stable-slim
 
 COPY --from=builder /app/main /app/main
-# Get the port from the environment variable
-ARG PORT
-ENV PORT=$PORT
-ARG POSTGRESQL_URL 
-ENV POSTGRESQL_URL=$POSTGRESQL_URL
+
+ENV GIN_MODE=release
 
 EXPOSE $PORT
 

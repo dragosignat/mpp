@@ -13,6 +13,8 @@ RUN npm run build
 FROM nginx:stable
 
 # Copy the Nginx configuration file
+COPY --from=builder /app/.nginx/nginx-selfsigned.crt /etc/nginx/ssl/nginx-selfsigned.crt
+COPY --from=builder /app/.nginx/nginx-selfsigned.key /etc/nginx/ssl/nginx-selfsigned.key
 COPY --from=builder /app/.nginx/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /usr/share/nginx/html
