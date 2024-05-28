@@ -14,9 +14,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      # - VITE_API_URL=http://backend:8080
       - VITE_API_URL=${VITE_API_URL}
     ports:
       - "8000:80"
+      - "8443:443"
     depends_on:
       - backend

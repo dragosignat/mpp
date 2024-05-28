@@ -2,6 +2,7 @@ FROM node:lts AS builder
 
 WORKDIR /app
 
+COPY .env ./
 COPY package.json package-lock.json ./
 
 RUN npm install
@@ -10,6 +11,7 @@ COPY . .
 
 RUN npm run build
 
+# Production stage
 FROM nginx:stable
 
 # Copy the Nginx configuration file
@@ -25,5 +27,6 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist . 
 
 EXPOSE 80
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
