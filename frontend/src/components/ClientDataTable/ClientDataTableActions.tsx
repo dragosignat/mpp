@@ -14,7 +14,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import {useToast} from '@/components/ui/use-toast';
-
+import {Client} from '@/types/Client';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
 import {removeClient} from '@/redux/clients/clientsSlice';
@@ -26,7 +26,8 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
     row,
 }: DataTableRowActionsProps<TData>) {
-    const clientId = row.original.id;
+    const client = row.original as Client;
+    const clientId = client.id;
     const dispatch = useDispatch<AppDispatch>();
     const {toast} = useToast();
     const handleDelete = () => {

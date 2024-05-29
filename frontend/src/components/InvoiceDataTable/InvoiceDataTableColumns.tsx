@@ -16,7 +16,7 @@ export const InvoiceColumns: ColumnDef<Invoice>[] = [
         accessorKey: 'date_of_issue',
         header: 'Date of Issue',
         cell: ({row}) => {
-            const dueDate = row.getValue('date_of_issue');
+            const dueDate = row.getValue<Date>('date_of_issue');
             const formatted = new Date(dueDate).toLocaleDateString();
 
             return <div>{formatted}</div>;
@@ -26,7 +26,7 @@ export const InvoiceColumns: ColumnDef<Invoice>[] = [
         accessorKey: 'due_date',
         header: 'Due Date',
         cell: ({row}) => {
-            const dueDate = row.getValue('due_date');
+            const dueDate = row.getValue<Date>('due_date');
             const formatted = new Date(dueDate).toLocaleDateString();
 
             return <div>{formatted}</div>;
@@ -38,7 +38,7 @@ export const InvoiceColumns: ColumnDef<Invoice>[] = [
             <DataTableColumnHeader column={column} title='Amount' />
         ),
         cell: ({row}) => {
-            const amount = row.getValue('amount');
+            const amount = row.getValue<number>('amount');
             const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',

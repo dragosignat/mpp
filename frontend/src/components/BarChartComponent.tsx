@@ -1,5 +1,4 @@
 import {Bar, BarChart, ResponsiveContainer, XAxis, YAxis} from 'recharts';
-import React from 'react';
 
 interface BarChartData {
     data: Array<{name: string; total: number}>;

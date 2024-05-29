@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import {Link} from 'react-router-dom';
-import {FaRegUserCircle} from 'react-icons/fa';
 import {API_URL} from '@/config/apiConfig';
 import {useNavigate} from 'react-router-dom';
 import {UserProfilePopup} from './UserProfilePopup';

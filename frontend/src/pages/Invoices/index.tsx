@@ -1,4 +1,3 @@
-import React from 'react';
 import {useEffect} from 'react';
 import {DataTable} from '@/components/InvoiceDataTable/InvoiceDataTable';
 import {InvoiceColumns} from '@/components/InvoiceDataTable/InvoiceDataTableColumns';

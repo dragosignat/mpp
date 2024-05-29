@@ -32,7 +32,7 @@ export const ClientColumns: ColumnDef<Client>[] = [
             <DataTableColumnHeader column={column} title='Total Purchases' />
         ),
         cell: ({row}) => {
-            const amount = row.getValue('total_purchases');
+            const amount = row.getValue<number>('total_purchases');
             const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
@@ -50,7 +50,7 @@ export const ClientColumns: ColumnDef<Client>[] = [
             />
         ),
         cell: ({row}) => {
-            const amount = row.getValue('total_outgoing_invoices');
+            const amount = row.getValue<number>('total_outgoing_invoices');
             const formatted = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',

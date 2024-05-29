@@ -1,4 +1,3 @@
-import React from 'react';
 import InvoiceAddForm from '@/components/InvoiceAddForm';
 
 function InvoiceAdd() {

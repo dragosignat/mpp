@@ -1,4 +1,3 @@
-import React from 'react';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {date, z} from 'zod';
@@ -47,6 +46,11 @@ function InvoiceEditForm({invoiceId}: {invoiceId: string | number}) {
     const invoice = invoices.find((i) => i.id === invoiceId);
     const navigate = useNavigate();
     const {toast} = useToast();
+
+    if (!invoice) {
+        navigate('/invoices');
+        return null;
+    }
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
