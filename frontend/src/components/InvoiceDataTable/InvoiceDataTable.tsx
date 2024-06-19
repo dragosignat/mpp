@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className=' flex flex-col space-y-4 '>
+        <div className=' flex flex-col space-y-4  bg-white rounded-lg shadow-lg sh p-2'>
             <div className='flex items-center justify-between'>
                 <div className='flex space-x-4'>
                     <Input

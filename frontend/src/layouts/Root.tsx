@@ -71,7 +71,7 @@ function Root() {
                 </div>
                 <div className='grow flex flex-row'>
                     <Sidebar></Sidebar>
-                    <main id='detail' className=' grow '>
+                    <main id='detail' className=' grow bg-slate-50 '>
                         <Outlet />
                     </main>
                 </div>

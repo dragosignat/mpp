@@ -22,7 +22,7 @@ async def redirect_root_to_docs():
 
 # Edit this to add the chain you want to add
 # add_routes(app, NotImplemented)
-add_routes(app, sql_ollama_chain, path="/sql-ollama")
+add_routes(app, sql_ollama_chain, path="/copilot")
 
 if __name__ == "__main__":
     import uvicorn

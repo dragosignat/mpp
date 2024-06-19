@@ -2,7 +2,7 @@ import React from 'react';
 import {LlamaIcon} from '@/components/LlamaChatBox/Icons';
 
 interface LlamaMessageProps {
-    message: string;
+    message: string | JSX.Element;
 }
 
 function LlamaMessage({message}: LlamaMessageProps) {

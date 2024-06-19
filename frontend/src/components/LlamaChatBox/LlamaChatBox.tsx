@@ -4,11 +4,14 @@ import {Textarea} from '@/components/ui/textarea';
 import {LlamaIcon, SendIcon, XIcon} from '@/components/LlamaChatBox/Icons';
 import LlamaMessage from './LlamaMessage';
 import UserMessage from './UserMessage';
+import LoadingMessage from './LoadingMessage';
+import {RemoteRunnable} from '@langchain/core/runnables/remote';
+import {AI_API_URL} from '@/config/apiConfig';
 
 export default function LlamaChatBox() {
     const [isOpen, setIsOpen] = useState(false);
     const [userMesage, setUserMessage] = useState('');
-    const [isWaiting, setIsWaiting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [messages, setMessages] = useState([
         {
@@ -16,23 +19,42 @@ export default function LlamaChatBox() {
             message: 'Hello! How can I help you today?',
             isLlama: true,
         },
-        {
-            id: 2,
-            message: 'I need help with my account.',
-            isLlama: false,
-        },
     ]);
 
-    function sendMessage() {
-        // Send the message to the server
-        // get the message from the textarea
-        let newMessage = {
-            id: messages.length + 1,
-            message: userMesage,
-            isLlama: false,
-        };
+    const remoteChain = new RemoteRunnable({
+        url: `${AI_API_URL}/copilot`,
+    });
+
+    async function sendMessage() {
+        const trimmedMessage = userMesage.trim();
+        if (!trimmedMessage) return;
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+                id: prevMessages.length + 1,
+                message: trimmedMessage,
+                isLlama: false,
+            },
+        ]);
+
         setUserMessage('');
-        setMessages([...messages, newMessage]);
+        setIsLoading(true);
+
+        const result = await remoteChain.invoke({
+            question: userMesage,
+        });
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+                id: prevMessages.length + 1,
+                message: result.content,
+                isLlama: true,
+            },
+        ]);
+
+        setIsLoading(false);
     }
 
     function populateMessages() {
@@ -77,6 +99,9 @@ export default function LlamaChatBox() {
                         </header>
                         <div className='flex-1 overflow-auto p-4 space-y-4'>
                             {populateMessages()}
+                            {isLoading ? (
+                                <LlamaMessage message={<LoadingMessage />} />
+                            ) : null}
                         </div>
                         <div className='bg-card border-t border-border p-2 flex items-center gap-2'>
                             <Textarea
@@ -105,7 +130,7 @@ export default function LlamaChatBox() {
                     className='rounded-full p-2 m-2'
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    <LlamaIcon className='w-5 h-5' />
+                    <LlamaIcon className='w-8 h-8' />
                     <span className='sr-only'>Maximize</span>
                 </Button>
             )}
