@@ -91,7 +91,10 @@ function ClientAddForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className='space-y-4 my-2 bg-white rounded-lg shadow-lg sh p-2'
+            >
                 <FormField
                     control={form.control}
                     name='clientName'

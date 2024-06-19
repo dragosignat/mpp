@@ -1,7 +1,14 @@
 import {NavLink} from 'react-router-dom';
+import {useState} from 'react';
 import {Users, Settings, Home, ReceiptText} from 'lucide-react';
 
 function Sidebar() {
+    const [isCurrent, setIsCurrent] = useState<string>('');
+
+    function handleClick() {
+        setIsCurrent('bg-gray-100 dark:bg-gray-700');
+    }
+
     return (
         <>
             <aside className='flex flex-col border-r-[2px] justify-between w-40'>
@@ -51,7 +58,7 @@ function Sidebar() {
                 </ul>
                 <div className='flex flex-col'>
                     <div className='justify-center m-2'></div>
-                    <div className=' text-sm text-gray-200 px-2 '>v0.0.1</div>
+                    <div className=' text-sm text-gray-200 px-2 '>v0.0.2</div>
                 </div>
             </aside>
         </>

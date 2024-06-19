@@ -20,7 +20,9 @@ function Invoices() {
         <>
             <div className=' p-5 flex flex-col space-y-4'>
                 <div className='flex flex-row justify-between'>
-                    <h1 className='text-3xl font-bold'>Invoices</h1>
+                    <h1 className='text-3xl font-bold drop-shadow-xl'>
+                        Invoices
+                    </h1>
                 </div>
                 <DataTable columns={InvoiceColumns} data={invoices} />
             </div>
