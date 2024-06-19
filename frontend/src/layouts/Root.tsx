@@ -8,7 +8,7 @@ import {useEffect} from 'react';
 import axios from 'axios';
 import useAuth from '@/hooks/auth';
 import axiosInstance from '@/config/axiosConfig';
-import LlamaChatBox from '@/components/LlamaChatBox';
+import LlamaChatBox from '@/components/LlamaChatBox/LlamaChatBox';
 
 function Root() {
     const {toast} = useToast();

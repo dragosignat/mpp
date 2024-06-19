@@ -1,97 +1,4 @@
-import {useState} from 'react';
-import {Button} from '@/components/ui/button';
-import {Textarea} from '@/components/ui/textarea';
-import {User} from 'lucide-react';
-
-export default function LlamaChatBox() {
-    const [isOpen, setIsOpen] = useState(false);
-    return (
-        <div className='fixed bottom-4 right-4 z-50'>
-            <div
-                className={`flex flex-col w-full max-w-md mx-auto bg-background rounded-2xl shadow-lg overflow-hidden ${
-                    isOpen ? '' : 'hidden'
-                }`}
-            >
-                {isOpen ? (
-                    <>
-                        <header className='flex items-center justify-between gap-3 bg-card p-4 border-b border-border'>
-                            <div className='flex items-center gap-3'>
-                                <LlamaIcon className='w-8 h-8' />
-                                <div className='text-sm font-medium'>
-                                    LLama Smart Assistant™
-                                </div>
-                            </div>
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                className='rounded-full'
-                                onClick={() => setIsOpen(!isOpen)}
-                            >
-                                <XIcon className='w-5 h-5' />
-                                <span className='sr-only'>Close</span>
-                            </Button>
-                        </header>
-                        <div className='flex-1 overflow-auto p-4 space-y-4'>
-                            <div className='flex items-start gap-3'>
-                                <User className='w-6 h-6' />
-                                <div className='bg-muted rounded-lg p-3 max-w-[75%] text-sm'>
-                                    <p>
-                                        Hello, AI Copilot! Can you help me with
-                                        a task?
-                                    </p>
-                                </div>
-                            </div>
-                            <div className='flex items-start gap-3 justify-end'>
-                                <div className='bg-primary rounded-lg p-3 max-w-[75%] text-sm text-primary-foreground'>
-                                    <p>
-                                        Of course, how can I assist you today?
-                                    </p>
-                                </div>
-                                <LlamaIcon className='w-6 h-6' />
-                            </div>
-                            <div className='flex items-start gap-3'>
-                                <User className='w-6 h-6' />
-                                <div className='bg-muted rounded-lg p-3 max-w-[75%] text-sm'>
-                                    <p>
-                                        I need help writing a blog post. Can you
-                                        give me some ideas?
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='bg-card border-t border-border p-2 flex items-center gap-2'>
-                            <Textarea
-                                placeholder='Type your message...'
-                                className='flex-1 resize-none rounded-lg p-2 text-sm'
-                            />
-                            <Button
-                                variant='ghost'
-                                size='icon'
-                                className='rounded-full'
-                            >
-                                <SendIcon className='w-5 h-5' />
-                                <span className='sr-only'>Send</span>
-                            </Button>
-                        </div>
-                    </>
-                ) : null}
-            </div>
-            {!isOpen && (
-                <Button
-                    variant='ghost'
-                    size='icon'
-                    className='rounded-full p-2 m-2'
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    <MaximizeIcon className='w-5 h-5' />
-                    <span className='sr-only'>Maximize</span>
-                </Button>
-            )}
-        </div>
-    );
-}
-
-function LlamaIcon(props: any) {
+export function LlamaIcon(props: any) {
     return (
         <svg
             {...props}
@@ -125,7 +32,7 @@ function LlamaIcon(props: any) {
     );
 }
 
-function MaximizeIcon(props: any) {
+export function MaximizeIcon(props: any) {
     return (
         <svg
             {...props}
@@ -147,7 +54,7 @@ function MaximizeIcon(props: any) {
     );
 }
 
-function SendIcon(props: any) {
+export function SendIcon(props: any) {
     return (
         <svg
             {...props}
@@ -167,7 +74,7 @@ function SendIcon(props: any) {
     );
 }
 
-function XIcon(props: any) {
+export function XIcon(props: any) {
     return (
         <svg
             {...props}
