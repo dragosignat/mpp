@@ -10,6 +10,7 @@ import InvoicesAdd from '@/pages/InvoicesAdd';
 import InvoicesEdit from '@/pages/InvoicesEdit';
 import LoginPage from '@/pages/LoginPage';
 import Signup from '@/pages/SignupPage';
+import Campaign from '@/pages/Campaigns';
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: '/invoices/:invoiceId',
                 element: <InvoicesEdit />,
+            },
+            {
+                path: '/campaign',
+                element: <Campaign />,
             },
         ],
     },
