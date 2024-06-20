@@ -21,7 +21,7 @@ func (s *Service) RegisterRoutes(router *gin.RouterGroup) {
 	routes.Use(middleware.AuthMiddleware(s.queries))
 	{
 		routes.GET("", s.List)
-		// routes.POST("", s.Create)
+		routes.POST("", s.Create)
 		routes.GET("/:id", s.Get)
 	}
 

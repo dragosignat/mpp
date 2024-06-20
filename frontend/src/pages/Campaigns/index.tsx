@@ -107,7 +107,7 @@ const CampaignPage = () => {
                                                     campaign.id,
                                                 )
                                             }
-                                            className={`cursor-pointer hover:bg-gray-100 ${selectedCampaign?.id === campaign.id ? 'bg-gray-200' : ''}`}
+                                            className={`cursor-pointer hover:bg-gray-200 ${selectedCampaign?.id === campaign.id ? 'bg-gray-100' : ''}`}
                                         >
                                             <TableCell className='px-4 py-2'>
                                                 <div className='font-medium text-gray-800'>
@@ -122,7 +122,11 @@ const CampaignPage = () => {
                                             </TableCell>
                                             <TableCell className='hidden sm:table-cell px-4 py-2'>
                                                 <Badge
-                                                    className={`text-xs ${campaign.is_processing ? 'bg-blue-500 text-white' : 'bg-green-500 text-white'}`}
+                                                    variant={
+                                                        campaign.is_processing
+                                                            ? 'secondary'
+                                                            : 'outline'
+                                                    }
                                                 >
                                                     {campaign.is_processing
                                                         ? 'Processing'

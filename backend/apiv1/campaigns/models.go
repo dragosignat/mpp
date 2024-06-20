@@ -14,3 +14,13 @@ type DetailedCampaign struct {
 	Neutral          int64  `json:"neutral" binding:"required"`
 	OverallSentiment string `json:"overall_sentiment" binding:"required"`
 }
+
+type CreateCampaignRequest struct {
+	Name        string `form:"name" binding:"required"`
+	Description string `form:"description" binding:"required"`
+}
+
+type Review struct {
+	ReviewID   string
+	ReviewText string
+}
