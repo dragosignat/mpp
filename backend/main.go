@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"openinvoice-api/apiv1/campaigns"
 	"openinvoice-api/apiv1/clients"
 	"openinvoice-api/apiv1/invoices"
 	"openinvoice-api/apiv1/users"
@@ -19,6 +20,7 @@ func setupRouter(pgConn *pgxpool.Pool) *gin.Engine {
 	clientsService := clients.NewService(querier)
 	invoicesService := invoices.NewService(querier)
 	usersService := users.NewService(querier)
+	campaignsService := campaigns.NewService(querier)
 
 	// Setup the router
 	r := gin.Default()
@@ -36,6 +38,7 @@ func setupRouter(pgConn *pgxpool.Pool) *gin.Engine {
 		clientsService.RegisterRoutes(superGroup)
 		invoicesService.RegisterRoutes(superGroup)
 		usersService.RegisterRoutes(superGroup)
+		campaignsService.RegisterRoutes(superGroup)
 	}
 
 	r.GET("/apiv1", func(c *gin.Context) {

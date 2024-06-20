@@ -10,7 +10,7 @@ import InvoicesAdd from '@/pages/InvoicesAdd';
 import InvoicesEdit from '@/pages/InvoicesEdit';
 import LoginPage from '@/pages/LoginPage';
 import Signup from '@/pages/SignupPage';
-import Campaign from '@/pages/Campaigns';
+import CampaignPage from '@/pages/Campaigns';
 
 const router = createBrowserRouter([
     {
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/campaign',
-                element: <Campaign />,
+                element: <CampaignPage />,
             },
         ],
     },
