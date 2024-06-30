@@ -1,7 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
-import axios from 'axios';
 
 import {Button} from '@/components/ui/button';
 import {
@@ -18,6 +17,7 @@ import {useToast} from '@/components/ui/use-toast';
 import axiosInstance from '@/config/axiosConfig';
 
 import {useNavigate} from 'react-router-dom';
+import {Textarea} from './ui/textarea';
 
 const formSchema = z.object({
     campaignName: z.string().min(2, {
@@ -103,8 +103,12 @@ function CampaignAddForm() {
                         <FormItem>
                             <FormLabel>Campaign description</FormLabel>
                             <FormControl>
-                                <Input
+                                {/* <Input
                                     type='textarea'
+                                    placeholder='Describe the campaign details here'
+                                    {...field}
+                                /> */}
+                                <Textarea
                                     placeholder='Describe the campaign details here'
                                     {...field}
                                 />

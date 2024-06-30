@@ -41,7 +41,7 @@ export default function LlamaChatBox() {
         setUserMessage('');
         setIsLoading(true);
 
-        const result = await remoteChain.invoke({
+        const result: any = await remoteChain.invoke({
             question: userMesage,
         });
 
@@ -109,6 +109,11 @@ export default function LlamaChatBox() {
                                 className='flex-1 resize-none rounded-lg p-2 text-sm'
                                 value={userMesage}
                                 onChange={(e) => setUserMessage(e.target.value)}
+                                onKeyDownCapture={(e) => {
+                                    if (e.key === 'Enter') {
+                                        sendMessage();
+                                    }
+                                }}
                             />
                             <Button
                                 variant='ghost'
