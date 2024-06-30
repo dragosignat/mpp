@@ -8,6 +8,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.pydantic_v1 import BaseModel
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+from sqlalchemy import except_
 
 # Add the LLM downloaded from Ollama
 ollama_llm_model = "llama3"
@@ -22,10 +23,13 @@ def get_schema(_):
 
 def run_query(query):
     # Run the query, and return the results, if the results are empty, return a no response message
-    results = db.run(query)
-    if not results:
+    try:
+        results = db.run(query)
+        if not results:
+            return "No response"
+        return results
+    except:
         return "No response"
-    return results
 
 
 

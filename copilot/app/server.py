@@ -3,6 +3,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sql_ollama import chain as sql_ollama_chain
 from langserve import add_routes
+from .dto import Reviews
+from .handle_sentiment import handle_sentiment
 
 app = FastAPI()
 
@@ -19,9 +21,12 @@ app.add_middleware(
 async def redirect_root_to_docs():
     return RedirectResponse("/docs")
 
+@app.post("/sentiment")
+async def sentiment(reviews: Reviews):
+    return handle_sentiment(reviews)
+
 
 # Edit this to add the chain you want to add
-# add_routes(app, NotImplemented)
 add_routes(app, sql_ollama_chain, path="/copilot")
 
 if __name__ == "__main__":

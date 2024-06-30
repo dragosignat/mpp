@@ -8,6 +8,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Campaign struct {
+	ID           int32            `json:"id"`
+	Name         string           `json:"name"`
+	Description  pgtype.Text      `json:"description"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
+	OwnerID      pgtype.Int4      `json:"owner_id"`
+	IsActive     bool             `json:"is_active"`
+	IsProcessing bool             `json:"is_processing"`
+}
+
 type Clients struct {
 	ID             pgtype.UUID      `json:"id"`
 	Name           string           `json:"name"`
@@ -33,6 +44,15 @@ type Invoices struct {
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 	OwnerID     pgtype.Int4      `json:"owner_id"`
 	IsPaid      pgtype.Bool      `json:"is_paid"`
+}
+
+type Review struct {
+	ID         int32            `json:"id"`
+	CampaignID int32            `json:"campaign_id"`
+	Sentiment  string           `json:"sentiment"`
+	Review     string           `json:"review"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
 }
 
 type Users struct {

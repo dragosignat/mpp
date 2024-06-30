@@ -48,7 +48,12 @@ function Navbar() {
                             to='/'
                             className='text-2xl font-bold hover:text-gray-700 cursor-pointer'
                         >
-                            OpenInvoice
+                            <div className='flex flex-row gap-1'>
+                                <div>OpenInvoice</div>
+                                <div className='text-sm italic drop-shadow-sm'>
+                                    CRM
+                                </div>
+                            </div>
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem className='flex gap-3 items-center'>

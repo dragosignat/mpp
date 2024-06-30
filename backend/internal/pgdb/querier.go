@@ -12,12 +12,15 @@ import (
 
 type Querier interface {
 	ActivateUser(ctx context.Context, id int32) error
+	CreateCampaign(ctx context.Context, arg CreateCampaignParams) (CreateCampaignRow, error)
 	CreateClient(ctx context.Context, arg CreateClientParams) (CreateClientRow, error)
 	CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (CreateInvoiceRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteClient(ctx context.Context, id pgtype.UUID) error
 	DeleteInvoice(ctx context.Context, id pgtype.UUID) error
 	DeleteUser(ctx context.Context, id int32) error
+	GetCampaignByID(ctx context.Context, arg GetCampaignByIDParams) (GetCampaignByIDRow, error)
+	GetCampaigns(ctx context.Context, ownerID pgtype.Int4) ([]GetCampaignsRow, error)
 	GetClientByID(ctx context.Context, arg GetClientByIDParams) (GetClientByIDRow, error)
 	GetClients(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsRow, error)
 	GetClientsWithOutgoingInvoicesAmount(ctx context.Context, arg GetClientsWithOutgoingInvoicesAmountParams) ([]GetClientsWithOutgoingInvoicesAmountRow, error)
@@ -25,6 +28,8 @@ type Querier interface {
 	GetInvoiceByID(ctx context.Context, arg GetInvoiceByIDParams) (GetInvoiceByIDRow, error)
 	GetInvoices(ctx context.Context, ownerID pgtype.Int4) ([]GetInvoicesRow, error)
 	GetInvoicesByClientID(ctx context.Context, arg GetInvoicesByClientIDParams) ([]GetInvoicesByClientIDRow, error)
+	GetReviewsByCampaignID(ctx context.Context, campaignID int32) ([]Review, error)
+	GetSentimentCountByCampaignID(ctx context.Context, arg GetSentimentCountByCampaignIDParams) (int64, error)
 	GetTotalNumberOfClients(ctx context.Context, ownerID pgtype.Int4) (int64, error)
 	GetUserByEmail(ctx context.Context, email string) (Users, error)
 	GetUserByID(ctx context.Context, id int32) (Users, error)
