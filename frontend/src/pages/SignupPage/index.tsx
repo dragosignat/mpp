@@ -4,6 +4,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Link, useNavigate} from 'react-router-dom';
 import {API_URL} from '@/config/apiConfig';
+import LoginCatSVG from '@/assets/login_cat';
 
 export function SignupPage() {
     const [username, setUsername] = useState('');
@@ -91,7 +92,10 @@ export function SignupPage() {
                             Sign Up
                         </Button>
                         <Button variant='outline' className='w-full'>
-                            Sign up with Google
+                            {/* Google icon */}
+                            <div className=' flex flex-col '>
+                                Sign up with Google
+                            </div>
                         </Button>
                     </div>
                     <div className='mt-4 text-center text-sm'>
@@ -110,21 +114,7 @@ export function SignupPage() {
                     Join us to manage your invoices with ease and simplicity
                 </p>
                 <div className='absolute inset-0 flex flex-col justify-center items-center space-y-4'>
-                    <svg width='100' height='100' className='opacity-50'>
-                        <rect width='100' height='100' fill='#E5E7EB' />
-                    </svg>
-                    <svg width='150' height='150' className='opacity-50'>
-                        <rect width='150' height='150' fill='#D1D5DB' />
-                    </svg>
-                    <svg width='200' height='200' className='opacity-50'>
-                        <rect width='200' height='200' fill='#9CA3AF' />
-                    </svg>
-                    <svg width='150' height='150' className='opacity-50'>
-                        <rect width='150' height='150' fill='#D1D5DB' />
-                    </svg>
-                    <svg width='100' height='100' className='opacity-50'>
-                        <rect width='100' height='100' fill='#E5E7EB' />
-                    </svg>
+                    <LoginCatSVG className='w-96 h-96' />
                 </div>
             </div>
         </div>

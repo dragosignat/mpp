@@ -12,6 +12,7 @@ import LoginPage from '@/pages/LoginPage';
 import Signup from '@/pages/SignupPage';
 import CampaignPage from '@/pages/Campaigns';
 import CampaignAdd from '@/pages/CampaignAdd';
+import PeopleDashboard from '@/pages/PeopleDashboard';
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Homepage />,
+            },
+            {
+                path: '/people',
+                element: <PeopleDashboard />,
             },
             {
                 path: '/clients',

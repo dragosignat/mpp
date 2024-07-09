@@ -27,10 +27,10 @@ function Sidebar() {
                     <li>
                         <NavLink
                             className='flex items-center p-5 m-2 space-x-4 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700'
-                            to='/clients'
+                            to='/people'
                         >
                             <Users className='h-6 w-5 text-gray-500 dark:text-gray-400' />
-                            <span className='text-sm font-medium'>Clients</span>
+                            <span className='text-sm font-medium'>People</span>
                         </NavLink>
                     </li>
                     <li>
