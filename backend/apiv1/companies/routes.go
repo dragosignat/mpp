@@ -1,4 +1,4 @@
-package invoices
+package companies
 
 import (
 	"openinvoice-api/internal/middleware"
@@ -16,17 +16,15 @@ func NewService(queries *pgdb.Queries) *Service {
 }
 
 func (s *Service) RegisterRoutes(router *gin.RouterGroup) {
-
-	routes := router.Group("/invoices")
+	routes := router.Group("/companies")
 	routes.Use(middleware.AuthMiddleware(s.queries))
 	{
-		routes.GET("", s.getInvoices)
-		routes.GET("/:id", s.getInvoice)
-		routes.GET("/client/:id", s.getInvoicesByClient)
-		routes.POST("", s.createInvoice)
-		routes.PUT("/:id", s.updateInvoice)
-		routes.DELETE("/:id", s.deleteInvoice)
-		routes.GET("/generate-fake-invoice/:client_id", s.generateFake)
+		routes.GET("", s.getCompanies)
+		routes.GET("/:id", s.getCompany)
+		routes.POST("", s.createCompany)
+		routes.PUT("/:id", s.updateCompany)
+		routes.DELETE("/:id", s.deleteCompany)
+		routes.GET("/search", s.searchCompanies)
 	}
 
 }

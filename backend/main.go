@@ -9,21 +9,28 @@ import (
 
 	"openinvoice-api/apiv1/campaigns"
 	"openinvoice-api/apiv1/clients"
-	"openinvoice-api/apiv1/invoices"
+	"openinvoice-api/apiv1/companies"
+	"openinvoice-api/apiv1/leads"
 	"openinvoice-api/apiv1/users"
+	docs "openinvoice-api/docs"
 	"openinvoice-api/internal/pgdb"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func setupRouter(pgConn *pgxpool.Pool) *gin.Engine {
 	querier := pgdb.New(pgConn)
 
 	clientsService := clients.NewService(querier)
-	invoicesService := invoices.NewService(querier)
+	companiesService := companies.NewService(querier)
+	leadsService := leads.NewService(querier)
 	usersService := users.NewService(querier)
 	campaignsService := campaigns.NewService(querier)
 
 	// Setup the router
 	r := gin.Default()
+	docs.SwaggerInfo.BasePath = "/apiv1"
 	corsConfig := cors.Config{
 		AllowOrigins:     []string{"*"}, // Adjust this to your front-end URL
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -36,9 +43,10 @@ func setupRouter(pgConn *pgxpool.Pool) *gin.Engine {
 	superGroup := r.Group("/apiv1")
 	{
 		clientsService.RegisterRoutes(superGroup)
-		invoicesService.RegisterRoutes(superGroup)
 		usersService.RegisterRoutes(superGroup)
 		campaignsService.RegisterRoutes(superGroup)
+		companiesService.RegisterRoutes(superGroup)
+		leadsService.RegisterRoutes(superGroup)
 	}
 
 	r.GET("/apiv1", func(c *gin.Context) {
@@ -46,6 +54,7 @@ func setupRouter(pgConn *pgxpool.Pool) *gin.Engine {
 			"message": "Welcome to OpenInvoice API!",
 		})
 	})
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

@@ -13,31 +13,40 @@ import (
 type Querier interface {
 	ActivateUser(ctx context.Context, id int32) error
 	CreateCampaign(ctx context.Context, arg CreateCampaignParams) (CreateCampaignRow, error)
+	// Clients CRUD operations
 	CreateClient(ctx context.Context, arg CreateClientParams) (CreateClientRow, error)
-	CreateInvoice(ctx context.Context, arg CreateInvoiceParams) (CreateInvoiceRow, error)
+	// Companies CRUD operations
+	CreateCompany(ctx context.Context, arg CreateCompanyParams) (CreateCompanyRow, error)
+	// Leads CRUD operations
+	CreateLead(ctx context.Context, arg CreateLeadParams) (CreateLeadRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
-	DeleteClient(ctx context.Context, id pgtype.UUID) error
-	DeleteInvoice(ctx context.Context, id pgtype.UUID) error
+	DeleteClient(ctx context.Context, arg DeleteClientParams) error
+	DeleteCompany(ctx context.Context, arg DeleteCompanyParams) error
+	DeleteLead(ctx context.Context, arg DeleteLeadParams) error
 	DeleteUser(ctx context.Context, id int32) error
 	GetCampaignByID(ctx context.Context, arg GetCampaignByIDParams) (GetCampaignByIDRow, error)
 	GetCampaigns(ctx context.Context, ownerID pgtype.Int4) ([]GetCampaignsRow, error)
 	GetClientByID(ctx context.Context, arg GetClientByIDParams) (GetClientByIDRow, error)
-	GetClients(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsRow, error)
-	GetClientsWithOutgoingInvoicesAmount(ctx context.Context, arg GetClientsWithOutgoingInvoicesAmountParams) ([]GetClientsWithOutgoingInvoicesAmountRow, error)
-	GetClientsWithOutgoingInvoicesAmountFull(ctx context.Context, ownerID pgtype.Int4) ([]GetClientsWithOutgoingInvoicesAmountFullRow, error)
-	GetInvoiceByID(ctx context.Context, arg GetInvoiceByIDParams) (GetInvoiceByIDRow, error)
-	GetInvoices(ctx context.Context, ownerID pgtype.Int4) ([]GetInvoicesRow, error)
-	GetInvoicesByClientID(ctx context.Context, arg GetInvoicesByClientIDParams) ([]GetInvoicesByClientIDRow, error)
+	GetClients(ctx context.Context, arg GetClientsParams) ([]GetClientsRow, error)
+	GetClientsWithCompanyInfo(ctx context.Context, arg GetClientsWithCompanyInfoParams) ([]GetClientsWithCompanyInfoRow, error)
+	GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]GetCompaniesRow, error)
+	GetCompanyByID(ctx context.Context, arg GetCompanyByIDParams) (GetCompanyByIDRow, error)
+	GetLeadByID(ctx context.Context, arg GetLeadByIDParams) (GetLeadByIDRow, error)
+	GetLeads(ctx context.Context, arg GetLeadsParams) ([]GetLeadsRow, error)
 	GetReviewsByCampaignID(ctx context.Context, campaignID int32) ([]Review, error)
 	GetSentimentCountByCampaignID(ctx context.Context, arg GetSentimentCountByCampaignIDParams) (int64, error)
 	GetTotalNumberOfClients(ctx context.Context, ownerID pgtype.Int4) (int64, error)
+	GetTotalNumberOfCompanies(ctx context.Context, ownerID pgtype.Int4) (int64, error)
 	GetUserByEmail(ctx context.Context, email string) (Users, error)
 	GetUserByID(ctx context.Context, id int32) (Users, error)
 	GetUserByUsername(ctx context.Context, username string) (Users, error)
 	GetUsers(ctx context.Context) ([]Users, error)
 	SearchClients(ctx context.Context, arg SearchClientsParams) ([]SearchClientsRow, error)
+	SearchCompanies(ctx context.Context, arg SearchCompaniesParams) ([]SearchCompaniesRow, error)
+	SearchLeads(ctx context.Context, arg SearchLeadsParams) ([]SearchLeadsRow, error)
 	UpdateClient(ctx context.Context, arg UpdateClientParams) error
-	UpdateInvoice(ctx context.Context, arg UpdateInvoiceParams) error
+	UpdateCompany(ctx context.Context, arg UpdateCompanyParams) error
+	UpdateLead(ctx context.Context, arg UpdateLeadParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 }
 
