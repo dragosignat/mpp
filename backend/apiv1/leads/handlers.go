@@ -1,6 +1,7 @@
 package leads
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"openinvoice-api/internal/pgdb"
@@ -78,15 +79,45 @@ func (s *Service) getLead(c *gin.Context) {
 func (s *Service) createLead(c *gin.Context) {
 	userID := c.MustGet("userID").(int32)
 
-	var lead pgdb.CreateLeadParams
+	var lead LeadCreate
 	if err := c.ShouldBindJSON(&lead); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input data", "error": err.Error()})
 		return
 	}
 
-	lead.OwnerID = pgtype.Int4{Int32: userID, Valid: true}
+	socialLinks, err := json.Marshal(lead.SocialLinks)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error creating lead", "error": err.Error()})
+		return
+	}
 
-	newLead, err := s.queries.CreateLead(c, lead)
+	var birthday pgtype.Date
+	if lead.Birthday != "" {
+		err := birthday.Scan(lead.Birthday)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid birthday"})
+			return
+		}
+	}
+
+	leadSQL := pgdb.CreateLeadParams{
+		FirstName:              lead.FirstName,
+		LastName:               lead.LastName,
+		Email:                  pgtype.Text{String: lead.Email, Valid: lead.Email != ""},
+		Phone:                  pgtype.Text{String: lead.Phone, Valid: lead.Phone != ""},
+		CompanyID:              pgtype.Int4{Int32: int32(lead.CompanyID), Valid: true},
+		Position:               pgtype.Text{String: lead.Position, Valid: lead.Position != ""},
+		Notes:                  pgtype.Text{String: lead.Notes, Valid: lead.Notes != ""},
+		PreferredContactMethod: pgtype.Text{String: lead.PreferredContactMethod, Valid: lead.PreferredContactMethod != ""},
+		Source:                 pgtype.Text{String: lead.Source, Valid: lead.Source != ""},
+		SocialLinks:            socialLinks,
+		OwnerID:                pgtype.Int4{Int32: userID, Valid: true},
+		Birthday:               birthday,
+		LeadStatus:             pgtype.Text{String: "New", Valid: true},
+		LeadScore:              pgtype.Int4{Int32: 0, Valid: true},
+	}
+
+	newLead, err := s.queries.CreateLead(c, leadSQL)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error creating lead", "error": err.Error()})
 		log.Println("Error creating lead:", err)
@@ -107,14 +138,42 @@ func (s *Service) updateLead(c *gin.Context) {
 		return
 	}
 
-	var updateParams pgdb.UpdateLeadParams
-	if err := c.ShouldBindJSON(&updateParams); err != nil {
+	var lead LeadCreate
+	if err := c.ShouldBindJSON(&lead); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input data", "error": err.Error()})
 		return
 	}
 
-	updateParams.Pid = uuid
-	updateParams.OwnerID = pgtype.Int4{Int32: userID, Valid: true}
+	socialLinks, err := json.Marshal(lead.SocialLinks)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error updating lead", "error": err.Error()})
+		return
+	}
+
+	var birthday pgtype.Date
+	if lead.Birthday != "" {
+		err := birthday.Scan(lead.Birthday)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid birthday"})
+			return
+		}
+	}
+
+	updateParams := pgdb.UpdateLeadParams{
+		Pid:                    uuid,
+		FirstName:              lead.FirstName,
+		LastName:               lead.LastName,
+		Email:                  pgtype.Text{String: lead.Email, Valid: lead.Email != ""},
+		Phone:                  pgtype.Text{String: lead.Phone, Valid: lead.Phone != ""},
+		CompanyID:              pgtype.Int4{Int32: int32(lead.CompanyID), Valid: true},
+		Position:               pgtype.Text{String: lead.Position, Valid: lead.Position != ""},
+		Notes:                  pgtype.Text{String: lead.Notes, Valid: lead.Notes != ""},
+		PreferredContactMethod: pgtype.Text{String: lead.PreferredContactMethod, Valid: lead.PreferredContactMethod != ""},
+		Source:                 pgtype.Text{String: lead.Source, Valid: lead.Source != ""},
+		SocialLinks:            socialLinks,
+		OwnerID:                pgtype.Int4{Int32: userID, Valid: true},
+		Birthday:               birthday,
+	}
 
 	err = s.queries.UpdateLead(c, updateParams)
 	if err != nil {

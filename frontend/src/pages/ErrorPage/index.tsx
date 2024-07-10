@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import {Button} from '@/components/ui/button';
 import {Link} from 'react-router-dom';
 import {Home} from 'lucide-react';
+import NotFoundImg from '@/assets/NotFoundImg';
 
 function ErrorPage() {
     return (
@@ -20,13 +21,7 @@ function ErrorPage() {
                     </Button>
                 </div>
                 <div className=' flex justify-center p-5 '>
-                    <iframe
-                        width='560'
-                        height='315'
-                        src='https://www.youtube.com/embed/dQw4w9WgXcQ?si=xaLTYbu1yfO4LZk8'
-                        title='YouTube video player'
-                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                    ></iframe>
+                    <NotFoundImg />
                 </div>
             </div>
         </div>

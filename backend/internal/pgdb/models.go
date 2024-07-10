@@ -54,6 +54,15 @@ type Companies struct {
 	OwnerID       pgtype.Int4      `json:"owner_id"`
 }
 
+type Kanban struct {
+	ID         int32            `json:"id"`
+	Title      string           `json:"title"`
+	ColumnType string           `json:"column_type"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	OwnerID    pgtype.Int4      `json:"owner_id"`
+}
+
 type Leads struct {
 	ID                     int32            `json:"id"`
 	Pid                    pgtype.UUID      `json:"pid"`

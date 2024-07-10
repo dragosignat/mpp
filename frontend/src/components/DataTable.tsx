@@ -18,12 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {DataTablePagination} from '../DataTableComponents/DataTablePagination';
-
-import {Link} from 'react-router-dom';
+import {DataTablePagination} from './DataTableComponents/DataTablePagination';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -37,6 +32,7 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
+
     const table = useReactTable({
         data,
         columns,
@@ -53,29 +49,7 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className=' flex flex-col space-y-4  bg-white rounded-lg shadow-lg sh p-2'>
-            <div className='flex items-center justify-between'>
-                <div className='flex space-x-4'>
-                    <Input
-                        placeholder='Filter by client...'
-                        value={
-                            (table
-                                .getColumn('client_id')
-                                ?.getFilterValue() as string) ?? ''
-                        }
-                        onChange={(event) =>
-                            table
-                                .getColumn('client_id')
-                                ?.setFilterValue(event.target.value)
-                        }
-                        className='max-w-sm'
-                    />
-                    <Button variant='default'>Filter</Button>
-                </div>
-                <Link to='/invoices/add/'>
-                    <Button variant='outline'>Add Invoice</Button>
-                </Link>
-            </div>
+        <div className=' flex flex-col space-y-4 bg-white rounded-lg shadow-lg sh p-2 '>
             <div className='rounded-md border'>
                 <Table>
                     <TableHeader>

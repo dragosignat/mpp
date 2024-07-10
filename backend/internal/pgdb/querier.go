@@ -19,11 +19,14 @@ type Querier interface {
 	CreateCompany(ctx context.Context, arg CreateCompanyParams) (CreateCompanyRow, error)
 	// Leads CRUD operations
 	CreateLead(ctx context.Context, arg CreateLeadParams) (CreateLeadRow, error)
+	CreateTask(ctx context.Context, arg CreateTaskParams) (CreateTaskRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteClient(ctx context.Context, arg DeleteClientParams) error
 	DeleteCompany(ctx context.Context, arg DeleteCompanyParams) error
 	DeleteLead(ctx context.Context, arg DeleteLeadParams) error
+	DeleteTask(ctx context.Context, arg DeleteTaskParams) error
 	DeleteUser(ctx context.Context, id int32) error
+	GetBoard(ctx context.Context, ownerID pgtype.Int4) ([]GetBoardRow, error)
 	GetCampaignByID(ctx context.Context, arg GetCampaignByIDParams) (GetCampaignByIDRow, error)
 	GetCampaigns(ctx context.Context, ownerID pgtype.Int4) ([]GetCampaignsRow, error)
 	GetClientByID(ctx context.Context, arg GetClientByIDParams) (GetClientByIDRow, error)
@@ -47,6 +50,7 @@ type Querier interface {
 	UpdateClient(ctx context.Context, arg UpdateClientParams) error
 	UpdateCompany(ctx context.Context, arg UpdateCompanyParams) error
 	UpdateLead(ctx context.Context, arg UpdateLeadParams) error
+	UpdateTask(ctx context.Context, arg UpdateTaskParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 }
 

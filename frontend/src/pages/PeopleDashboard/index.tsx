@@ -1,12 +1,55 @@
-import {DataTable} from '@/components/ClientDataTable/ClientDataTable';
-import {ClientColumns} from '@/components/ClientDataTable/ClientDataTableColumns';
+import {DataTable} from '@/components/DataTable';
 import {Button} from '@/components/ui/button';
 import {Link} from 'react-router-dom';
 import LeadsSVG from '@/assets/leads';
 import FindLeadsDialog from '@/components/FindLeadsDialog';
 import ImportCSVDialog from '@/components/ImportCSVDialog';
+import {LeadsColumnShort} from '@/components/LeadsDataTable/LeadsColumnShort';
+import {CompaniesColumnShort} from '@/components/CompanyDataTable/CompanyColumnShort';
+import {ClientsColumnShort} from '@/components/ClientDataTable/ClientsColumnsShort';
+import {useQuery} from '@tanstack/react-query';
+import axiosInstance from '@/config/axiosConfig';
+import {useToast} from '@/components/ui/use-toast';
 
 function PeopleDashboard() {
+    const {status: leadsStatus, data: leadsData} = useQuery({
+        queryKey: ['leads'],
+        queryFn: () => axiosInstance.get('/leads'),
+    });
+
+    const {toast} = useToast();
+
+    if (leadsStatus === 'error') {
+        toast({
+            title: 'Error',
+            description: 'Failed to fetch leads',
+        });
+    }
+
+    const {status: clientsStatus, data: clientsData} = useQuery({
+        queryKey: ['clients'],
+        queryFn: () => axiosInstance.get('/clients'),
+    });
+
+    if (clientsStatus === 'error') {
+        toast({
+            title: 'Error',
+            description: 'Failed to fetch clients',
+        });
+    }
+
+    const {status: companyStatus, data: companyData} = useQuery({
+        queryKey: ['companies'],
+        queryFn: () => axiosInstance.get('/companies'),
+    });
+
+    if (companyStatus === 'error') {
+        toast({
+            title: 'Error',
+            description: 'Failed to fetch companies',
+        });
+    }
+
     return (
         <>
             <div className=' p-5 flex flex-col space-y-4'>
@@ -26,17 +69,15 @@ function PeopleDashboard() {
                                     <div className=' space-x-4 '>
                                         <Link to='/clients'>
                                             <Button variant='outline'>
-                                                Explore all clients
+                                                Explore all leads
                                             </Button>
                                         </Link>
-                                        {/* <Link to='/clients/add'>
-                                            <Button variant='default'>
-                                                Add Client
-                                            </Button>
-                                        </Link> */}
                                     </div>
                                 </div>
-                                <DataTable columns={ClientColumns} data={[]} />
+                                <DataTable
+                                    columns={LeadsColumnShort}
+                                    data={leadsData?.data || []}
+                                />
                             </div>
                         </div>
                         <div className=' flex flex-col '>
@@ -51,14 +92,12 @@ function PeopleDashboard() {
                                                 Explore all clients
                                             </Button>
                                         </Link>
-                                        {/* <Link to='/clients/add'>
-                                            <Button variant='default'>
-                                                Add Client
-                                            </Button>
-                                        </Link> */}
                                     </div>
                                 </div>
-                                <DataTable columns={ClientColumns} data={[]} />
+                                <DataTable
+                                    columns={ClientsColumnShort}
+                                    data={clientsData?.data || []}
+                                />
                             </div>
                         </div>
                         <div className=' flex flex-col '>
@@ -73,14 +112,12 @@ function PeopleDashboard() {
                                                 Explore all companies
                                             </Button>
                                         </Link>
-                                        {/* <Link to='/clients/add'>
-                                            <Button variant='default'>
-                                                Add Client
-                                            </Button>
-                                        </Link> */}
                                     </div>
                                 </div>
-                                <DataTable columns={ClientColumns} data={[]} />
+                                <DataTable
+                                    columns={CompaniesColumnShort}
+                                    data={companyData?.data || []}
+                                />
                             </div>
                         </div>
                     </div>

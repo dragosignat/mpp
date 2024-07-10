@@ -21,7 +21,7 @@ import {
 
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {DataTablePagination} from '../data-table-components/data-table-pagination';
+import {DataTablePagination} from '../DataTableComponents/DataTablePagination';
 
 import {Link} from 'react-router-dom';
 

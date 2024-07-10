@@ -13,6 +13,7 @@ import Signup from '@/pages/SignupPage';
 import CampaignPage from '@/pages/Campaigns';
 import CampaignAdd from '@/pages/CampaignAdd';
 import PeopleDashboard from '@/pages/PeopleDashboard';
+import KanbanDashboard from '@/pages/KanbanDashboard';
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             {
                 path: '/clients/add',
                 element: <ClientAdd />,
+            },
+            {
+                path: '/kanban',
+                element: <KanbanDashboard />,
             },
             {
                 path: '/invoices',

@@ -2,7 +2,7 @@ import {ColumnDef} from '@tanstack/react-table';
 import {Client} from '@/types/Client';
 import {Check} from 'lucide-react';
 import {X} from 'lucide-react';
-import {DataTableColumnHeader} from '../data-table-components/data-table-column-header';
+import {DataTableColumnHeader} from '../DataTableComponents/DataTableColumnHeader';
 import {DataTableRowActions} from './ClientDataTableActions';
 
 export const ClientColumns: ColumnDef<Client>[] = [

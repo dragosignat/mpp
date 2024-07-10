@@ -13,4 +13,5 @@ type LeadCreate struct {
 	PreferredContactMethod string            `json:"preferred_contact_method"`
 	Source                 string            `json:"source"`
 	SocialLinks            utils.SocialLinks `json:"social_links"`
+	Birthday               string            `json:"birthday"`
 }

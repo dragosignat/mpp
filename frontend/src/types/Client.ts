@@ -1,42 +1,32 @@
-/*
-    Client class is the main class for the client side of the application.
-*/
-// export interface Client {
-//     clientId: string;
-//     clientName: string;
-//     clientAddress: string;
-//     clientPhone: string;
-//     clientEmail: string;
-//     clientTotalPurchases: number;
-//     clientIsBusiness: boolean;
-// }
-
-export interface Client {
-    id: string;
-    name: string;
-    address: string;
-    phone: string;
-    email: string;
-    total_purchases: number;
-    is_business: boolean;
-    total_outgoing_invoices: number;
-}
+import {SocialLinks} from './SocialLink';
 
 export interface ClientCreate {
-    name: string;
-    address: string;
-    phone: string;
+    first_name: string;
+    last_name: string;
     email: string;
-    total_purchases: number;
-    is_business: boolean;
+    phone: string;
+    company_id: number;
+    position: string;
+    social_links: SocialLinks;
+    birth_date?: string; // Optional property
+    last_contact?: string; // Optional property
+    notes?: string; // Optional property
+    preferred_contact_method?: string; // Optional property
 }
 
-export interface ClientUpdate {
-    id: string;
-    name: string;
-    address: string;
-    phone: string;
+export interface Client {
+    pid: string;
+    first_name: string;
+    last_name: string;
     email: string;
-    total_purchases: number;
-    is_business: boolean;
+    phone: string;
+    company_id: number;
+    position: string;
+    social_links: string; // Assuming this is a base64 encoded JSON string
+    birthday: string | null; // Optional property, can be null
+    last_contact: string | null; // Optional property, can be null
+    notes?: string; // Optional property
+    preferred_contact_method?: string; // Optional property
+    created_at: string; // ISO 8601 date string
+    updated_at: string; // ISO 8601 date string
 }
