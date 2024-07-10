@@ -12,6 +12,7 @@ import (
 
 type Querier interface {
 	ActivateUser(ctx context.Context, id int32) error
+	AddLeadToSalesCampaign(ctx context.Context, arg AddLeadToSalesCampaignParams) error
 	CreateCampaign(ctx context.Context, arg CreateCampaignParams) (CreateCampaignRow, error)
 	// Clients CRUD operations
 	CreateClient(ctx context.Context, arg CreateClientParams) (CreateClientRow, error)
@@ -19,6 +20,8 @@ type Querier interface {
 	CreateCompany(ctx context.Context, arg CreateCompanyParams) (CreateCompanyRow, error)
 	// Leads CRUD operations
 	CreateLead(ctx context.Context, arg CreateLeadParams) (CreateLeadRow, error)
+	CreateSalesCampaign(ctx context.Context, arg CreateSalesCampaignParams) (CreateSalesCampaignRow, error)
+	CreateSalesScript(ctx context.Context, arg CreateSalesScriptParams) (CreateSalesScriptRow, error)
 	CreateTask(ctx context.Context, arg CreateTaskParams) (CreateTaskRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteClient(ctx context.Context, arg DeleteClientParams) error
@@ -36,7 +39,12 @@ type Querier interface {
 	GetCompanyByID(ctx context.Context, arg GetCompanyByIDParams) (GetCompanyByIDRow, error)
 	GetLeadByID(ctx context.Context, arg GetLeadByIDParams) (GetLeadByIDRow, error)
 	GetLeads(ctx context.Context, arg GetLeadsParams) ([]GetLeadsRow, error)
+	GetLeadsByCampaign(ctx context.Context, arg GetLeadsByCampaignParams) ([]GetLeadsByCampaignRow, error)
 	GetReviewsByCampaignID(ctx context.Context, campaignID int32) ([]Review, error)
+	GetSalesCampaigns(ctx context.Context, ownerID int32) ([]GetSalesCampaignsRow, error)
+	GetSalesScriptByID(ctx context.Context, arg GetSalesScriptByIDParams) (GetSalesScriptByIDRow, error)
+	GetSalesScripts(ctx context.Context, ownerID int32) ([]GetSalesScriptsRow, error)
+	GetSalesScriptsByType(ctx context.Context, arg GetSalesScriptsByTypeParams) ([]GetSalesScriptsByTypeRow, error)
 	GetSentimentCountByCampaignID(ctx context.Context, arg GetSentimentCountByCampaignIDParams) (int64, error)
 	GetTotalNumberOfClients(ctx context.Context, ownerID pgtype.Int4) (int64, error)
 	GetTotalNumberOfCompanies(ctx context.Context, ownerID pgtype.Int4) (int64, error)

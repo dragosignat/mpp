@@ -24,3 +24,24 @@ type Review struct {
 	ReviewID   string
 	ReviewText string
 }
+
+type SalesScriptCreate struct {
+	Title   string `json:"title" binding:"required"`
+	Type    string `json:"type" binding:"required"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
+}
+
+type SalesCampaignCreate struct {
+	Name     string  `json:"name" binding:"required"`
+	Type     string  `json:"type" binding:"required"`
+	ScriptID int32   `json:"script_id" binding:"required"`
+	Leads    []int32 `json:"leads" binding:"required"`
+}
+
+type SalesCampaign struct {
+	ID       int32  `json:"id" binding:"required"`
+	Name     string `json:"name" binding:"required"`
+	Type     string `json:"type" binding:"required"`
+	ScriptID int32  `json:"script_id" binding:"required"`
+}

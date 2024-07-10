@@ -13,6 +13,8 @@ import PeopleDashboard from '@/pages/PeopleDashboard';
 import KanbanDashboard from '@/pages/KanbanDashboard';
 import Leads from '@/pages/Leads';
 import LeadAddForm from '@/components/LeadsAddForm';
+import CampaignDashboard from '@/pages/CampaignDashboard';
+import CampaignEmail from '@/pages/CampaignEmail';
 
 const router = createBrowserRouter([
     {
@@ -53,11 +55,19 @@ const router = createBrowserRouter([
                 element: <LeadAddForm />,
             },
             {
+                path: '/campaign',
+                element: <CampaignDashboard />,
+            },
+            {
+                path: '/campaign/email',
+                element: <CampaignEmail />,
+            },
+            {
                 path: '/campaign/analyse',
                 element: <CampaignPage />,
             },
             {
-                path: '/campaign/add',
+                path: '/campaign/analyse/add',
                 element: <CampaignAdd />,
             },
         ],

@@ -15,3 +15,32 @@ export interface DetailedCampaign extends Campaign {
     neutral: number;
     overall_sentiment: string;
 }
+
+export interface SalesCampaign {
+    id: number;
+    name: string;
+    type: string;
+    script_id: number;
+}
+
+export interface SalesCampaignCreate {
+    name: string;
+    type: string;
+    script_id: number;
+    leads: number[];
+}
+
+export interface SalesScript {
+    id: number;
+    title: string;
+    type: string;
+    subject: string;
+    body: string;
+}
+
+export interface SalesScriptCreate {
+    title: string;
+    type: string;
+    subject: string;
+    body: string;
+}

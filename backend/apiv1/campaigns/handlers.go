@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/smtp"
 	"openinvoice-api/internal/pgdb"
 	"os"
 
@@ -227,4 +228,195 @@ func sendReviewsToService(reviews []Review, campaignId int) {
 		return
 	}
 	defer resp.Body.Close()
+}
+
+func (s *Service) GetSalesCampaings(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
+
+	campaigns, err := s.queries.GetSalesCampaigns(c, userID)
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error fetching campaigns"})
+		log.Println(err)
+		return
+	}
+
+	if campaigns == nil {
+		c.JSON(404, gin.H{"message": "No campaigns found"})
+		return
+	}
+
+	c.JSON(200, campaigns)
+
+}
+
+func (s *Service) GetScripts(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
+
+	script_type := c.Query("type")
+
+	if script_type != "email" && script_type != "sms" {
+		c.JSON(400, gin.H{"message": "Invalid type"})
+		return
+	}
+
+	scripts, err := s.queries.GetSalesScriptsByType(c, pgdb.GetSalesScriptsByTypeParams{
+		OwnerID: userID,
+		Type:    script_type,
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error fetching scripts"})
+		log.Println(err)
+		return
+	}
+
+	if scripts == nil {
+		c.JSON(404, gin.H{"message": "No scripts found"})
+		return
+	}
+
+	c.JSON(200, scripts)
+
+}
+
+func (s *Service) CreateScript(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
+
+	var req SalesScriptCreate
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
+		return
+	}
+
+	script, err := s.queries.CreateSalesScript(c, pgdb.CreateSalesScriptParams{
+		Title:   req.Title,
+		Type:    req.Type,
+		Subject: pgtype.Text{String: req.Subject, Valid: true},
+		Body:    pgtype.Text{String: req.Body, Valid: true},
+		OwnerID: userID,
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error creating script"})
+		log.Println(err)
+		return
+	}
+
+	c.JSON(200, script)
+}
+
+func (s *Service) handleEmailCampaign(c *gin.Context, campaign SalesCampaign) error {
+	userID := c.MustGet("userID").(int32)
+
+	// Send email campaign
+	log.Println("Sending email campaign")
+
+	// Get the leads for the campaign
+	leads, err := s.queries.GetLeadsByCampaign(c, pgdb.GetLeadsByCampaignParams{
+		CampaignID: pgtype.Int4{Int32: campaign.ID, Valid: true},
+		OwnerID:    userID,
+	})
+
+	if err != nil {
+		log.Println("Error fetching leads for the campaign")
+		return err
+	}
+
+	script, err := s.queries.GetSalesScriptByID(c, pgdb.GetSalesScriptByIDParams{
+		ID:      campaign.ScriptID,
+		OwnerID: userID,
+	})
+
+	if err != nil {
+		log.Println("Error fetching script for the campaign")
+		return err
+	}
+
+	// Form the email body
+	emailUserName := os.Getenv("EMAIL_USERNAME")
+	emailPassword := os.Getenv("EMAIL_PASSWORD")
+
+	auth := smtp.PlainAuth("", emailUserName, emailPassword, "smtp.gmail.com")
+
+	msgBody := fmt.Sprintf("Subject: %s\n\n%s", script.Subject.String, script.Body.String)
+
+	for _, lead := range leads {
+		err := smtp.SendMail("smtp.gmail.com:587", auth, emailUserName, []string{lead.Email.String}, []byte(msgBody))
+		if err != nil {
+			log.Println("Error sending email to", lead.Email.String)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *Service) CreateSalesCampaign(c *gin.Context) {
+
+	userID := c.MustGet("userID").(int32)
+
+	var req SalesCampaignCreate
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
+		return
+	}
+
+	if req.Type != "email" && req.Type != "sms" {
+		c.JSON(400, gin.H{"message": "Invalid campaign type"})
+		return
+	}
+
+	campaign, err := s.queries.CreateSalesCampaign(c, pgdb.CreateSalesCampaignParams{
+		Name:     req.Name,
+		Type:     req.Type,
+		ScriptID: pgtype.Int4{Int32: req.ScriptID, Valid: true},
+		OwnerID:  userID,
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Error creating campaign"})
+		log.Println(err)
+		return
+	}
+
+	// Add leads to the campaign
+	for _, leadID := range req.Leads {
+		err := s.queries.AddLeadToSalesCampaign(c, pgdb.AddLeadToSalesCampaignParams{
+			CampaignID: pgtype.Int4{Int32: campaign.ID, Valid: true},
+			LeadID:     pgtype.Int4{Int32: leadID, Valid: true},
+			OwnerID:    userID,
+		})
+		if err != nil {
+			c.JSON(500, gin.H{"message": "Error adding lead to campaign"})
+			log.Println(err)
+			return
+		}
+	}
+
+	campaignModel := SalesCampaign{
+		ID:       campaign.ID,
+		Name:     campaign.Name,
+		Type:     campaign.Type,
+		ScriptID: campaign.ScriptID.Int32,
+	}
+
+	switch req.Type {
+	case "email":
+		// Send email campaign
+		err := s.handleEmailCampaign(c, campaignModel)
+		if err != nil {
+			c.JSON(500, gin.H{"message": "Error sending campaign"})
+			log.Println(err)
+			return
+		}
+	case "sms":
+		// Send SMS campaign
+		log.Println("Sending SMS campaign")
+	}
+
+	c.JSON(200, campaign)
 }

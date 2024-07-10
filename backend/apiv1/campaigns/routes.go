@@ -23,6 +23,10 @@ func (s *Service) RegisterRoutes(router *gin.RouterGroup) {
 		routes.GET("", s.List)
 		routes.POST("", s.Create)
 		routes.GET("/:id", s.Get)
+		routes.GET("/sales", s.GetSalesCampaings)
+		routes.POST("/sales", s.CreateSalesCampaign)
+		routes.GET("/scripts", s.GetScripts)
+		routes.POST("/scripts", s.CreateScript)
 	}
 
 }

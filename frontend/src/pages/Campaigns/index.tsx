@@ -70,7 +70,7 @@ const CampaignPage = () => {
                                 Manage all your sale campaigns here
                             </CardDescription>
                         </div>
-                        <Link to='/campaign/add'>
+                        <Link to='/campaign/analyse/add'>
                             <Button
                                 variant='outline'
                                 className='text-sm font-medium'

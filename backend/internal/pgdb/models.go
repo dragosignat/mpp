@@ -96,6 +96,38 @@ type Review struct {
 	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
 }
 
+type SalesCampaignLeads struct {
+	ID         int32            `json:"id"`
+	CampaignID pgtype.Int4      `json:"campaign_id"`
+	LeadID     pgtype.Int4      `json:"lead_id"`
+	CreatedAt  pgtype.Timestamp `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	OwnerID    int32            `json:"owner_id"`
+}
+
+type SalesCampaigns struct {
+	ID        int32            `json:"id"`
+	Name      string           `json:"name"`
+	ScriptID  pgtype.Int4      `json:"script_id"`
+	DateStart pgtype.Date      `json:"date_start"`
+	DateEnd   pgtype.Date      `json:"date_end"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	OwnerID   int32            `json:"owner_id"`
+	Type      string           `json:"type"`
+}
+
+type SalesScripts struct {
+	ID        int32            `json:"id"`
+	Title     string           `json:"title"`
+	Type      string           `json:"type"`
+	Subject   pgtype.Text      `json:"subject"`
+	Body      pgtype.Text      `json:"body"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	OwnerID   int32            `json:"owner_id"`
+}
+
 type Users struct {
 	ID        int32            `json:"id"`
 	Username  string           `json:"username"`
