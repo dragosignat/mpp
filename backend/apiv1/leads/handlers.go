@@ -105,7 +105,7 @@ func (s *Service) createLead(c *gin.Context) {
 		LastName:               lead.LastName,
 		Email:                  pgtype.Text{String: lead.Email, Valid: lead.Email != ""},
 		Phone:                  pgtype.Text{String: lead.Phone, Valid: lead.Phone != ""},
-		CompanyID:              pgtype.Int4{Int32: int32(lead.CompanyID), Valid: true},
+		CompanyID:              pgtype.Int4{Int32: int32(lead.CompanyID), Valid: lead.CompanyID != 0},
 		Position:               pgtype.Text{String: lead.Position, Valid: lead.Position != ""},
 		Notes:                  pgtype.Text{String: lead.Notes, Valid: lead.Notes != ""},
 		PreferredContactMethod: pgtype.Text{String: lead.PreferredContactMethod, Valid: lead.PreferredContactMethod != ""},

@@ -92,7 +92,7 @@ func (q *Queries) DeleteCompany(ctx context.Context, arg DeleteCompanyParams) er
 }
 
 const getCompanies = `-- name: GetCompanies :many
-SELECT pid, name, industry, size, website, contact_person, email, phone, address, created_at, updated_at
+SELECT id, name, industry, size, website, contact_person, email, phone, address, created_at, updated_at
 FROM companies
 WHERE owner_id = $1
 ORDER BY name
@@ -107,7 +107,7 @@ type GetCompaniesParams struct {
 }
 
 type GetCompaniesRow struct {
-	Pid           pgtype.UUID      `json:"pid"`
+	ID            int32            `json:"id"`
 	Name          string           `json:"name"`
 	Industry      pgtype.Text      `json:"industry"`
 	Size          pgtype.Text      `json:"size"`
@@ -130,7 +130,7 @@ func (q *Queries) GetCompanies(ctx context.Context, arg GetCompaniesParams) ([]G
 	for rows.Next() {
 		var i GetCompaniesRow
 		if err := rows.Scan(
-			&i.Pid,
+			&i.ID,
 			&i.Name,
 			&i.Industry,
 			&i.Size,

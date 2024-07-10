@@ -5,15 +5,14 @@ import ClientEdit from '@/pages/ClientEdit';
 import {createBrowserRouter} from 'react-router-dom';
 import ErrorPage from '@/pages/ErrorPage';
 import Root from '@/layouts/Root';
-import Invoices from '@/pages/Invoices';
-import InvoicesAdd from '@/pages/InvoicesAdd';
-import InvoicesEdit from '@/pages/InvoicesEdit';
 import LoginPage from '@/pages/LoginPage';
 import Signup from '@/pages/SignupPage';
 import CampaignPage from '@/pages/Campaigns';
 import CampaignAdd from '@/pages/CampaignAdd';
 import PeopleDashboard from '@/pages/PeopleDashboard';
 import KanbanDashboard from '@/pages/KanbanDashboard';
+import Leads from '@/pages/Leads';
+import LeadAddForm from '@/components/LeadsAddForm';
 
 const router = createBrowserRouter([
     {
@@ -46,19 +45,15 @@ const router = createBrowserRouter([
                 element: <KanbanDashboard />,
             },
             {
-                path: '/invoices',
-                element: <Invoices />,
+                path: '/leads',
+                element: <Leads />,
             },
             {
-                path: '/invoices/add',
-                element: <InvoicesAdd />,
+                path: '/leads/add',
+                element: <LeadAddForm />,
             },
             {
-                path: '/invoices/:invoiceId',
-                element: <InvoicesEdit />,
-            },
-            {
-                path: '/campaign',
+                path: '/campaign/analyse',
                 element: <CampaignPage />,
             },
             {

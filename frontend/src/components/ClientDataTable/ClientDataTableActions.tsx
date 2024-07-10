@@ -15,9 +15,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import {useToast} from '@/components/ui/use-toast';
 import {Client} from '@/types/Client';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '@/redux/store';
-import {removeClient} from '@/redux/clients/clientsSlice';
 
 interface DataTableRowActionsProps<TData> {
     row: Row<TData>;
@@ -27,11 +24,9 @@ export function DataTableRowActions<TData>({
     row,
 }: DataTableRowActionsProps<TData>) {
     const client = row.original as Client;
-    const clientId = client.id;
-    const dispatch = useDispatch<AppDispatch>();
+    const clientId = client.pid;
     const {toast} = useToast();
     const handleDelete = () => {
-        dispatch(removeClient(clientId));
         toast({
             title: 'Client deleted',
             variant: 'destructive',

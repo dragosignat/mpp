@@ -20,7 +20,6 @@ import {useToast} from '@/components/ui/use-toast';
 
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '@/redux/store';
-import {addClient} from '@/redux/clients/clientsSlice';
 import {useNavigate} from 'react-router-dom';
 
 const formSchema = z.object({
@@ -79,7 +78,6 @@ function ClientAddForm() {
         };
 
         // Dispatch the action to add the client to the store
-        dispatch(addClient(client));
         // Display a success message
         toast({
             title: 'Client added',

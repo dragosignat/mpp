@@ -26,12 +26,12 @@ export interface LeadCreate {
     first_name: string;
     last_name: string;
     email: string;
-    phone: string;
-    company_id: number;
-    position: string;
+    source: string;
+    phone?: string;
+    company_id?: number;
+    position?: string;
     notes?: string;
     preferred_contact_method?: string;
-    source?: string;
     social_links: SocialLinks;
     birthday?: string;
 }

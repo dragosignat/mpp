@@ -1,7 +1,7 @@
 import {Address} from './Address';
 
 export interface Company {
-    pid: string;
+    id: number;
     name: string;
     industry: string;
     size: string;

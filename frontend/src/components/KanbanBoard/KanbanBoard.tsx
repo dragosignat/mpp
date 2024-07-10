@@ -1,4 +1,4 @@
-import React, {useState, DragEvent, FormEvent} from 'react';
+import {useState, DragEvent, FormEvent} from 'react';
 import {FiPlus, FiTrash} from 'react-icons/fi';
 import {motion} from 'framer-motion';
 import {FaFire} from 'react-icons/fa';

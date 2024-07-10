@@ -23,11 +23,13 @@ import {DataTablePagination} from './DataTableComponents/DataTablePagination';
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    message?: string;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    message,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
@@ -96,7 +98,7 @@ export function DataTable<TData, TValue>({
                                     colSpan={columns.length}
                                     className='h-24 text-center'
                                 >
-                                    No results.
+                                    {message || 'No results.'}
                                 </TableCell>
                             </TableRow>
                         )}

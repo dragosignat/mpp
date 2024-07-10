@@ -6,7 +6,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
         $9) RETURNING pid, name, industry, size, website, contact_person, email, phone, address, created_at, updated_at;
 
 -- name: GetCompanies :many
-SELECT pid, name, industry, size, website, contact_person, email, phone, address, created_at, updated_at
+SELECT id, name, industry, size, website, contact_person, email, phone, address, created_at, updated_at
 FROM companies
 WHERE owner_id = $1
 ORDER BY name

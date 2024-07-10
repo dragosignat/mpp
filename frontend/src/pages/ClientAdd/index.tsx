@@ -7,7 +7,7 @@ const ClientAdd = () => {
                 <div className='flex flex-row justify-between'>
                     <h1 className='text-2xl font-bold'>Add a new client</h1>
                 </div>
-                <ClientAddForm />
+                {/* <ClientAddForm /> */}
             </div>
         </>
     );

@@ -9,32 +9,9 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import {DollarSign, Users, Warehouse, PiggyBank} from 'lucide-react';
-import {useDispatch, useSelector} from 'react-redux';
-import {loadClients, selectClients} from '@/redux/clients/clientsSlice';
-import {AppDispatch} from '@/redux/store';
 import BarChartComponent from '@/components/BarChartComponent';
 
 function Homepage() {
-    // Load the number of clients and map them to the number total purchase
-    const clients = useSelector(selectClients);
-    const dispatch = useDispatch<AppDispatch>();
-    const clientsToPurchases: {name: string; total: number}[] = [];
-
-    useEffect(() => {
-        // Load the clients and form the map
-        if (clients.length === 0) {
-            console.log('loading clients');
-            dispatch(loadClients());
-        }
-    }, [dispatch]);
-
-    clients.map((client) => {
-        clientsToPurchases.push({
-            name: client.name,
-            total: client.total_purchases,
-        });
-    });
-
     return (
         <>
             <div className=' flex flex-col space-y-4 p-5 '>
@@ -119,7 +96,7 @@ function Homepage() {
                             <CardTitle>Sales by client</CardTitle>
                         </CardHeader>
                         <CardContent className='pl-2'>
-                            <BarChartComponent data={clientsToPurchases} />
+                            <BarChartComponent data={[]} />
                         </CardContent>
                     </Card>
                     <Card className='col-span-2'>

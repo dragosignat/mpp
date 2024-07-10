@@ -1,21 +1,7 @@
 import {NavLink} from 'react-router-dom';
-import {useState} from 'react';
-import {
-    Users,
-    Settings,
-    Home,
-    ReceiptText,
-    Percent,
-    FolderKanban,
-} from 'lucide-react';
+import {Users, Settings, Home, FolderKanban, Percent} from 'lucide-react';
 
 function Sidebar() {
-    const [isCurrent, setIsCurrent] = useState<string>('');
-
-    function handleClick() {
-        setIsCurrent('bg-gray-100 dark:bg-gray-700');
-    }
-
     return (
         <>
             <aside className='flex flex-col border-r-[2px] justify-between w-40'>
@@ -43,11 +29,13 @@ function Sidebar() {
                     <li>
                         <NavLink
                             className='flex items-center p-5 m-2 space-x-4 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 '
-                            to='/invoices'
+                            to='/campaign'
                         >
-                            <ReceiptText className='h-5 w-5 text-gray-500 dark:text-gray-400' />
+                            <div>
+                                <Percent className='h-5 w-5 text-gray-500 dark:text-gray-400' />
+                            </div>
                             <span className='text-sm font-medium'>
-                                Invoices
+                                Campaigns
                             </span>
                         </NavLink>
                     </li>

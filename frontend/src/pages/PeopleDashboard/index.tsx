@@ -9,7 +9,6 @@ import {CompaniesColumnShort} from '@/components/CompanyDataTable/CompanyColumnS
 import {ClientsColumnShort} from '@/components/ClientDataTable/ClientsColumnsShort';
 import {useQuery} from '@tanstack/react-query';
 import axiosInstance from '@/config/axiosConfig';
-import {useToast} from '@/components/ui/use-toast';
 
 function PeopleDashboard() {
     const {status: leadsStatus, data: leadsData} = useQuery({
@@ -17,38 +16,15 @@ function PeopleDashboard() {
         queryFn: () => axiosInstance.get('/leads'),
     });
 
-    const {toast} = useToast();
-
-    if (leadsStatus === 'error') {
-        toast({
-            title: 'Error',
-            description: 'Failed to fetch leads',
-        });
-    }
-
     const {status: clientsStatus, data: clientsData} = useQuery({
         queryKey: ['clients'],
         queryFn: () => axiosInstance.get('/clients'),
     });
 
-    if (clientsStatus === 'error') {
-        toast({
-            title: 'Error',
-            description: 'Failed to fetch clients',
-        });
-    }
-
     const {status: companyStatus, data: companyData} = useQuery({
         queryKey: ['companies'],
         queryFn: () => axiosInstance.get('/companies'),
     });
-
-    if (companyStatus === 'error') {
-        toast({
-            title: 'Error',
-            description: 'Failed to fetch companies',
-        });
-    }
 
     return (
         <>
@@ -67,7 +43,7 @@ function PeopleDashboard() {
                                         Leads
                                     </h3>
                                     <div className=' space-x-4 '>
-                                        <Link to='/clients'>
+                                        <Link to='/leads'>
                                             <Button variant='outline'>
                                                 Explore all leads
                                             </Button>
@@ -77,6 +53,13 @@ function PeopleDashboard() {
                                 <DataTable
                                     columns={LeadsColumnShort}
                                     data={leadsData?.data || []}
+                                    message={
+                                        leadsStatus === 'pending'
+                                            ? 'Loading...'
+                                            : '' || leadsStatus === 'error'
+                                              ? 'Error fetching data'
+                                              : ''
+                                    }
                                 />
                             </div>
                         </div>
@@ -87,7 +70,7 @@ function PeopleDashboard() {
                                         Clients
                                     </h3>
                                     <div className=' space-x-4 '>
-                                        <Link to='/clients'>
+                                        <Link to=''>
                                             <Button variant='outline'>
                                                 Explore all clients
                                             </Button>
@@ -97,6 +80,13 @@ function PeopleDashboard() {
                                 <DataTable
                                     columns={ClientsColumnShort}
                                     data={clientsData?.data || []}
+                                    message={
+                                        clientsStatus === 'pending'
+                                            ? 'Loading...'
+                                            : '' || clientsStatus === 'error'
+                                              ? 'Error fetching data'
+                                              : ''
+                                    }
                                 />
                             </div>
                         </div>
@@ -107,7 +97,7 @@ function PeopleDashboard() {
                                         Companies
                                     </h3>
                                     <div className=' space-x-4 '>
-                                        <Link to='/clients'>
+                                        <Link to=''>
                                             <Button variant='outline'>
                                                 Explore all companies
                                             </Button>
@@ -117,16 +107,27 @@ function PeopleDashboard() {
                                 <DataTable
                                     columns={CompaniesColumnShort}
                                     data={companyData?.data || []}
+                                    message={
+                                        companyStatus === 'pending'
+                                            ? 'Loading...'
+                                            : '' || companyStatus === 'error'
+                                              ? 'Error fetching data'
+                                              : ''
+                                    }
                                 />
                             </div>
                         </div>
                     </div>
                     <div className=' basis-1/3 bg-white rounded-lg shadow-lg flex flex-col justify-between'>
                         <div className='flex flex-col p-8 space-y-4 '>
-                            <FindLeadsDialog />
+                            <Link to='/campaign'>
+                                <Button variant='outline' className=' w-full '>
+                                    Find leads
+                                </Button>
+                            </Link>
                             <ImportCSVDialog />
                             <Button variant='default' className=' w-full '>
-                                Import from Instagram
+                                Import from social media
                             </Button>
                             {/* Should put a chart here */}
                         </div>
