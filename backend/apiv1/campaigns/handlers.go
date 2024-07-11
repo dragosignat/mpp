@@ -13,6 +13,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/twilio/twilio-go"
+	twilioApi "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
 var (
@@ -355,6 +357,60 @@ func (s *Service) handleEmailCampaign(c *gin.Context, campaign SalesCampaign) er
 	return nil
 }
 
+func (s *Service) handleSMSCampaign(c *gin.Context, campaign SalesCampaign) error {
+	userID := c.MustGet("userID").(int32)
+
+	// Send SMS campaign
+	log.Println("Sending SMS campaign")
+
+	// Get the leads for the campaign
+	leads, err := s.queries.GetLeadsByCampaign(c, pgdb.GetLeadsByCampaignParams{
+		CampaignID: pgtype.Int4{Int32: campaign.ID, Valid: true},
+		OwnerID:    userID,
+	})
+
+	if err != nil {
+		log.Println("Error fetching leads for the campaign")
+		return err
+	}
+
+	script, err := s.queries.GetSalesScriptByID(c, pgdb.GetSalesScriptByIDParams{
+		ID:      campaign.ScriptID,
+		OwnerID: userID,
+	})
+
+	if err != nil {
+		log.Println("Error fetching script for the campaign")
+		return err
+	}
+
+	accountSid := os.Getenv("TWILIO_ACCOUNT_SID")
+	authToken := os.Getenv("TWILIO_AUTH_TOKEN")
+	twilioPhoneNumber := os.Getenv("TWILIO_PHONE_NUMBER")
+	twilioClient := twilio.NewRestClientWithParams(twilio.ClientParams{
+		Username: accountSid,
+		Password: authToken,
+	})
+
+	params := &twilioApi.CreateMessageParams{}
+	params.SetFrom(twilioPhoneNumber)
+	params.SetBody(script.Body.String)
+
+	// Form the SMS body
+	for _, lead := range leads {
+		log.Println("Sending SMS to", lead.Phone.String)
+		params.SetTo(lead.Phone.String)
+		resp, err := twilioClient.Api.CreateMessage(params)
+		if err != nil {
+			log.Println("Error sending SMS to", lead.Phone.String)
+			return err
+		}
+		log.Println("SMS sent to", lead.Phone.String, "with SID", resp.Sid)
+	}
+
+	return nil
+}
+
 func (s *Service) CreateSalesCampaign(c *gin.Context) {
 
 	userID := c.MustGet("userID").(int32)
@@ -415,7 +471,12 @@ func (s *Service) CreateSalesCampaign(c *gin.Context) {
 		}
 	case "sms":
 		// Send SMS campaign
-		log.Println("Sending SMS campaign")
+		err := s.handleSMSCampaign(c, campaignModel)
+		if err != nil {
+			c.JSON(500, gin.H{"message": "Error sending campaign"})
+			log.Println(err)
+			return
+		}
 	}
 
 	c.JSON(200, campaign)

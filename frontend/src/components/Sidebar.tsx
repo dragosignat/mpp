@@ -61,7 +61,7 @@ function Sidebar() {
                         <span className='text-sm font-medium'>Settings</span>
                     </NavLink>
                     <div className='justify-center m-2'></div>
-                    <div className=' text-sm text-gray-200 px-2 '>v0.0.2</div>
+                    <div className=' text-sm text-gray-200 px-2 '>v0.0.3</div>
                 </div>
             </aside>
         </>

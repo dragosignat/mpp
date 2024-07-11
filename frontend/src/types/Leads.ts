@@ -1,7 +1,7 @@
 import {SocialLinks, decodeBase64SocialLinks} from './SocialLink';
 
 export interface Lead {
-    pid: string;
+    id: number;
     first_name: string;
     last_name: string;
     email: string;

@@ -7,7 +7,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
         $17) RETURNING pid, first_name, last_name, email, phone, company_id, position, social_links, birthday, last_contact, first_contact, follow_up, source, notes, lead_status, preferred_contact_method, lead_score, created_at, updated_at;
 
 -- name: GetLeads :many
-SELECT pid,
+SELECT id,
        first_name,
        last_name,
        email,
@@ -32,7 +32,7 @@ ORDER BY last_contact DESC LIMIT $2
 OFFSET $3;
 
 -- name: GetLeadByID :one
-SELECT pid,
+SELECT id,
        first_name,
        last_name,
        email,

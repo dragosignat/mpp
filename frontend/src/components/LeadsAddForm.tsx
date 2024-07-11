@@ -80,7 +80,7 @@ function LeadAddForm() {
 
     const {status: companyStatus, data: companyData} = useQuery({
         queryKey: ['companies'],
-        queryFn: () => axiosInstance.get('/companies').then((res) => res.data),
+        queryFn: () => axiosInstance.get('/companies').then((res) => res),
     });
 
     // 2. Define a submit handler.
@@ -245,7 +245,7 @@ function LeadAddForm() {
                                                         Error fetching data
                                                     </SelectItem>
                                                 ) : (
-                                                    companyData?.map(
+                                                    companyData.data?.map(
                                                         (company: Company) => (
                                                             <SelectItem
                                                                 key={company.id}

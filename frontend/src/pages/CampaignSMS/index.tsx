@@ -33,7 +33,7 @@ import {SalesCampaignCreate} from '@/types/Campaign';
 import {Checkbox} from '@/components/ui/checkbox';
 import {useToast} from '@/components/ui/use-toast';
 
-function CampaignEmail() {
+function CampaignSMS() {
     const [title, setTitle] = useState('');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
@@ -48,9 +48,7 @@ function CampaignEmail() {
     } = useQuery({
         queryKey: ['scripts'],
         queryFn: () =>
-            axiosInstance
-                .get('/campaigns/scripts?type=email')
-                .then((res) => res),
+            axiosInstance.get('/campaigns/scripts?type=sms').then((res) => res),
     });
 
     const {
@@ -93,7 +91,7 @@ function CampaignEmail() {
 
         const newCampaign: SalesCampaignCreate = {
             name: campignName,
-            type: 'email',
+            type: 'sms',
             script_id: selectedScript,
             leads,
         };
@@ -128,7 +126,7 @@ function CampaignEmail() {
             title,
             subject,
             body,
-            type: 'email',
+            type: 'sms',
         };
 
         addScriptMutation.mutate(newScript, {
@@ -152,7 +150,7 @@ function CampaignEmail() {
             <div className='flex flex-col  space-y-4'>
                 <div className='flex flex-col justify-center items-center'>
                     <h1 className='text-4xl font-bold text-gray-800 my-4'>
-                        Email campaign
+                        SMS campaign
                     </h1>
                     <Dialog>
                         <DialogTrigger asChild>
@@ -198,7 +196,7 @@ function CampaignEmail() {
                                         <div>Error: {leadsError.message}</div>
                                     ) : (
                                         leadsData.data
-                                            ?.filter((lead: Lead) => lead.email)
+                                            ?.filter((lead: Lead) => lead.phone)
                                             .map((lead: Lead) => (
                                                 <TableRow key={lead.id}>
                                                     <TableCell className='font-medium'>
@@ -253,7 +251,7 @@ function CampaignEmail() {
                 <div className='flex flex-row justify-evenly space-x-4 mx-4 '>
                     <div className='basis-1/2 flex flex-col bg-white rounded-lg shadow-lg p-4'>
                         <h2 className='text-2xl mx-auto font-bold'>
-                            Email scripts
+                            Phone scripts
                         </h2>
                         <Separator className='my-4' />
                         <div className='flex flex-col'>
@@ -400,4 +398,4 @@ function CampaignEmail() {
     );
 }
 
-export default CampaignEmail;
+export default CampaignSMS;

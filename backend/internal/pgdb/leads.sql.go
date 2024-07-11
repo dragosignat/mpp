@@ -125,7 +125,7 @@ func (q *Queries) DeleteLead(ctx context.Context, arg DeleteLeadParams) error {
 }
 
 const getLeadByID = `-- name: GetLeadByID :one
-SELECT pid,
+SELECT id,
        first_name,
        last_name,
        email,
@@ -155,7 +155,7 @@ type GetLeadByIDParams struct {
 }
 
 type GetLeadByIDRow struct {
-	Pid                    pgtype.UUID      `json:"pid"`
+	ID                     int32            `json:"id"`
 	FirstName              string           `json:"first_name"`
 	LastName               string           `json:"last_name"`
 	Email                  pgtype.Text      `json:"email"`
@@ -180,7 +180,7 @@ func (q *Queries) GetLeadByID(ctx context.Context, arg GetLeadByIDParams) (GetLe
 	row := q.db.QueryRow(ctx, getLeadByID, arg.Pid, arg.OwnerID)
 	var i GetLeadByIDRow
 	err := row.Scan(
-		&i.Pid,
+		&i.ID,
 		&i.FirstName,
 		&i.LastName,
 		&i.Email,
@@ -204,7 +204,7 @@ func (q *Queries) GetLeadByID(ctx context.Context, arg GetLeadByIDParams) (GetLe
 }
 
 const getLeads = `-- name: GetLeads :many
-SELECT pid,
+SELECT id,
        first_name,
        last_name,
        email,
@@ -236,7 +236,7 @@ type GetLeadsParams struct {
 }
 
 type GetLeadsRow struct {
-	Pid                    pgtype.UUID      `json:"pid"`
+	ID                     int32            `json:"id"`
 	FirstName              string           `json:"first_name"`
 	LastName               string           `json:"last_name"`
 	Email                  pgtype.Text      `json:"email"`
@@ -267,7 +267,7 @@ func (q *Queries) GetLeads(ctx context.Context, arg GetLeadsParams) ([]GetLeadsR
 	for rows.Next() {
 		var i GetLeadsRow
 		if err := rows.Scan(
-			&i.Pid,
+			&i.ID,
 			&i.FirstName,
 			&i.LastName,
 			&i.Email,

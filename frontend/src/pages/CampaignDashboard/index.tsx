@@ -60,7 +60,7 @@ function CampaignDashboard() {
                                 </div>
                                 <Separator orientation='vertical' />
                                 <div className='mx-auto'>
-                                    <Link to='/campaign/phone'>
+                                    <Link to='/campaign/sms'>
                                         <Button variant='outline'>
                                             Phone campaign
                                         </Button>

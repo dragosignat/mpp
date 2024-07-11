@@ -147,18 +147,6 @@ export const LeadsColumn: ColumnDef<Lead>[] = [
             <DataTableColumnHeader column={column} title='Lead Score' />
         ),
     },
-    {
-        accessorKey: 'created_at',
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title='Created At' />
-        ),
-    },
-    {
-        accessorKey: 'updated_at',
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title='Updated At' />
-        ),
-    },
     // {
     //     id: 'actions',
     //     cell: ({ row }) => <DataTableRowActions row={row} />,
