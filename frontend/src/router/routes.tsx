@@ -16,6 +16,7 @@ import LeadAddForm from '@/components/LeadsAddForm';
 import CampaignDashboard from '@/pages/CampaignDashboard';
 import CampaignEmail from '@/pages/CampaignEmail';
 import CampaignSMS from '@/pages/CampaignSMS';
+import Meetings from '@/pages/Meetings';
 
 const router = createBrowserRouter([
     {
@@ -74,6 +75,14 @@ const router = createBrowserRouter([
             {
                 path: '/campaign/analyse/add',
                 element: <CampaignAdd />,
+            },
+            {
+                path: '/settings',
+                element: <div>Settings</div>,
+            },
+            {
+                path: '/meetings',
+                element: <Meetings />,
             },
         ],
     },

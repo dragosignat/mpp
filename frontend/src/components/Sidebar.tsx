@@ -1,5 +1,12 @@
 import {NavLink} from 'react-router-dom';
-import {Users, Settings, Home, FolderKanban, Percent} from 'lucide-react';
+import {
+    Users,
+    Settings,
+    Home,
+    FolderKanban,
+    Percent,
+    Headset,
+} from 'lucide-react';
 
 function Sidebar() {
     return (
@@ -48,6 +55,17 @@ function Sidebar() {
                                 <FolderKanban className='h-5 w-5 text-gray-500 dark:text-gray-400' />
                             </div>
                             <span className='text-sm font-medium'>Kanban</span>
+                        </NavLink>
+                        <NavLink
+                            className='flex items-center p-5 m-2 space-x-4 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 '
+                            to='/meetings'
+                        >
+                            <div>
+                                <Headset className='h-5 w-5 text-gray-500 dark:text-gray-400' />
+                            </div>
+                            <span className='text-sm font-medium'>
+                                Meetings
+                            </span>
                         </NavLink>
                     </li>
                 </ul>
